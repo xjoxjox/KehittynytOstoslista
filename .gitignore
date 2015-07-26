@@ -28,7 +28,6 @@ KehittynytOstoslista/build/web/html-demo/ostohistoria.html
 KehittynytOstoslista/build/web/html-demo/ostoslista.html
 KehittynytOstoslista/build/web/html-demo/ostoslistat.html
 KehittynytOstoslista/build/web/html-demo/tuote.html
-*.html
 KehittynytOstoslista/build/web/index.jsp
 KehittynytOstoslista/build/web/js/bootstrap.js
 KehittynytOstoslista/build/web/js/bootstrap.min.js
