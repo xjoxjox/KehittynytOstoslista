@@ -28,7 +28,7 @@ p {
 }
 
 table, th, td {
-    background-color: #f5e79e;
+    background-color: beige;
     border: 1px solid darkblue;
     font-family: Georgia, Arial;
 }
@@ -45,7 +45,7 @@ td {
 }
 
 tbody {
-    background-color: cornsilk;
+    background-color: beige;
 }
 
 button {
