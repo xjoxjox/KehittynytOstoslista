@@ -3,8 +3,8 @@
     <Resource name="jdbc/tietokanta" auth="Container"
         type="javax.sql.DataSource" removeAbandoned="true"
         removeAbandonedTimeout="30" maxActive="100"
-        maxIdle="30" maxWait="10000" username="xjoxjox"
+        maxIdle="30" maxWait="10000" username="tunnus"
         password="salasana"
         driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql://localhost/xjoxjox" />
+        url="jdbc:postgresql://localhost/tunnus" />
 </Context>
