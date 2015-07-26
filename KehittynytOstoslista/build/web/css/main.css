@@ -1,0 +1,71 @@
+/* 
+    Created on : Jul 23, 2015, 5:40:27 PM
+    Author     : Johanna
+*/
+body {
+    background-color: #bce8f1;
+    font-family: Georgia, Arial;
+}
+
+div {
+    background-color:#d0e9c6;
+    font-family: Georgia, Arial;
+}
+
+h1 {
+    color: darkblue;
+    font-family: Georgia, Arial;
+}
+
+h2 {
+    color: darkblue;
+    font-family: Georgia, Arial;
+}
+
+p {
+    color: darkgreen;
+    font-family: Georgia, Arial;
+}
+
+table, th, td {
+    background-color: beige;
+    border: 1px solid darkblue;
+    font-family: Georgia, Arial;
+}
+
+th {
+    text-align: center;
+    background-color: lightgreen;
+    color: black;
+    font-family: Georgia, Arial;
+}
+
+td {
+    padding: 20px;
+}
+
+tbody {
+    background-color: beige;
+}
+
+button {
+    background-color: activecaption;
+    color: black;
+    font-family: Georgia, Arial;
+}
+
+a:link {
+    color: cornflowerblue;
+}
+
+a:visited {
+    color: blueviolet;
+}
+
+a:hover {
+    color: blue;
+}
+
+a:active {
+    color: #262626;
+}
