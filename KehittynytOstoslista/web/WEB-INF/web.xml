@@ -2,11 +2,19 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <servlet>
         <servlet-name>TestiServLet</servlet-name>
-        <servlet-class>TestiServLet</servlet-class>
+        <servlet-class>KehittynytOstoslista.ServLets.TestiServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Testi</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.Testi</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>TestiServLet</servlet-name>
         <url-pattern>/TestiServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Testi</servlet-name>
+        <url-pattern>/Testi</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
