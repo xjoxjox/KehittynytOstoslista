@@ -65,15 +65,15 @@ public class Tuote {
     }
   
     public static List<Tuote> getTuotteet() throws SQLException, NamingException {
-        String sql = "SELECT id, name, brand, weight, subcategory from kayttajat";
+        String sql = "SELECT product_id, name, brand, weight, subcategory_id from product";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
 
         ArrayList<Tuote> tuotteet = new ArrayList<Tuote>();
         while (tulokset.next()) {
-            Tuote k = new Tuote(tulokset.getInt("id"), tulokset.getString("name"), tulokset.getString("brand"),
-                tulokset.getDouble("weight"), tulokset.getInt("subcategory"));
+            Tuote k = new Tuote(tulokset.getInt("product_id"), tulokset.getString("name"), tulokset.getString("brand"),
+                tulokset.getDouble("weight"), tulokset.getInt("subcategory_id"));
             tuotteet.add(k);
         }   
 

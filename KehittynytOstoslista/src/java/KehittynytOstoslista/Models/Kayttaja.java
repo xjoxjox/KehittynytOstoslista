@@ -45,14 +45,14 @@ public class Kayttaja {
     }
   
     public static List<Kayttaja> getKayttajat() throws SQLException, NamingException {
-        String sql = "SELECT id, account, password from account";
+        String sql = "SELECT account_id, username, password from account";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
 
         ArrayList<Kayttaja> kayttajat = new ArrayList<Kayttaja>();
         while (tulokset.next()) {
-            Kayttaja k = new Kayttaja(tulokset.getInt("id"), tulokset.getString("account"), tulokset.getString("password"));
+            Kayttaja k = new Kayttaja(tulokset.getInt("account_id"), tulokset.getString("username"), tulokset.getString("password"));
             kayttajat.add(k);
         }   
 
