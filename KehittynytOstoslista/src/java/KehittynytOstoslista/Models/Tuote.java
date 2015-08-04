@@ -92,7 +92,7 @@ public class Tuote {
         }
     }
     
-    public static List<Tuote> getTuotteet() throws SQLException, NamingException {
+    public static List<Tuote> haeKaikkiTuotteet() throws SQLException, NamingException {
         String sql = "SELECT product_id, name, brand, weight, subcategory_id from product";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);

@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/Testi.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/index.jsp</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/Yhteys.java</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/TestiServLet.java</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/Tuote.java</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/testilistaus.jsp</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/Kayttaja.java</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/esittelysivu.html</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/TuoteServLet.java</file>
         </group>
     </open-files>
 </project-private>

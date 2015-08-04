@@ -1,6 +1,6 @@
-INSERT INTO account (username, password)
+INSERT INTO account (username, password, admin)
 VALUES
-	('testi','testisana');
+	('testi','testisana',FALSE);
 
 INSERT INTO bonus (name)
 VALUES

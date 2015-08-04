@@ -1,7 +1,8 @@
 CREATE TABLE account(
 	account_id serial PRIMARY KEY,
 	username VARCHAR (50) UNIQUE NOT NULL,
-	password VARCHAR (50) NOT NULL
+	password VARCHAR (50) NOT NULL,
+	admin BOOLEAN NOT NULL
 );
 
 CREATE TABLE category(
@@ -76,6 +77,7 @@ CREATE TABLE productprice(
 	price DECIMAL (10,3) NOT NULL,
 	location INTEGER NOT NULL,
 	productprice_date TIMESTAMP NOT NULL DEFAULT now(),
+	current_price BOOLEAN NOT NULL,
 	product_id INTEGER NOT NULL,
 	shop_id INTEGER NOT NULL,
 	CONSTRAINT product_id_fkey FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE RESTRICT,

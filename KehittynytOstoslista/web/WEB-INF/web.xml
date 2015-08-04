@@ -4,9 +4,25 @@
         <servlet-name>TuoteServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.TuoteServLet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>KayttajaServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.KayttajaServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.Login</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KayttajaServLet</servlet-name>
+        <url-pattern>/KayttajaServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/Login</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
