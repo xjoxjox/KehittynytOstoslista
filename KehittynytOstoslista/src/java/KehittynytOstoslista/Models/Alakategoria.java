@@ -9,36 +9,39 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
-public class Bonus {
+public class Alakategoria {
     private int id;
-    private String nimi;
+    private String kuvaus;
+    private int kategoriaId;
     
-    private Bonus(ResultSet tulos) throws SQLException {
-        Bonus b = new Bonus(
-            tulos.getInt("bonus_id"),
-            tulos.getString("name")
+    private Alakategoria(ResultSet tulos) throws SQLException {
+        Alakategoria a = new Alakategoria(
+            tulos.getInt("subcategory_id"),
+            tulos.getString("description"),
+            tulos.getInt("category_id")
         );
     }
 
-    public Bonus(int id, String nimi) {
+    public Alakategoria(int id, String kuvaus, int kategoriaId) {
         this.id = id;
-        this.nimi = nimi;
+        this.kuvaus = kuvaus;
+        this.kategoriaId = kategoriaId;
     }
     
-    public static Bonus haeBonus(int id) throws Exception {
+    public static Alakategoria haeAlakategoria(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
 
         try {
-            String sql = "SELECT * FROM bonus WHERE bonus_id = ?";
+            String sql = "SELECT * FROM subcategory WHERE subcategory_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, id);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                return new Bonus(tulokset);
+                return new Alakategoria(tulokset);
             } else {
                 return null;
             }
@@ -50,27 +53,27 @@ public class Bonus {
         }
     }
     
-    public static List<Bonus> haeBonukset(String hakusana) throws Exception {
+    public static List<Alakategoria> haeAlakategoriat(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
-        List<Bonus> bonukset = new ArrayList<Bonus>();
+        List<Alakategoria> alakategoriat = new ArrayList<Alakategoria>();
 
         try {
-            String sql = "SELECT * FROM bonus WHERE name like %?%";
+            String sql = "SELECT * FROM subcategory WHERE description like %?%";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {
-                Bonus t = new Bonus(tulokset);
-                bonukset.add(t);
+                Alakategoria a = new Alakategoria(tulokset);
+                alakategoriat.add(a);
             }
 
             
-            return bonukset;
+            return alakategoriat;
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
@@ -79,24 +82,24 @@ public class Bonus {
         }
     }
     
-    public static List<Bonus> haeKaikkiBonukset() throws SQLException, NamingException {
-        String sql = "SELECT bonus_id, name from bonus";
+    public static List<Alakategoria> haeKaikkiAlakategoriat() throws SQLException, NamingException {
+        String sql = "SELECT subcategory_id, description, category_id from subcategory";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
 
-        ArrayList<Bonus> bonukset = new ArrayList<Bonus>();
+        ArrayList<Alakategoria> alakategoriat = new ArrayList<Alakategoria>();
         
         while (tulokset.next()) {
-            Bonus b = new Bonus(tulokset.getInt("bonus_id"), tulokset.getString("name"));
-            bonukset.add(b);
+            Alakategoria a = new Alakategoria(tulokset.getInt("subcategory_id"), tulokset.getString("description"), tulokset.getInt("category_id"));
+            alakategoriat.add(a);
         }   
 
         try { tulokset.close(); } catch (Exception e) {}
         try { kysely.close(); } catch (Exception e) {}
         try { yhteys.close(); } catch (Exception e) {}
 
-        return bonukset;
+        return alakategoriat;
     }
     
     public boolean tallenna() throws Exception {
@@ -105,14 +108,14 @@ public class Bonus {
         ResultSet tulokset = null;
 
         try {
-            String sql = "INSERT INTO bonus(name) VALUES(?) RETURNING bonus_id";
+            String sql = "INSERT INTO subcategory(description) VALUES(?) RETURNING subcategory_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, nimi);
+            kysely.setString(1, kuvaus);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
-                id = tulokset.getInt("bonus_id");
+                id = tulokset.getInt("subcategory_id");
                 return true;
             } else {
                 return false;
@@ -130,7 +133,7 @@ public class Bonus {
         PreparedStatement kysely = null;
 
         try {
-            String sql = "DELETE FROM bonus where bonus_id = ?";
+            String sql = "DELETE FROM subcategory where subcategory_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, id);
@@ -145,15 +148,23 @@ public class Bonus {
         return this.id;
     }
   
-    public String getNimi() {
-        return this.nimi;
+    public String getKuvaus() {
+        return this.kuvaus;
+    }
+    
+    public int getKategoriaId() {
+        return this.kategoriaId;
     }
 
     public void setId(int x) {
         this.id = x;
     }
   
-    public void setNimi(String x) {
-        this.nimi = x;
+    public void setKuvaus(String x) {
+        this.kuvaus = x;
+    }
+    
+    public void setKategoriaId(int x) {
+        this.kategoriaId = x;
     }
 }

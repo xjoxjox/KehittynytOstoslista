@@ -5,72 +5,43 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.naming.NamingException;
+import java.sql.Timestamp;
 
-public class Bonus {
-    private int id;
-    private String nimi;
+public class BonusOstot {
+    private int bonusId;
+    private int listaId;
     
-    private Bonus(ResultSet tulos) throws SQLException {
-        Bonus b = new Bonus(
+    private BonusOstot(ResultSet tulos) throws SQLException {
+        BonusOstot b = new BonusOstot(
             tulos.getInt("bonus_id"),
-            tulos.getString("name")
+            tulos.getInt("shoppinglist_id")
         );
     }
 
-    public Bonus(int id, String nimi) {
-        this.id = id;
-        this.nimi = nimi;
+    public BonusOstot(int bonusId, int listaId) {
+        this.bonusId = bonusId;
+        this.listaId = listaId;
     }
     
-    public static Bonus haeBonus(int id) throws Exception {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-
-        try {
-            String sql = "SELECT * FROM bonus WHERE bonus_id = ?";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, id);
-            tulokset = kysely.executeQuery();
-
-            if (tulokset.next()) {
-                return new Bonus(tulokset);
-            } else {
-                return null;
-            }
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
-    }
-    
-    public static List<Bonus> haeBonukset(String hakusana) throws Exception {
+    public static double haeBonuksellaSumma(int bonusId) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
-        List<Bonus> bonukset = new ArrayList<Bonus>();
+        double summa = 0;
 
         try {
-            String sql = "SELECT * FROM bonus WHERE name like %?%";
+            String sql = "SELECT sum FROM shoppinlistchecked WHERE bonus_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
+            kysely.setInt(1, bonusId);
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {
-                Bonus t = new Bonus(tulokset);
-                bonukset.add(t);
+                summa += tulokset.getDouble("sum");
             }
-
             
-            return bonukset;
+            return summa;
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
@@ -79,24 +50,34 @@ public class Bonus {
         }
     }
     
-    public static List<Bonus> haeKaikkiBonukset() throws SQLException, NamingException {
-        String sql = "SELECT bonus_id, name from bonus";
-        Connection yhteys = Yhteys.getYhteys();
-        PreparedStatement kysely = yhteys.prepareStatement(sql);
-        ResultSet tulokset = kysely.executeQuery();
-
-        ArrayList<Bonus> bonukset = new ArrayList<Bonus>();
+    public static double haeBonuksetAjalla(int hakubonusId, Timestamp paivays1, Timestamp paivays2) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
         
-        while (tulokset.next()) {
-            Bonus b = new Bonus(tulokset.getInt("bonus_id"), tulokset.getString("name"));
-            bonukset.add(b);
-        }   
+        double summa = 0;
 
-        try { tulokset.close(); } catch (Exception e) {}
-        try { kysely.close(); } catch (Exception e) {}
-        try { yhteys.close(); } catch (Exception e) {}
+        try {
+            String sql = "SELECT sum FROM shoppinglistchecked WHERE bonus_id = ? AND time_checked < ? AND time_checked > ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, hakubonusId);
+            kysely.setTimestamp(2, paivays1);
+            kysely.setTimestamp(3, paivays2);
+            tulokset = kysely.executeQuery();
 
-        return bonukset;
+            while (tulokset.next()) {
+                summa += tulokset.getDouble("sum");
+            }
+
+            
+            return summa;
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {
@@ -105,14 +86,15 @@ public class Bonus {
         ResultSet tulokset = null;
 
         try {
-            String sql = "INSERT INTO bonus(name) VALUES(?) RETURNING bonus_id";
+            String sql = "INSERT INTO bonusshopped(bonus_id, shoppinglist_id) VALUES(?,?) RETURNING bonus_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, nimi);
+            kysely.setInt(1, bonusId);
+            kysely.setInt(2, listaId);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
-                id = tulokset.getInt("bonus_id");
+                bonusId = tulokset.getInt("bonus_id");
                 return true;
             } else {
                 return false;
@@ -130,10 +112,10 @@ public class Bonus {
         PreparedStatement kysely = null;
 
         try {
-            String sql = "DELETE FROM bonus where bonus_id = ?";
+            String sql = "DELETE FROM bonusshopped where shoppinglist_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, id);
+            kysely.setInt(1, listaId);
             return kysely.execute();
         } finally {
             try { kysely.close(); } catch (Exception e) {  }
@@ -141,19 +123,19 @@ public class Bonus {
         }
     }
 
-    public int getId() {
-        return this.id;
+    public int getBonusId() {
+        return this.bonusId;
     }
-  
-    public String getNimi() {
-        return this.nimi;
+    
+    public int getListaId() {
+        return this.listaId;
     }
 
-    public void setId(int x) {
-        this.id = x;
+    public void setBonusId(int x) {
+        this.bonusId = x;
     }
   
-    public void setNimi(String x) {
-        this.nimi = x;
+    public void setListaId(int x) {
+        this.listaId = x;
     }
 }

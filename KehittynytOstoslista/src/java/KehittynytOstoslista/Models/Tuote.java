@@ -14,24 +14,21 @@ public class Tuote {
     private String nimi;
     private String valmistaja;
     private double paino;
-    private int alakategoriaId;
     
     private Tuote(ResultSet tulos) throws SQLException {
         Tuote t = new Tuote(
             tulos.getInt("product_id"),
             tulos.getString("name"),
             tulos.getString("brand"),
-            tulos.getDouble("weight"),
-            tulos.getInt("subcategory_id")
+            tulos.getDouble("weight")
         );
     }
 
-    public Tuote(int id, String nimi, String valmistaja, double paino, int alakategoriaId) {
+    public Tuote(int id, String nimi, String valmistaja, double paino) {
         this.id = id;
         this.nimi = nimi;
         this.valmistaja = valmistaja;
         this.paino = paino;
-        this.alakategoriaId = alakategoriaId;
     }
     
     public static Tuote haeTuote(int id) throws Exception {
@@ -93,7 +90,7 @@ public class Tuote {
     }
     
     public static List<Tuote> haeKaikkiTuotteet() throws SQLException, NamingException {
-        String sql = "SELECT product_id, name, brand, weight, subcategory_id from product";
+        String sql = "SELECT product_id, name, brand, weight from product";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -101,7 +98,7 @@ public class Tuote {
         ArrayList<Tuote> tuotteet = new ArrayList<Tuote>();
         while (tulokset.next()) {
             Tuote k = new Tuote(tulokset.getInt("product_id"), tulokset.getString("name"), tulokset.getString("brand"),
-                tulokset.getDouble("weight"), tulokset.getInt("subcategory_id"));
+                tulokset.getDouble("weight"));
             tuotteet.add(k);
         }   
 
@@ -118,13 +115,12 @@ public class Tuote {
         ResultSet tulokset = null;
 
         try {
-            String sql = "INSERT INTO product(name, brand, weight, subgategory_id) VALUES(?,?,?,?) RETURNING id";
+            String sql = "INSERT INTO product(name, brand, weight) VALUES(?,?,?) RETURNING product_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, nimi);
             kysely.setString(2, valmistaja);
             kysely.setDouble(3, paino);
-            kysely.setInt(4, alakategoriaId);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
@@ -146,7 +142,7 @@ public class Tuote {
         PreparedStatement kysely = null;
 
         try {
-            String sql = "DELETE FROM product where id = ?";
+            String sql = "DELETE FROM product where product_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, id);
@@ -173,10 +169,6 @@ public class Tuote {
         return this.paino;
     }
   
-    public int getAlakategoriaId() {
-        return this.alakategoriaId;
-    }
-  
     public void setId(int x) {
         this.id = x;
     }
@@ -191,9 +183,5 @@ public class Tuote {
   
     public void setPaino(double x) {
         this.paino = x;
-    }
-  
-    public void setAlakategoriaId(int x) {
-        this.alakategoriaId = x;
     }
 }

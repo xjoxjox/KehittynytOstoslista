@@ -134,6 +134,50 @@ public class Kayttaja {
         return kayttajat;
     }
     
+    public boolean tallenna() throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "INSERT INTO account(username, password, admin) VALUES(?,?,?) RETURNING account_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, tunnus);
+            kysely.setString(2, salasana);
+            kysely.setBoolean(3, admin);
+            tulokset = kysely.executeQuery();
+      
+            if (tulokset.next()) {
+                id = tulokset.getInt("account_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean poista() throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM account where account_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, id);
+            return kysely.execute();
+        } finally {
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
     public int getId() {
         return this.id;
     }
