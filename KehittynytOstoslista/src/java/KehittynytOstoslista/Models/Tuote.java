@@ -64,7 +64,7 @@ public class Tuote {
         List<Tuote> tuotteet = new ArrayList<Tuote>();
 
         try {
-            String sql = "SELECT * FROM product WHERE name like %?% OR brand like %?%";
+            String sql = "SELECT * FROM product WHERE name like %?% OR brand like %?% ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -90,7 +90,7 @@ public class Tuote {
     }
     
     public static List<Tuote> haeKaikkiTuotteet() throws SQLException, NamingException {
-        String sql = "SELECT product_id, name, brand, weight from product";
+        String sql = "SELECT product_id, name, brand, weight FROM product ORDER by name";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -107,6 +107,87 @@ public class Tuote {
         try { yhteys.close(); } catch (Exception e) {}
 
         return tuotteet;
+    }
+    
+    public boolean muokkaaNimi(String x) throws SQLException, NamingException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE product SET name = ? WHERE product_id = ? RETURNING name";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.nimi = tulokset.getString("name");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+  
+    public boolean muokkaaValmistaja(String x) throws SQLException, NamingException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE product SET brand = ? WHERE product_id = ? RETURNING brand";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.valmistaja = tulokset.getString("brand");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+  
+    public boolean muokkaaPaino(double x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE product SET weight = ? WHERE product_id = ? RETURNING weight";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setDouble(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.paino = tulokset.getDouble("weight");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {
@@ -152,7 +233,7 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-
+    
     public int getId() {
         return this.id;
     }
@@ -166,21 +247,21 @@ public class Tuote {
     }
   
     public double getPaino() {
-        return this.paino;
+       return this.paino;
     }
   
     public void setId(int x) {
         this.id = x;
     }
-  
+    
     public void setNimi(String x) {
         this.nimi = x;
     }
-  
+    
     public void setValmistaja(String x) {
         this.valmistaja = x;
     }
-  
+    
     public void setPaino(double x) {
         this.paino = x;
     }

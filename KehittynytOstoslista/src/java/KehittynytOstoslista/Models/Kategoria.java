@@ -58,7 +58,7 @@ public class Kategoria {
         List<Kategoria> kategoriat = new ArrayList<Kategoria>();
 
         try {
-            String sql = "SELECT * FROM category WHERE description like %?%";
+            String sql = "SELECT * FROM category WHERE description like %?% ORDER BY description";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -80,7 +80,7 @@ public class Kategoria {
     }
     
     public static List<Kategoria> haeKaikkiKategoriat() throws SQLException, NamingException {
-        String sql = "SELECT category_id, description from category";
+        String sql = "SELECT category_id, description FROM category ORDER BY description";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -97,6 +97,33 @@ public class Kategoria {
         try { yhteys.close(); } catch (Exception e) {}
 
         return kategoriat;
+    }
+    
+    public boolean muokkaaKuvaus(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE category SET description = ? WHERE category_id = ? RETURNING description";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kuvaus = tulokset.getString("description");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {

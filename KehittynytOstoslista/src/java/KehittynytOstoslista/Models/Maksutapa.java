@@ -58,7 +58,7 @@ public class Maksutapa {
         List<Maksutapa> maksutavat = new ArrayList<Maksutapa>();
 
         try {
-            String sql = "SELECT * FROM payment WHERE name like %?%";
+            String sql = "SELECT * FROM payment WHERE name like %?% ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -80,7 +80,7 @@ public class Maksutapa {
     }
     
     public static List<Maksutapa> haeKaikkiMaksutavat() throws SQLException, NamingException {
-        String sql = "SELECT payment_id, name from payment";
+        String sql = "SELECT payment_id, name FROM payment ORDER BY name";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -113,6 +113,33 @@ public class Maksutapa {
       
             if (tulokset.next()) {
                 id = tulokset.getInt("payment_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaNimi(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE payment SET name = ? WHERE payment_id = ? RETURNING name";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.nimi = tulokset.getString("name");
                 return true;
             } else {
                 return false;

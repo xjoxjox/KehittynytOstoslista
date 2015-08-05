@@ -13,8 +13,14 @@ CREATE TABLE category(
 CREATE TABLE subcategory(
 	subcategory_id serial PRIMARY KEY,
 	description VARCHAR (50) NOT NULL,
-	category_id INTEGER NOT NULL,
-	CONSTRAINT category_id_fkey FOREIGN KEY (category_id) REFERENCES category(category_id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE categorylink(
+	category_id serial NOT NULL,
+	subcategory_id serial NOT NULL,
+	CONSTRAINT category_id_fkey FOREIGN KEY (category_id) REFERENCES category(category_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+	CONSTRAINT subcategory_id_fkey FOREIGN KEY (subcategory_id) REFERENCES subcategory(subcategory_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+	PRIMARY KEY (product_id, subcategory_id)
 );
 
 CREATE TABLE bonus(
@@ -40,9 +46,7 @@ CREATE TABLE product(
 	product_id serial PRIMARY KEY,
 	name VARCHAR (50) NOT NULL,
 	brand VARCHAR (50) NOT NULL,
-	weight DECIMAL (10,3) NOT NULL,
-	subcategory_id INTEGER NOT NULL,
-	CONSTRAINT subcategory_id_fkey FOREIGN KEY (subcategory_id) REFERENCES subcategory(subcategory_id) ON UPDATE CASCADE ON DELETE RESTRICT
+	weight DECIMAL (10,3) NOT NULL
 );
 
 CREATE TABLE shoppinglistsaved(
@@ -91,6 +95,14 @@ CREATE TABLE productlist(
 	CONSTRAINT product_id_fkey FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE RESTRICT,
 	CONSTRAINT shoppinglist_id_fkey FOREIGN KEY (shoppinglist_id) REFERENCES shoppinglistsaved(shoppinglist_id) ON UPDATE CASCADE ON DELETE RESTRICT,
 	PRIMARY KEY (product_id, shoppinglist_id)
+);
+
+CREATE TABLE productcategory(
+	product_id INTEGER NOT NULL,
+	subcategory_id INTEGER NOT NULL,
+	CONSTRAINT product_id_fkey FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+	CONSTRAINT subcategory_id_fkey FOREIGN KEY (subcategory_id) REFERENCES subcategory(subcategory_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+	PRIMARY KEY (product_id, subcategory_id)
 );
 
 

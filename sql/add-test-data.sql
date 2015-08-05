@@ -36,11 +36,11 @@ INSERT INTO shop (name, city, address, bonus_id)
 INSERT INTO shop (name, city, address, bonus_id)
 	SELECT 'Citymarket Jumbo','Vantaa','Vantaanportti', bonus_id FROM bonus WHERE name = 'plussa';
 
-INSERT INTO product (name, brand, weight, subcategory_id)
-	SELECT 'Maito','Valio',1, subcategory_id FROM subcategory WHERE description = 'maitotuote';
+INSERT INTO product (name, brand, weight)
+	SELECT 'Maito','Valio',1;
 
-INSERT INTO product (name, brand, weight, subcategory_id)
-	SELECT 'Omena','Royal Gala',1, subcategory_id FROM subcategory WHERE description = 'hedelmat';
+INSERT INTO product (name, brand, weight)
+	SELECT 'Omena','Royal Gala',1;
 
-INSERT INTO product (name, brand, weight, subcategory_id)
-	SELECT 'Limu','CocaCola',1, subcategory_id FROM subcategory WHERE description = 'virvoitusjuoma';
+INSERT INTO product (name, brand, weight)
+	SELECT 'Limu','CocaCola',1;

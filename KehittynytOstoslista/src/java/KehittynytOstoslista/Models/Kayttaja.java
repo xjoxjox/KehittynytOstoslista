@@ -89,7 +89,7 @@ public class Kayttaja {
         List<Kayttaja> kayttajat = new ArrayList<Kayttaja>();
 
         try {
-            String sql = "SELECT * FROM product WHERE username like %?%";
+            String sql = "SELECT * FROM account WHERE username like %?% ORDER BY username";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -115,7 +115,7 @@ public class Kayttaja {
     }
   
     public static List<Kayttaja> haeKaikkiKayttajat() throws SQLException, NamingException {
-        String sql = "SELECT account_id, username, password, admin from account";
+        String sql = "SELECT account_id, username, password, admin FROM account ORDER BY username";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -132,6 +132,87 @@ public class Kayttaja {
         try { yhteys.close(); } catch (Exception e) {}
 
         return kayttajat;
+    }
+    
+    public boolean muokkaaKayttajatunnus(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE account SET username = ? WHERE account_id = ? RETURNING username";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.tunnus = tulokset.getString("username");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaSalasana(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE account SET password = ? WHERE account_id = ? RETURNING password";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.salasana = tulokset.getString("password");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaAdminoikeudet(boolean x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE account SET admin = ? WHERE account_id = ? RETURNING admin";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setBoolean(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.admin = tulokset.getBoolean("admin");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {
@@ -204,14 +285,6 @@ public class Kayttaja {
   
     public void setSalasana(String x) {
         this.salasana = x;
-    }
-    
-    public void setAdmin() {
-        if (this.admin = false) {
-            this.admin = true;
-        } else {
-            this.admin = false;
-        }
     }
     
     public void setAdmin(boolean x) {

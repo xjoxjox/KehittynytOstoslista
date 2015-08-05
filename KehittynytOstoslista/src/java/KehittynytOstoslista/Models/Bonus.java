@@ -58,7 +58,7 @@ public class Bonus {
         List<Bonus> bonukset = new ArrayList<Bonus>();
 
         try {
-            String sql = "SELECT * FROM bonus WHERE name like %?%";
+            String sql = "SELECT * FROM bonus WHERE name like %?% ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -80,7 +80,7 @@ public class Bonus {
     }
     
     public static List<Bonus> haeKaikkiBonukset() throws SQLException, NamingException {
-        String sql = "SELECT bonus_id, name from bonus";
+        String sql = "SELECT bonus_id, name FROM bonus ORDER BY name";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -97,6 +97,33 @@ public class Bonus {
         try { yhteys.close(); } catch (Exception e) {}
 
         return bonukset;
+    }
+    
+    public boolean muokkaaNimi(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE bonus SET name = ? WHERE bonus_id = ? RETURNING name";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.nimi = tulokset.getString("name");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {

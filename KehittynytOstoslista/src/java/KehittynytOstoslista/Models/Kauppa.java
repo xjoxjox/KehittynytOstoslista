@@ -67,7 +67,7 @@ public class Kauppa {
         List<Kauppa> kaupat = new ArrayList<Kauppa>();
 
         try {
-            String sql = "SELECT * FROM shop WHERE name like %?%";
+            String sql = "SELECT * FROM shop WHERE name like %?% ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -99,7 +99,7 @@ public class Kauppa {
         List<Kauppa> kaupat = new ArrayList<Kauppa>();
 
         try {
-            String sql = "SELECT * FROM shop WHERE city like %?%";
+            String sql = "SELECT * FROM shop WHERE city like %?% ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -131,7 +131,7 @@ public class Kauppa {
         List<Kauppa> kaupat = new ArrayList<Kauppa>();
 
         try {
-            String sql = "SELECT * FROM shop WHERE name bonus_id %?%";
+            String sql = "SELECT * FROM shop WHERE name bonus_id %?% ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, bonusId);
@@ -156,7 +156,7 @@ public class Kauppa {
     }
     
     public static List<Kauppa> haeKaikkiKaupat() throws SQLException, NamingException {
-        String sql = "SELECT shop_id, name, city, address, bonus_id from shop";
+        String sql = "SELECT shop_id, name, city, address, bonus_id FROM shop ORDER BY name";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -173,6 +173,114 @@ public class Kauppa {
         try { yhteys.close(); } catch (Exception e) {}
 
         return kaupat;
+    }
+    
+    public boolean muokkaaNimi(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shop SET name = ? WHERE shop_id = ? RETURNING name";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.nimi = tulokset.getString("name");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaKaupunki(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shop SET city = ? WHERE shop_id = ? RETURNING city";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kaupunki = tulokset.getString("city");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaOsoite(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shop SET address = ? WHERE shop_id = ? RETURNING address";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.osoite = tulokset.getString("address");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaBonus(int x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shop SET bonus_id = ? WHERE shop_id = ? RETURNING bonus_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.bonusId = tulokset.getInt("onus_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {

@@ -18,7 +18,7 @@ public class OstoslistaTallennettu {
     private double summa;
     private double paino;
     private Timestamp paivays;
-    private int kauppaId;
+    private static int kauppaId;
     private int kayttajaId;
     
     private OstoslistaTallennettu(ResultSet tulos) throws SQLException, Exception {
@@ -78,7 +78,7 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE name like %?%";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE name like %?% ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -110,7 +110,7 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created < %?%";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created < %?% ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
@@ -142,7 +142,7 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created > %?%";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created > %?% ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
@@ -174,7 +174,7 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE shop_id = ?";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE shop_id = ? ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, hakukauppa);
@@ -199,7 +199,7 @@ public class OstoslistaTallennettu {
     }
     
     public static List<OstoslistaTallennettu> haeKaikkiOstoslistaTallennettu(int hakukayttaja) throws SQLException, NamingException, Exception {
-        String sql = "SELECT shoppinglist_id, name, sum, weight, time_created, shop_id from shoppinglistsaved WHERE account_id = ?";
+        String sql = "SELECT shoppinglist_id, name, sum, weight, time_created, shop_id FROM shoppinglistsaved WHERE account_id = ? ORDER BY time_created";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         kysely.setInt(1, hakukayttaja);
@@ -220,61 +220,19 @@ public class OstoslistaTallennettu {
     }
     
     public static double haeSumma() throws Exception {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-        
         double sum = 0;
-
-        try {
-            for (Tuote tuote: tuotteet.keySet()) {
-                String sql = "SELECT price FROM productprice WHERE product_id like = ? AND current_price = TRUE";
-                yhteys = Yhteys.getYhteys();
-                kysely = yhteys.prepareStatement(sql);
-                kysely.setInt(1, tuote.getId());
-                tulokset = kysely.executeQuery();
-
-                while (tulokset.next()) {
-                    sum += tulokset.getDouble("price");
-                }
-            }
-            
-            return sum;
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
+        for (Tuote tuote: tuotteet.keySet()) {
+            sum += TuoteHinta.haeHintaTuotteelleKaupassa(tuote.getId(), kauppaId);
         }
+        return sum;
     }
     
-    public static double haePaino() throws Exception {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-        
+    public static double haePaino() throws NamingException, SQLException {
         double kokPaino = 0;
-
-        try {
-            for (Tuote tuote: tuotteet.keySet()) {
-                String sql = "SELECT weight FROM product WHERE product_id like = ?";
-                yhteys = Yhteys.getYhteys();
-                kysely = yhteys.prepareStatement(sql);
-                kysely.setInt(1, tuote.getId());
-                tulokset = kysely.executeQuery();
-
-                while (tulokset.next()) {
-                    kokPaino += tulokset.getDouble("weight");
-                }
-            }
-            
-            return kokPaino;
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
+        for (Tuote tuote : tuotteet.keySet()) {
+            kokPaino += tuote.getPaino();
+        }     
+        return kokPaino;
     }
     
     public boolean lisaaTuote(int tuoteId) throws Exception {
@@ -337,11 +295,119 @@ public class OstoslistaTallennettu {
         }
     }
 
+    public boolean muokkaaNimi(String x, int lista) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistsaved SET name = ? WHERE shoppinglist_id = ? RETURNING name";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, lista);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.nimi = tulokset.getString("name");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+  
+    public boolean muokkaaPaivays(Timestamp x, int lista) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistsaved SET time_created = ? WHERE shoppinglist_id = ? RETURNING time_created";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setTimestamp(1, x);
+            kysely.setInt(2, lista);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.paivays = tulokset.getTimestamp("time_created");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaKauppaId(int x, int lista) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistsaved SET shop_id = ? WHERE shoppinglist_id = ? RETURNING shop_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, x);
+            kysely.setInt(2, lista);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kauppaId = tulokset.getInt("shop_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaKayttajaId(int x, int lista) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistsaved SET account_id = ? WHERE shoppinglist_id = ? RETURNING account_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, x);
+            kysely.setInt(2, lista);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kayttajaId = tulokset.getInt("account_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
     public int getId() {
         return this.id;
     }
   
-    public String getNimi() {
+    public String getNimi()  {
         return this.nimi;
     }
   
@@ -372,19 +438,19 @@ public class OstoslistaTallennettu {
     public void setId(int x) {
         this.id = x;
     }
-  
+    
     public void setNimi(String x) {
         this.nimi = x;
     }
-  
-    public void setSumma(double x) {
-        this.summa = x;
+      
+    public void setSumma() throws Exception {
+        this.summa = haeSumma();
     }
   
-    public void setPaino(double x) {
-        this.paino = x;
+    public void setPaino() throws NamingException, SQLException {
+        this.paino = haePaino();
     }
-  
+        
     public void setPaivays(Timestamp x) {
         this.paivays = x;
     }

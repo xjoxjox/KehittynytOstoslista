@@ -12,20 +12,17 @@ import javax.naming.NamingException;
 public class Alakategoria {
     private int id;
     private String kuvaus;
-    private int kategoriaId;
     
     private Alakategoria(ResultSet tulos) throws SQLException {
         Alakategoria a = new Alakategoria(
             tulos.getInt("subcategory_id"),
-            tulos.getString("description"),
-            tulos.getInt("category_id")
+            tulos.getString("description")
         );
     }
 
-    public Alakategoria(int id, String kuvaus, int kategoriaId) {
+    public Alakategoria(int id, String kuvaus) {
         this.id = id;
         this.kuvaus = kuvaus;
-        this.kategoriaId = kategoriaId;
     }
     
     public static Alakategoria haeAlakategoria(int id) throws Exception {
@@ -61,7 +58,7 @@ public class Alakategoria {
         List<Alakategoria> alakategoriat = new ArrayList<Alakategoria>();
 
         try {
-            String sql = "SELECT * FROM subcategory WHERE description like %?%";
+            String sql = "SELECT * FROM subcategory WHERE description like %?% ORDER BY description";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
@@ -83,7 +80,7 @@ public class Alakategoria {
     }
     
     public static List<Alakategoria> haeKaikkiAlakategoriat() throws SQLException, NamingException {
-        String sql = "SELECT subcategory_id, description, category_id from subcategory";
+        String sql = "SELECT subcategory_id, description, category_id FROM subcategory ORDER BY description";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
@@ -91,7 +88,7 @@ public class Alakategoria {
         ArrayList<Alakategoria> alakategoriat = new ArrayList<Alakategoria>();
         
         while (tulokset.next()) {
-            Alakategoria a = new Alakategoria(tulokset.getInt("subcategory_id"), tulokset.getString("description"), tulokset.getInt("category_id"));
+            Alakategoria a = new Alakategoria(tulokset.getInt("subcategory_id"), tulokset.getString("description"));
             alakategoriat.add(a);
         }   
 
@@ -100,6 +97,33 @@ public class Alakategoria {
         try { yhteys.close(); } catch (Exception e) {}
 
         return alakategoriat;
+    }
+    
+    public boolean muokkaaKuvaus(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE subcategory SET description = ? WHERE subcategory_id = ? RETURNING description";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kuvaus = tulokset.getString("description");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {
@@ -151,10 +175,6 @@ public class Alakategoria {
     public String getKuvaus() {
         return this.kuvaus;
     }
-    
-    public int getKategoriaId() {
-        return this.kategoriaId;
-    }
 
     public void setId(int x) {
         this.id = x;
@@ -162,9 +182,5 @@ public class Alakategoria {
   
     public void setKuvaus(String x) {
         this.kuvaus = x;
-    }
-    
-    public void setKategoriaId(int x) {
-        this.kategoriaId = x;
     }
 }
