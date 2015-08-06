@@ -6,9 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib  uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:if test="${virhe != null}">
-    <div class="alert alert-danger">Virhe! ${virhe}</div>
-</c:if>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,5 +19,9 @@
             Salasana: <input type="password" name="password" value="${salasana}"/>
             <button type="submit">Kirjaudu</button>
         </form> 
+            <br>
+        <c:if test="${virhe != null}">
+            <div class="alert alert-danger">Virhe! ${virhe}</div>
+        </c:if>
     </body>
 </html>

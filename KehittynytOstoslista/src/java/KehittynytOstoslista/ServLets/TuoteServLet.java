@@ -22,6 +22,7 @@ public class TuoteServLet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String hakusana = request.getParameter("haku");
+        
         List<Tuote> tuotteet = null;
         
         if (hakusana != null && hakusana.length() > 0) {
@@ -29,18 +30,15 @@ public class TuoteServLet extends HttpServlet {
         } else {
             tuotteet = Tuote.haeKaikkiTuotteet();
         }
-    
+        
         request.setAttribute("tuotteet", tuotteet);
+        request.setAttribute("tuotteidenmaara", tuotteet.size());
         
         if (tuotteet.isEmpty()) {
             request.setAttribute("viesti", "Tuotteita ei löytynyt");
         }
         
-        request.setAttribute("pageError", "Ei yhtään tuotetta!"); 
-        
-        /* Luodaan RequestDispatcher-olio, joka osaa näyttää näkymätiedoston lista.jsp */
-        RequestDispatcher dispatcher = request.getRequestDispatcher("lista.jsp");
-        /* Pyydetään dispatcher-oliota näyttämään JSP-sivunsa */
+        RequestDispatcher dispatcher = request.getRequestDispatcher("tuote.jsp");
         dispatcher.forward(request, response);
     }
 

@@ -86,10 +86,11 @@ public class OstoslistaKuitattu {
         List<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistchecked WHERE name like %?% ORDER BY time_checked";
+            String sql = "SELECT * FROM shoppinglistchecked WHERE name like %?% AND account_id = ? ORDER BY time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
+            kysely.setInt(2, kayttajaId);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -118,10 +119,11 @@ public class OstoslistaKuitattu {
         List<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked < %?% ORDER BY time_checked";
+            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked < %?% AND account_id = ? ORDER BY time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
+            kysely.setInt(2, kayttajaId);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -150,10 +152,11 @@ public class OstoslistaKuitattu {
         List<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked > %?% ORDER BY time_checked";
+            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked > %?% AND account_id = ? ORDER BY time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
+            kysely.setInt(2, kayttajaId);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -182,10 +185,11 @@ public class OstoslistaKuitattu {
         List<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistchecked WHERE shop_id = ? ORDER BY time_checked";
+            String sql = "SELECT * FROM shoppinglistchecked WHERE shop_id = ? AND account_id = ? ORDER BY time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, hakukauppa);
+            kysely.setInt(2, kayttajaId);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -244,66 +248,16 @@ public class OstoslistaKuitattu {
         return kokPaino;
     }
     
-    public boolean lisaaTuote(int tuoteId) throws Exception {
-        boolean lisays = TuoteLista.lisaaTuote(tuoteId, id);
+    public void lisaaTuote(int tuoteId) throws Exception {
+        TuoteLista t = new TuoteLista(tuoteId, id);
+        t.tallenna();
         tuotteet = TuoteLista.haeTuotteetListalle(id);
-        return lisays;
     }
     
-    public boolean poistaTuote(int tuoteId) throws Exception {
-        boolean poisto = TuoteLista.poistaTuote(tuoteId, id);
+    public void poistaTuote(int tuoteId) throws Exception {
+        TuoteLista t = new TuoteLista(tuoteId, id);
+        t.poista();
         tuotteet = TuoteLista.haeTuotteetListalle(id);
-        return poisto;
-    }
-    
-    public boolean tallenna() throws Exception {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-
-        try {
-            String sql = "INSERT INTO shoppinglistchecked(name, sum, weight, time_checked, "
-                    + "shop_id, account_id, payment_id, bonus_id) VALUES(?,?,?,?,?,?,?,?) RETURNING shoppinglist_id";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, nimi);
-            kysely.setDouble(2, summa);
-            kysely.setDouble(3, paino);
-            kysely.setTimestamp(4, paivays);
-            kysely.setInt(5, kauppaId);
-            kysely.setInt(6, kayttajaId);
-            kysely.setInt(7, maksutapaId);
-            kysely.setInt(8, bonusId);
-            tulokset = kysely.executeQuery();
-      
-            if (tulokset.next()) {
-                id = tulokset.getInt("shoppinglist_id");
-                return true;
-            } else {
-                return false;
-            }
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
-    }
-    
-    public boolean poista() throws Exception {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-
-        try {
-            String sql = "DELETE FROM shoppinglistchecked where shoppinglist_id = ?";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, id);
-            return kysely.execute();
-        } finally {
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
     }
     
     public boolean muokkaaNimi(String x) throws NamingException, SQLException {
@@ -463,6 +417,56 @@ public class OstoslistaKuitattu {
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean tallenna() throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "INSERT INTO shoppinglistchecked(name, sum, weight, time_checked, "
+                    + "shop_id, account_id, payment_id, bonus_id) VALUES(?,?,?,?,?,?,?,?) RETURNING shoppinglist_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, nimi);
+            kysely.setDouble(2, summa);
+            kysely.setDouble(3, paino);
+            kysely.setTimestamp(4, paivays);
+            kysely.setInt(5, kauppaId);
+            kysely.setInt(6, kayttajaId);
+            kysely.setInt(7, maksutapaId);
+            kysely.setInt(8, bonusId);
+            tulokset = kysely.executeQuery();
+      
+            if (tulokset.next()) {
+                id = tulokset.getInt("shoppinglist_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean poista() throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM shoppinglistchecked where shoppinglist_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, id);
+            return kysely.execute();
+        } finally {
             try { kysely.close(); } catch (Exception e) {  }
             try { yhteys.close(); } catch (Exception e) {  }
         }

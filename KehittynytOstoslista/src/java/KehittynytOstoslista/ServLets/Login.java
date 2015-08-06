@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +59,7 @@ public class Login extends HttpServlet {
         
         if (k != null) {
             session.setAttribute("kirjautunut", kayttaja);
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("ostoslistat.jsp");
         } else {
             request.setAttribute("virhe", "Kirjautuminen epäonnistui! Antamasi tunnus tai salasana on väärä.");
             request.getRequestDispatcher("login.jsp").forward(request, response);

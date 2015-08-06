@@ -81,6 +81,30 @@ public class Kayttaja {
         return kirjautunut;
     }
     
+    public static Kayttaja haeKayttajaTunnuksella(String kayttaja) throws SQLException, NamingException {
+        String sql = "SELECT account_id ,username, password, admin from account where username = ?";
+        Connection yhteys = Yhteys.getYhteys();
+        PreparedStatement kysely = yhteys.prepareStatement(sql);
+        kysely.setString(1, kayttaja);
+        ResultSet rs = kysely.executeQuery();
+  
+        Kayttaja kirjautunut = null;
+
+        if (rs.next()) { 
+            kirjautunut = new Kayttaja(rs);
+            kirjautunut.setId(rs.getInt("account_id"));
+            kirjautunut.setTunnus(rs.getString("username"));
+            kirjautunut.setSalasana(rs.getString("password"));
+            kirjautunut.setAdmin(rs.getBoolean("admin"));
+        }
+
+        try { rs.close(); } catch (Exception e) {}
+        try { kysely.close(); } catch (Exception e) {}
+        try { yhteys.close(); } catch (Exception e) {}
+
+        return kirjautunut;
+    }
+    
     public static List<Kayttaja> haeKayttajat(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

@@ -156,7 +156,8 @@ public class TuoteHinta {
         ResultSet tulokset = null;
 
         try {
-            String sql = "UPDATE productprice SET price = ? WHERE product_id = ? AND productprice_date = ? AND shop_id = ? RETURNING price";
+            String sql = "UPDATE productprice SET price = ? WHERE product_id = ? AND productprice_date = ? AND "
+                    + "shop_id = ? RETURNING price";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setDouble(1, x);
@@ -167,6 +168,125 @@ public class TuoteHinta {
 
             if (tulokset.next()) {
                 this.hinta = tulokset.getDouble("price");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaSijainti(int x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE productprice SET location = ? WHERE product_id = ? AND productprice_date = ? AND "
+                    + "shop_id = ? RETURNING location";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, x);
+            kysely.setInt(2, tuoteId);
+            kysely.setTimestamp(3, paivays);
+            kysely.setInt(4, kauppaId);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.sijainti = tulokset.getInt("location");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaPaivays(Timestamp x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE productprice SET productprice_date = ? WHERE product_id = ? AND "
+                    + "productprice_date = ? AND shop_id = ? RETURNING productprice_date";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setTimestamp(1, x);
+            kysely.setInt(2, tuoteId);
+            kysely.setTimestamp(3, paivays);
+            kysely.setInt(4, kauppaId);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.paivays = tulokset.getTimestamp("productprice_date");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaNykyinen(boolean x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE productprice SET current_price = ? WHERE product_id = ? AND productprice_date = ? AND "
+                    + "shop_id = ? RETURNING current_price";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setBoolean(1, x);
+            kysely.setInt(2, tuoteId);
+            kysely.setTimestamp(3, paivays);
+            kysely.setInt(4, kauppaId);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.nykyinen = tulokset.getBoolean("current_price");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaKauppa(int x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE productprice SET shop_id = ? WHERE product_id = ? AND productprice_date = ? AND shop_id = ? RETURNING shop_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setDouble(1, x);
+            kysely.setInt(2, tuoteId);
+            kysely.setTimestamp(3, paivays);
+            kysely.setInt(4, kauppaId);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kauppaId = tulokset.getInt("shop_id");
                 return true;
             } else {
                 return false;
@@ -215,11 +335,12 @@ public class TuoteHinta {
         PreparedStatement kysely = null;
 
         try {
-            String sql = "DELETE FROM productprice where product_id = ? AND productprice_date = ?";
+            String sql = "DELETE FROM productprice where product_id = ? AND productprice_date = ? AND shop_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, tuoteId);
-            kysely.setTimestamp(1, paivays);
+            kysely.setTimestamp(2, paivays);
+            kysely.setInt(3, kauppaId);
             return kysely.execute();
         } finally {
             try { kysely.close(); } catch (Exception e) {  }
@@ -227,11 +348,50 @@ public class TuoteHinta {
         }
     }
 
+    public double getHinta() {
+        return this.hinta;
+    }
+    
+    public int getSijainti() {
+        return this.sijainti;
+    }
+    
+    public Timestamp getPaivays() {
+        return this.paivays;
+    }
+    
+    public boolean getNykyinen() {
+        return this.nykyinen;
+    }
+    
     public int getTuoteId() {
         return this.tuoteId;
     }
+    
+    public int getKauppaId() {
+        return this.kauppaId;
+    }
+    
+    public void setHinta(double x) {
+        this.hinta = x;
+    }
+    
+    public void setSijainti(int x) {
+        this.sijainti = x;
+    }
 
+    public void setPaivays(Timestamp x) {
+        this.paivays= x;
+    }
+    
+    public void setNykyinen(boolean x) {
+        this.nykyinen = x;
+    }
     public void setTuoteId(int x) {
         this.tuoteId = x;
+    }
+    
+    public void setKauppaId(int x) {
+        this.kauppaId = x;
     }
 }

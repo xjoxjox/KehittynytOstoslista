@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class TuoteLista {
     private static int tuoteId;
-    private int listaId;
+    private static int listaId;
     
     private TuoteLista(ResultSet tulos) throws SQLException {
         TuoteLista t = new TuoteLista(
@@ -58,7 +58,7 @@ public class TuoteLista {
         }
     }
     
-    public static boolean lisaaTuote(int tuote, int lista) throws Exception {
+    public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -67,8 +67,8 @@ public class TuoteLista {
             String sql = "INSERT INTO productlist(product_id, shoppinglist_id) VALUES(?,?)";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, tuote);
-            kysely.setInt(2, lista);
+            kysely.setInt(1, tuoteId);
+            kysely.setInt(2, listaId);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
@@ -84,7 +84,7 @@ public class TuoteLista {
         }
     }
     
-    public static boolean poistaTuote(int tuote, int lista) throws Exception {
+    public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
 
@@ -92,8 +92,8 @@ public class TuoteLista {
             String sql = "DELETE FROM productlist where product_id = ? AND shoppinglist_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, tuote);
-            kysely.setInt(2, lista);
+            kysely.setInt(1, tuoteId);
+            kysely.setInt(2, listaId);
             return kysely.execute();
         } finally {
             try { kysely.close(); } catch (Exception e) {  }

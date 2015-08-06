@@ -235,16 +235,124 @@ public class OstoslistaTallennettu {
         return kokPaino;
     }
     
-    public boolean lisaaTuote(int tuoteId) throws Exception {
-        boolean lisays = TuoteLista.lisaaTuote(tuoteId, id);
+    public void lisaaTuote(int tuoteId) throws Exception {
+        TuoteLista t = new TuoteLista(tuoteId, id);
+        t.tallenna();
         tuotteet = TuoteLista.haeTuotteetListalle(id);
-        return lisays;
     }
     
-    public boolean poistaTuote(int tuoteId) throws Exception {
-        boolean poisto = TuoteLista.poistaTuote(tuoteId, id);
+    public void poistaTuote(int tuoteId) throws Exception {
+        TuoteLista t = new TuoteLista(tuoteId, id);
+        t.poista();
         tuotteet = TuoteLista.haeTuotteetListalle(id);
-        return poisto;
+    }
+    
+    public boolean muokkaaNimi(String x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistchecked SET name = ? WHERE shoppinglist_id = ? RETURNING name";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.nimi = tulokset.getString("name");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+  
+    public boolean muokkaaPaivays(Timestamp x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistchecked SET time_created = ? WHERE shoppinglist_id = ? RETURNING time_checked";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setTimestamp(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.paivays = tulokset.getTimestamp("time_checked");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaKauppaId(int x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistchecked SET shop_id = ? WHERE shoppinglist_id = ? RETURNING shop_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kauppaId = tulokset.getInt("shop_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public boolean muokkaaKayttajaId(int x) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistchecked SET account_id = ? WHERE shoppinglist_id = ? RETURNING account_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, x);
+            kysely.setInt(2, id);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                this.kayttajaId = tulokset.getInt("account_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
     }
     
     public boolean tallenna() throws Exception {

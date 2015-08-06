@@ -12,17 +12,24 @@ INSERT INTO category (description)
 VALUES
 	('elintarvike');
 
-INSERT INTO subcategory (description, category_id)
-	SELECT 'hedelmat', category_id FROM category WHERE description = 'elintarvike';
+INSERT INTO subcategory (description)
+VALUES	
+	('hedelmat'),
+	('virvoitusjuoma'),
+	('maitotuote'),
+	('lihatuote');
 
-INSERT INTO subcategory (description, category_id)
-	SELECT 'virvoitusjuoma', category_id FROM category WHERE description = 'elintarvike';
+INSERT INTO categorylink (category_id, subcategory_id)
+	SELECT category_id, subcategory_id FROM category, subcategory WHERE category.description = 'elintarvike' AND subcategory.description = 'hedelmat';
 
-INSERT INTO subcategory (description, category_id)
-	SELECT 'maitotuote', category_id FROM category WHERE description = 'elintarvike';
+INSERT INTO categorylink (category_id, subcategory_id)
+	SELECT category_id, subcategory_id FROM category, subcategory WHERE category.description = 'elintarvike' AND subcategory.description = 'virvoitusjuoma';
 
-INSERT INTO subcategory (description, category_id)
-	SELECT 'lihatuote', category_id FROM category WHERE description = 'elintarvike';
+INSERT INTO categorylink (category_id, subcategory_id)
+	SELECT category_id, subcategory_id FROM category, subcategory WHERE category.description = 'elintarvike' AND subcategory.description = 'maitotuote';
+
+INSERT INTO categorylink (category_id, subcategory_id)
+	SELECT category_id, subcategory_id FROM category, subcategory WHERE category.description = 'elintarvike' AND subcategory.description = 'lihatuote';
 	
 
 INSERT INTO payment (name)

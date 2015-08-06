@@ -17,13 +17,13 @@
     <body>
         <h1>Testilista</h1>
         <h2>Käyttäjät</h2>
-        <% List<Kayttaja> kayttajat = Kayttaja.getKayttajat();
+        <% List<Kayttaja> kayttajat = Kayttaja.haeKaikkiKayttajat();
         
         for (Kayttaja kayttaja : kayttajat) { %>
             <li> <% out.println(kayttaja.getTunnus() + " " );
         }
         %><h2>Tuotteet</h2><%
-         List<Tuote> tuotteet = Tuote.getTuotteet();
+         List<Tuote> tuotteet = Tuote.haeKaikkiTuotteet();
         
         for (Tuote tuote : tuotteet) { %>
             <li> <% out.println(tuote.getNimi() + " " + tuote.getValmistaja() + " " + tuote.getPaino());

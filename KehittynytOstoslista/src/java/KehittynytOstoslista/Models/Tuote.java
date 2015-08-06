@@ -37,14 +37,19 @@ public class Tuote {
         ResultSet tulokset = null;
 
         try {
-            String sql = "SELECT * FROM product WHERE product_id = ?";
+            String sql = "SELECT product_id, name, brand, weight FROM product WHERE product_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, id);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                return new Tuote(tulokset);
+                Tuote t = new Tuote(tulokset);
+                t.setId(tulokset.getInt("product_id"));
+                t.setNimi(tulokset.getString("name"));
+                t.setValmistaja(tulokset.getString("brand"));
+                t.setPaino(tulokset.getDouble("weight"));
+                return t;
             } else {
                 return null;
             }
@@ -64,20 +69,21 @@ public class Tuote {
         List<Tuote> tuotteet = new ArrayList<Tuote>();
 
         try {
-            String sql = "SELECT * FROM product WHERE name like %?% OR brand like %?% ORDER BY name";
+            String sql = "SELECT product_id, name, brand, weight"
+                    + " FROM product WHERE name LIKE ? OR brand LIKE ? ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
-            kysely.setString(2, hakusana);
+            kysely.setString(1, "'%" + hakusana + "%'");
+            kysely.setString(2, "'%" + hakusana + "%'");
             tulokset = kysely.executeQuery();
 
-            if (tulokset.next()) {
-                while (tulokset.next()) {
-                    Tuote t = new Tuote(tulokset);
-                    tuotteet.add(t);
-                }
-            } else {
-                return null;
+            while (tulokset.next()) {
+                Tuote t = new Tuote(tulokset);
+                t.setId(tulokset.getInt("product_id"));
+                t.setNimi(tulokset.getString("name"));
+                t.setValmistaja(tulokset.getString("brand"));
+                t.setPaino(tulokset.getDouble("weight"));
+                tuotteet.add(t);
             }
             
             return tuotteet;
@@ -96,10 +102,14 @@ public class Tuote {
         ResultSet tulokset = kysely.executeQuery();
 
         ArrayList<Tuote> tuotteet = new ArrayList<Tuote>();
+        
         while (tulokset.next()) {
-            Tuote k = new Tuote(tulokset.getInt("product_id"), tulokset.getString("name"), tulokset.getString("brand"),
-                tulokset.getDouble("weight"));
-            tuotteet.add(k);
+            Tuote t = new Tuote(tulokset);
+            t.setId(tulokset.getInt("product_id"));
+            t.setNimi(tulokset.getString("name"));
+            t.setValmistaja(tulokset.getString("brand"));
+            t.setPaino(tulokset.getDouble("weight"));
+            tuotteet.add(t);
         }   
 
         try { tulokset.close(); } catch (Exception e) {}

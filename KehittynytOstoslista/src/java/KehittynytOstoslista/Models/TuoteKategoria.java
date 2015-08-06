@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TuoteKategoria {
     private static int tuoteId;
-    private int alakategoriaId;
+    private static int alakategoriaId;
     
     private TuoteKategoria(ResultSet tulos) throws SQLException {
         TuoteLista t = new TuoteLista(
@@ -82,7 +82,7 @@ public class TuoteKategoria {
         }
     }
     
-    public static boolean lisaaYhteys(int tuote, int alakategoria) throws Exception {
+    public static boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -91,8 +91,8 @@ public class TuoteKategoria {
             String sql = "INSERT INTO productcategory(product_id, shoppinglist_id) VALUES(?,?)";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, tuote);
-            kysely.setInt(2, alakategoria);
+            kysely.setInt(1, tuoteId);
+            kysely.setInt(2, alakategoriaId);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
@@ -108,16 +108,16 @@ public class TuoteKategoria {
         }
     }
     
-    public static boolean poistaTuote(int tuote, int lista) throws Exception {
+    public static boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
 
         try {
-            String sql = "DELETE FROM productlist where product_id = ? AND shoppinglist_id = ?";
+            String sql = "DELETE FROM productcategory where product_id = ? AND subcategory_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, tuote);
-            kysely.setInt(2, lista);
+            kysely.setInt(1, tuoteId);
+            kysely.setInt(2, alakategoriaId);
             return kysely.execute();
         } finally {
             try { kysely.close(); } catch (Exception e) {  }
@@ -137,7 +137,7 @@ public class TuoteKategoria {
         this.tuoteId = x;
     }
   
-    public void setListaId(int x) {
+    public void setAlakategoriaId(int x) {
         this.alakategoriaId = x;
     }
 }

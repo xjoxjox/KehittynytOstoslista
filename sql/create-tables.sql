@@ -12,7 +12,7 @@ CREATE TABLE category(
 
 CREATE TABLE subcategory(
 	subcategory_id serial PRIMARY KEY,
-	description VARCHAR (50) NOT NULL,
+	description VARCHAR (50) NOT NULL
 );
 
 CREATE TABLE categorylink(
@@ -20,7 +20,7 @@ CREATE TABLE categorylink(
 	subcategory_id serial NOT NULL,
 	CONSTRAINT category_id_fkey FOREIGN KEY (category_id) REFERENCES category(category_id) ON UPDATE CASCADE ON DELETE RESTRICT,
 	CONSTRAINT subcategory_id_fkey FOREIGN KEY (subcategory_id) REFERENCES subcategory(subcategory_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-	PRIMARY KEY (product_id, subcategory_id)
+	PRIMARY KEY (category_id, subcategory_id)
 );
 
 CREATE TABLE bonus(
