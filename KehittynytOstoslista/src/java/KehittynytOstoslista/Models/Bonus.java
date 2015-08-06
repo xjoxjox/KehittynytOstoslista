@@ -58,10 +58,10 @@ public class Bonus {
         List<Bonus> bonukset = new ArrayList<Bonus>();
 
         try {
-            String sql = "SELECT * FROM bonus WHERE name like %?% ORDER BY name";
+            String sql = "SELECT * FROM bonus WHERE name like ? ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
+            kysely.setString(1, "%" + hakusana + "%");
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {

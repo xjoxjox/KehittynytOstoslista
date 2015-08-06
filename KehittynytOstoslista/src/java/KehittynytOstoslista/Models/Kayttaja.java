@@ -113,11 +113,10 @@ public class Kayttaja {
         List<Kayttaja> kayttajat = new ArrayList<Kayttaja>();
 
         try {
-            String sql = "SELECT * FROM account WHERE username like %?% ORDER BY username";
+            String sql = "SELECT * FROM account WHERE username = ? ORDER BY username";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, hakusana);
-            kysely.setString(2, hakusana);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {

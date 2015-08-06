@@ -73,8 +73,8 @@ public class Tuote {
                     + " FROM product WHERE name LIKE ? OR brand LIKE ? ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, "'%" + hakusana + "%'");
-            kysely.setString(2, "'%" + hakusana + "%'");
+            kysely.setString(1, "%" + hakusana + "%");
+            kysely.setString(2, "%" + hakusana + "%");
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {

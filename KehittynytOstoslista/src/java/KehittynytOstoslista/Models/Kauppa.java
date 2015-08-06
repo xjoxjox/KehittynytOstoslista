@@ -67,10 +67,10 @@ public class Kauppa {
         List<Kauppa> kaupat = new ArrayList<Kauppa>();
 
         try {
-            String sql = "SELECT * FROM shop WHERE name like %?% ORDER BY name";
+            String sql = "SELECT * FROM shop WHERE name like ? ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
+            kysely.setString(1, "%" + hakusana + "%");
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -99,10 +99,10 @@ public class Kauppa {
         List<Kauppa> kaupat = new ArrayList<Kauppa>();
 
         try {
-            String sql = "SELECT * FROM shop WHERE city like %?% ORDER BY name";
+            String sql = "SELECT * FROM shop WHERE city like ? ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
+            kysely.setString(1, "%" + hakusana + "%");
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -131,7 +131,7 @@ public class Kauppa {
         List<Kauppa> kaupat = new ArrayList<Kauppa>();
 
         try {
-            String sql = "SELECT * FROM shop WHERE name bonus_id %?% ORDER BY name";
+            String sql = "SELECT * FROM shop WHERE bonus_id = ? ORDER BY name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, bonusId);

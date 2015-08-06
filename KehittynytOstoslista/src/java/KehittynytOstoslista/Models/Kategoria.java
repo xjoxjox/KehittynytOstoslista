@@ -58,10 +58,10 @@ public class Kategoria {
         List<Kategoria> kategoriat = new ArrayList<Kategoria>();
 
         try {
-            String sql = "SELECT * FROM category WHERE description like %?% ORDER BY description";
+            String sql = "SELECT * FROM category WHERE description like ? ORDER BY description";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
+            kysely.setString(1, "%" + hakusana + "%");
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {

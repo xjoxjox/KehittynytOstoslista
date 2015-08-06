@@ -86,10 +86,10 @@ public class OstoslistaKuitattu {
         List<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistchecked WHERE name like %?% AND account_id = ? ORDER BY time_checked";
+            String sql = "SELECT * FROM shoppinglistchecked WHERE name like ? AND account_id = ? ORDER BY time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
+            kysely.setString(1, "%" + hakusana + "%");
             kysely.setInt(2, kayttajaId);
             tulokset = kysely.executeQuery();
 
@@ -119,7 +119,7 @@ public class OstoslistaKuitattu {
         List<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked < %?% AND account_id = ? ORDER BY time_checked";
+            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked < ? AND account_id = ? ORDER BY time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
@@ -152,7 +152,7 @@ public class OstoslistaKuitattu {
         List<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked > %?% AND account_id = ? ORDER BY time_checked";
+            String sql = "SELECT * FROM shoppinglistchecked WHERE time_checked > ? AND account_id = ? ORDER BY time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);

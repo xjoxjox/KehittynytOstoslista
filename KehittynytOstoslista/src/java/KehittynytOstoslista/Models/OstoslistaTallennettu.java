@@ -78,10 +78,10 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE name like %?% ORDER BY time_created";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE name like ? ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, hakusana);
+            kysely.setString(1, "%" + hakusana + "%");
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -110,7 +110,7 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created < %?% ORDER BY time_created";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created < ? ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
@@ -142,7 +142,7 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created > %?% ORDER BY time_created";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created > ? ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
