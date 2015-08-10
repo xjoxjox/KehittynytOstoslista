@@ -18,6 +18,8 @@
                     <th>Tuote</th>
                     <th>Valmistaja</th>
                     <th>Paino</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +28,18 @@
                         <td>${tuote.nimi}</td> 
                         <td>${tuote.valmistaja}</td> 
                         <td>${tuote.paino}</td>
+                        <td>
+                            <form method="post" name="frm" action="TuotteenmuokkausServLet">
+                                <input type="hidden" name="id" value="${tuote.id}">
+                                <input type="submit" value="Muokkaa">
+                            </form>
+                        </td>                        
+                        <td>
+                            <form method="post" name="frm" action="TuotteenpoistoServLet">
+                                <input type="hidden" name="id" value="${tuote.id}">
+                                <input type="submit" value="Poista">
+                            </form>
+                        </td>
                     </tr>
                 </c:forEach>
             </tbody>
@@ -34,5 +48,8 @@
         <c:if test="${viesti != null}">
             <p>${viesti}</p>
         </c:if>
+            <c:if test="${poistoviesti != null}">
+                <br><p>${poistoviesti}</p><br>
+            </c:if>
     </html>
 </t:pohja>

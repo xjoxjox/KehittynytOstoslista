@@ -387,6 +387,44 @@ public class OstoslistaTallennettu {
         }
     }
     
+    public boolean lisaaOstoslista(String lisaysnimi, int lisayskauppaId, int lisayskayttajaId) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, shop_id, account_id) "
+                    + "VALUES(?,?,?,now(),?,?) RETURNING shoppinglist_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, lisaysnimi);
+            kysely.setDouble(2, haeSumma());
+            kysely.setDouble(3, haePaino());
+            kysely.setInt(5, lisayskauppaId);
+            kysely.setInt(6, lisayskayttajaId);
+            tulokset = kysely.executeQuery();
+      
+            if (tulokset.next()) {
+                OstoslistaTallennettu o = new OstoslistaTallennettu(tulokset);
+                o.setId(tulokset.getInt("shoppinglist_id"));
+                o.setNimi(tulokset.getString("name"));
+                o.setSumma();
+                o.setPaino();
+                o.setPaivays(tulokset.getTimestamp("time_created"));
+                o.setKauppaId(tulokset.getInt("shop_id"));
+                o.setKayttajaId(tulokset.getInt("account_id"));
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

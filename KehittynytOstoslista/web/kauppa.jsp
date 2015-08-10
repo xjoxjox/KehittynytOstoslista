@@ -1,6 +1,6 @@
 <%-- 
-    Document   : tuote
-    Created on : Aug 6, 2015, 12:01:21 PM
+    Document   : kauppa
+    Created on : Aug 10, 2015, 11:26:54 AM
     Author     : Johanna
 --%>
 
@@ -15,28 +15,30 @@
         <table>
             <thead>
                 <tr>
-                    <th>Tuote</th>
-                    <th>Valmistaja</th>
-                    <th>Paino</th>
+                    <th>Kauppa</th>
+                    <th>Kaupunki</th>
+                    <th>Osoite</th>
+                    <th>Bonus</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="tuote" items="${tuotteet}">
+                <c:forEach var="kauppa" items="${kaupat}">
                     <tr>
-                        <td>${tuote.nimi}</td> 
-                        <td>${tuote.valmistaja}</td> 
-                        <td>${tuote.paino}</td>
+                        <td>${kauppa.nimi}</td> 
+                        <td>${kauppa.kaupunki}</td> 
+                        <td>${kauppa.osoite}</td>
+                        <td>${kauppa.bonusId}</td>
                         <td>
-                            <form method="post" name="frm" action="TuotteenmuokkausServLet">
-                                <input type="hidden" name="id" value="${tuote.id}">
+                            <form method="post" name="frm" action="KaupanmuokkausServLet">
+                                <input type="hidden" name="id" value="${kauppa.id}">
                                 <input type="submit" value="Muokkaa">
                             </form>
                         </td>                        
                         <td>
-                            <form method="post" name="frm" action="TuotteenpoistoServLet">
-                                <input type="hidden" name="id" value="${tuote.id}">
+                            <form method="post" name="frm" action="KaupanpoistoServLet">
+                                <input type="hidden" name="id" value="${kauppa.id}">
                                 <input type="submit" value="Poista">
                             </form>
                         </td>

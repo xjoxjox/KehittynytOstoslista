@@ -101,7 +101,7 @@ public class Tuote {
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         ResultSet tulokset = kysely.executeQuery();
 
-        ArrayList<Tuote> tuotteet = new ArrayList<Tuote>();
+        List<Tuote> tuotteet = new ArrayList<Tuote>();
         
         while (tulokset.next()) {
             Tuote t = new Tuote(tulokset);
@@ -195,6 +195,60 @@ public class Tuote {
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public static boolean lisaaTuote(String lisaysnimi, String lisaysvalmistaja, double lisayspaino) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+        
+        if(lisaysnimi.length() > 50 || lisaysnimi.length() < 0 || lisaysnimi.equals("")) {
+            return false;
+        }       
+        if(lisaysvalmistaja.length() > 50 || lisaysvalmistaja.length() < 0 || lisaysvalmistaja.equals("")) {
+            return false;
+        }
+        if(lisayspaino < 0) {
+            return false;
+        }
+
+        try {
+            String sql = "INSERT INTO product(name, brand, weight) VALUES(?,?,?) RETURNING product_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, lisaysnimi);
+            kysely.setString(2, lisaysvalmistaja);
+            kysely.setDouble(3, lisayspaino);
+            tulokset = kysely.executeQuery();
+      
+            if (tulokset.next()) {
+                Tuote t = haeTuote(tulokset.getInt("product_id"));
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public static boolean poistaTuote(int poistoId) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM product where product_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, poistoId);
+            return kysely.execute();
+        } finally {
             try { kysely.close(); } catch (Exception e) {  }
             try { yhteys.close(); } catch (Exception e) {  }
         }

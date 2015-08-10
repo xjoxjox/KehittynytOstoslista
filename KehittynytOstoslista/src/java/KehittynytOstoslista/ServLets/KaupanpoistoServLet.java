@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Johanna
  */
-public class KauppaServLet extends HttpServlet {
+public class KaupanpoistoServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,28 +29,20 @@ public class KauppaServLet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         
-        String hakukaupunki = request.getParameter("hakukaupunki");
-        String hakunimi = request.getParameter("hakunimi");
-        String hakubonus = request.getParameter("hakubonus");
-        int hakubonusInt = 0;
-        if (hakubonus.length() > 0) {
-            hakubonusInt = Integer.parseInt(hakubonus);
+        response.setContentType("text/html;charset=UTF-8");
+        
+        boolean tulos = Kauppa.poistaKauppa(Integer.parseInt(request.getParameter("id")));
+        
+        if(!tulos) {
+            request.setAttribute("poistoviesti", "Kauppa poistettu onnistuneesti.");
+        } else {
+            request.setAttribute("poistoviesti", "Kauppa poisto epäonnistui.");
         }
         
         List<Kauppa> kaupat = null;
-        
-        if (hakukaupunki != null && hakukaupunki.length() > 0) {
-            kaupat = Kauppa.haeKaupatKaupungilla(hakukaupunki);
-        }
-        if (hakunimi != null && hakunimi.length() > 0) {
-            kaupat = Kauppa.haeKaupatNimella(hakunimi);
-        }
-        if (hakubonusInt != 0) {
-            kaupat = Kauppa.haeKaupatBonuksella(hakubonusInt);
-        }
-        if (hakukaupunki.equals("") && hakunimi.equals("") && hakubonusInt == 0) {
-            kaupat = Kauppa.haeKaikkiKaupat();
-        }
+
+        kaupat = Kauppa.haeKaikkiKaupat();
+
         
         request.setAttribute("kaupat", kaupat);
         
@@ -77,7 +69,7 @@ public class KauppaServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(KauppaServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(KaupanpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -95,7 +87,7 @@ public class KauppaServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(KauppaServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(KaupanpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

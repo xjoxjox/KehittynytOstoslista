@@ -4,6 +4,7 @@ VALUES
 
 INSERT INTO bonus (name)
 VALUES
+	('ei bonusta'),
 	('s-bonus'),
 	('plussa');
 
@@ -36,6 +37,9 @@ INSERT INTO payment (name)
 VALUES
 	('Visa'),
 	('Kateinen');
+
+INSERT INTO shop (name, city, address, bonus_id)
+	SELECT '','','', bonus_id FROM bonus WHERE name = 'ei bonusta';
 
 INSERT INTO shop (name, city, address, bonus_id)
 	SELECT 'Prisma Jumbo','Vantaa','Vantaanportti', bonus_id FROM bonus WHERE name = 's-bonus';

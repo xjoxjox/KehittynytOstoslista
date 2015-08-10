@@ -162,9 +162,15 @@ public class Kauppa {
         ResultSet tulokset = kysely.executeQuery();
 
         ArrayList<Kauppa> kaupat = new ArrayList<Kauppa>();
+        
         while (tulokset.next()) {
-            Kauppa k = new Kauppa(tulokset.getInt("shop_id"), tulokset.getString("name"), tulokset.getString("city"),
-                tulokset.getString("address"), tulokset.getInt("bonus_id"));
+            System.out.println(tulokset.getString("name"));
+            Kauppa k = new Kauppa(tulokset);
+            k.setId(tulokset.getInt("shop_id"));
+            k.setNimi(tulokset.getString("name"));
+            k.setKaupunki(tulokset.getString("city"));
+            k.setOsoite(tulokset.getString("address"));
+            k.setBonusId(tulokset.getInt("bonus_id"));
             kaupat.add(k);
         }   
 
@@ -271,6 +277,63 @@ public class Kauppa {
 
             if (tulokset.next()) {
                 this.bonusId = tulokset.getInt("onus_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public static boolean poistaKauppa(int poistoId) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM shop where shop_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, poistoId);
+            return kysely.execute();
+        } finally {
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public static boolean lisaaKauppa(String lisaysnimi, String lisayskaupunki, String lisaysosoite, int lisaysbonus) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+        
+        if(lisaysnimi.length() > 50 || lisaysnimi.length() < 0 || lisaysnimi.equals("")) {
+            return false;
+        }       
+        if(lisayskaupunki.length() > 50 || lisayskaupunki.length() < 0 || lisayskaupunki.equals("")) {
+            return false;
+        }
+        if(lisaysosoite.length() > 50 || lisaysosoite.length() < 0 || lisaysosoite.equals("")) {
+            return false;
+        }
+        if(lisaysbonus == 0) {
+            return false;
+        }
+
+        try {
+            String sql = "INSERT INTO shop(name, city, address, bonus_id) VALUES(?,?,?,?) RETURNING shop_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, lisaysnimi);
+            kysely.setString(2, lisayskaupunki);
+            kysely.setString(3, lisaysosoite);
+            kysely.setInt(4, lisaysbonus);
+            tulokset = kysely.executeQuery();
+      
+            if (tulokset.next()) {
                 return true;
             } else {
                 return false;

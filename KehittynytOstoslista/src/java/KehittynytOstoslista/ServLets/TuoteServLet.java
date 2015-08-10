@@ -21,18 +21,18 @@ public class TuoteServLet extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         
-        String hakusana = request.getParameter("haku");
+        String hakunimi = request.getParameter("hakunimi");
+        String hakuvalmistaja = request.getParameter("hakuvalmistaja");
         
         List<Tuote> tuotteet = null;
         
-        if (hakusana != null && hakusana.length() > 0) {
-            tuotteet = Tuote.haeTuotteet(hakusana);
+        if (hakunimi != null && hakunimi.length() > 0) {
+            tuotteet = Tuote.haeTuotteet(hakunimi);
         } else {
             tuotteet = Tuote.haeKaikkiTuotteet();
         }
         
         request.setAttribute("tuotteet", tuotteet);
-        request.setAttribute("tuotteidenmaara", tuotteet.size());
         
         if (tuotteet.isEmpty()) {
             request.setAttribute("viesti", "Tuotteita ei löytynyt");

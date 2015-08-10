@@ -11,10 +11,32 @@
 <t:pohja pageTitle="Kaupat">
     <html>
         <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         </head>
         <body>
-            <h1>Hello World!</h1>
+            <br/><br/>
+            <form method="post" name="frm" action="KauppaServLet">
+                <p>Haku toimii tällä hetkellä syöttämällä vain yksi hakukriteeri.</p>
+            <table>
+                <tr><td><h3>Etsi kauppa</h3></td></tr>
+                <tr><td ><b>Kaupunki</b></td><td>: <input  type="text" name="hakukaupunki"></td></tr>        
+                <tr><td ><b>Nimi</b></td><td>: <input  type="text" name="hakunimi"></td></tr>  
+                <tr><td ><b>Bonus</b></td><td>: <input  type="text" name="hakubonus"></td></tr> 
+                <tr><td><input  type="submit" value="Hae"></td></tr>
+            </table>
+            </form>
+            <form method="post" name="frm" action="KaupanlisaysServLet">
+            <table>
+                <tr><td><h3>Lisää kauppa</h3></td></tr>
+                <tr><td ><b>Nimi</b></td><td>: <input  type="text" name="nimi"></td></tr>        
+                <tr><td><tr><td ><b>Kaupunki</b></td><td>: <input  type="text" name="kaupunki"></td></tr>
+                <tr><td ><b>Osoite</b></td><td>: <input  type="text" name="osoite"></td></tr> 
+                <tr><td ><b>Bonus</b></td><td>: <input  type="text" name="bonus"></td></tr> 
+                <tr><td><input  type="submit" value="Lisää"></td></tr>
+            </table>
+            </form>
+            <c:if test="${lisaysviesti != null}">
+                    <br><p>${lisaysviesti}</p><br>
+            </c:if>
         </body>
     </html>
 </t:pohja>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-
     <servlet>
         <servlet-name>TuoteServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.TuoteServLet</servlet-class>
@@ -57,6 +56,30 @@
         <servlet-name>TuoteListaServlet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.TuoteListaServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OstoslistanlisaysServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistanlisaysServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TuotteenlisaysServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.TuotteenlisaysServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TuotteenpoistoServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.TuotteenpoistoServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TuotteenmuokkausServlet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.TuotteenmuokkausServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>KaupanpoistoServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.KaupanpoistoServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>KaupanlisaysServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.KaupanlisaysServLet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
@@ -112,6 +135,30 @@
     <servlet-mapping>
         <servlet-name>TuoteListaServlet</servlet-name>
         <url-pattern>/TuoteListaServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistanlisaysServLet</servlet-name>
+        <url-pattern>/OstoslistanlisaysServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TuotteenlisaysServLet</servlet-name>
+        <url-pattern>/TuotteenlisaysServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TuotteenpoistoServLet</servlet-name>
+        <url-pattern>/TuotteenpoistoServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TuotteenmuokkausServlet</servlet-name>
+        <url-pattern>/TuotteenmuokkausServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KaupanpoistoServLet</servlet-name>
+        <url-pattern>/KaupanpoistoServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KaupanlisaysServLet</servlet-name>
+        <url-pattern>/KaupanlisaysServLet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

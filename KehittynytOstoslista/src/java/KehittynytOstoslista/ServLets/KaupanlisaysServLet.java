@@ -2,7 +2,6 @@ package KehittynytOstoslista.ServLets;
 
 import KehittynytOstoslista.Models.Kauppa;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -15,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Johanna
  */
-public class KauppaServLet extends HttpServlet {
+public class KaupanlisaysServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -28,37 +27,24 @@ public class KauppaServLet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
+        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         
-        String hakukaupunki = request.getParameter("hakukaupunki");
-        String hakunimi = request.getParameter("hakunimi");
-        String hakubonus = request.getParameter("hakubonus");
         int hakubonusInt = 0;
-        if (hakubonus.length() > 0) {
+        String hakubonus = request.getParameter("bonus");
+        if (!hakubonus.equals("")) {
             hakubonusInt = Integer.parseInt(hakubonus);
         }
+        boolean tulos = Kauppa.lisaaKauppa(request.getParameter("nimi"), request.getParameter("kaupunki"), 
+                request.getParameter("osoite"), hakubonusInt);
         
-        List<Kauppa> kaupat = null;
-        
-        if (hakukaupunki != null && hakukaupunki.length() > 0) {
-            kaupat = Kauppa.haeKaupatKaupungilla(hakukaupunki);
-        }
-        if (hakunimi != null && hakunimi.length() > 0) {
-            kaupat = Kauppa.haeKaupatNimella(hakunimi);
-        }
-        if (hakubonusInt != 0) {
-            kaupat = Kauppa.haeKaupatBonuksella(hakubonusInt);
-        }
-        if (hakukaupunki.equals("") && hakunimi.equals("") && hakubonusInt == 0) {
-            kaupat = Kauppa.haeKaikkiKaupat();
+        if(tulos) {
+            request.setAttribute("lisaysviesti", "Kauppa lisätty onnistuneesti.");
+        } else {
+            request.setAttribute("lisaysviesti", "Kaupan lisäys epäonnistui.");
         }
         
-        request.setAttribute("kaupat", kaupat);
-        
-        if (kaupat.isEmpty()) {
-            request.setAttribute("viesti", "Kauppoja ei löytynyt");
-        }
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher("kauppa.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("kaupat.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -77,7 +63,7 @@ public class KauppaServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(KauppaServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(KaupanlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -95,7 +81,7 @@ public class KauppaServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(KauppaServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(KaupanlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -3,13 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/index.jsp</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/tuotteet.jsp</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/tuote.jsp</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/META-INF/context.xml</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/Yhteys.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/Tuote.java</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/testilistaus.jsp</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/Kayttaja.java</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/esittelysivu.html</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/TuotteenpoistoServLet.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/TuoteServLet.java</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/OstoslistanlisaysServLet.java</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/TuotteenlisaysServLet.java</file>
         </group>
     </open-files>
 </project-private>
