@@ -32,6 +32,8 @@ public class TuotteenpoistoServLet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
        boolean tulos = Tuote.poistaTuote(Integer.parseInt(request.getParameter("id")));
+       
+       String hakunimi = request.getParameter("hakunimi");
         
         if(!tulos) {
             request.setAttribute("poistoviesti", "Tuote poistettu onnistuneesti.");
@@ -40,10 +42,14 @@ public class TuotteenpoistoServLet extends HttpServlet {
         }
         
         List<Tuote> tuotteet = null;
-
-        tuotteet = Tuote.haeKaikkiTuotteet();
-
         
+        if (hakunimi != null && hakunimi.length() > 0) {
+            tuotteet = Tuote.haeTuotteet(hakunimi);
+        } else {
+            tuotteet = Tuote.haeKaikkiTuotteet();
+        }
+        
+        request.setAttribute("hakunimi", hakunimi);
         request.setAttribute("tuotteet", tuotteet);
         
         if (tuotteet.isEmpty()) {

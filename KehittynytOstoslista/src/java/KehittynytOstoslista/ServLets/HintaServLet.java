@@ -1,11 +1,7 @@
 package KehittynytOstoslista.ServLets;
 
-import KehittynytOstoslista.Models.Tuote;
-import KehittynytOstoslista.Models.TuoteHinta;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Johanna
  */
-public class TuotteenlisaysServLet extends HttpServlet {
+public class HintaServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -27,30 +23,23 @@ public class TuotteenlisaysServLet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
-        
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        Tuote tuote = Tuote.lisaaTuote(request.getParameter("nimi"), request.getParameter("valmistaja"), 
-                Double.parseDouble(request.getParameter("paino")));
-        
-        
-        
-        if(tuote != null) {
-            request.setAttribute("lisaysviesti", "Tuote lisätty onnistuneesti.");
-            boolean tulos = TuoteHinta.lisaaTuoteHinta(Double.parseDouble(request.getParameter("hinta")), 
-                1, tuote.getId(), Integer.parseInt(request.getParameter("kauppa")));
-                if (tulos) {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hinta lisätty onnistuneesti.");
-                } else {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hintaa ei voitu lisätä.");
-                }
-        } else {
-            request.setAttribute("lisaysviesti", "Tuotteen lisäys epäonnistui.");
-        }       
-           
-        RequestDispatcher dispatcher = request.getRequestDispatcher("tuotteet.jsp");
-        dispatcher.forward(request, response);
+        PrintWriter out = response.getWriter();
+        try {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet HintaServLet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet HintaServLet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        } finally {
+            out.close();
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -65,11 +54,7 @@ public class TuotteenlisaysServLet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(TuotteenlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -83,11 +68,7 @@ public class TuotteenlisaysServLet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(TuotteenlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

@@ -65,8 +65,10 @@ public class Bonus {
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {
-                Bonus t = new Bonus(tulokset);
-                bonukset.add(t);
+                Bonus b = new Bonus(tulokset);
+                b.id = tulokset.getInt("bonus_id");
+                b.nimi = tulokset.getString("name");
+                bonukset.add(b);
             }
 
             

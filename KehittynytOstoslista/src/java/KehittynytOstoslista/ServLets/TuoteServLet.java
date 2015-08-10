@@ -24,6 +24,8 @@ public class TuoteServLet extends HttpServlet {
         String hakunimi = request.getParameter("hakunimi");
         String hakuvalmistaja = request.getParameter("hakuvalmistaja");
         
+        request.setAttribute("hakunimi", hakunimi);
+        
         List<Tuote> tuotteet = null;
         
         if (hakunimi != null && hakunimi.length() > 0) {

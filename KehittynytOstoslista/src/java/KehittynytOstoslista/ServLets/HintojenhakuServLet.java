@@ -1,8 +1,10 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Kauppa;
 import KehittynytOstoslista.Models.Tuote;
 import KehittynytOstoslista.Models.TuoteHinta;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -15,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Johanna
  */
-public class TuotteenlisaysServLet extends HttpServlet {
+public class HintojenhakuServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,25 +33,23 @@ public class TuotteenlisaysServLet extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         
-        Tuote tuote = Tuote.lisaaTuote(request.getParameter("nimi"), request.getParameter("valmistaja"), 
-                Double.parseDouble(request.getParameter("paino")));
+        int tuoteid = Integer.parseInt(request.getParameter("id"));
+        Tuote tuote = Tuote.haeTuote(tuoteid);
         
+        HashMap<Kauppa, Double> hinnat = TuoteHinta.haeHintaTuotteelle(tuoteid);
         
+        for (Kauppa kauppa: hinnat.keySet()) {
+            kauppa.getNimi();
+        }
         
-        if(tuote != null) {
-            request.setAttribute("lisaysviesti", "Tuote lisätty onnistuneesti.");
-            boolean tulos = TuoteHinta.lisaaTuoteHinta(Double.parseDouble(request.getParameter("hinta")), 
-                1, tuote.getId(), Integer.parseInt(request.getParameter("kauppa")));
-                if (tulos) {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hinta lisätty onnistuneesti.");
-                } else {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hintaa ei voitu lisätä.");
-                }
-        } else {
-            request.setAttribute("lisaysviesti", "Tuotteen lisäys epäonnistui.");
-        }       
-           
-        RequestDispatcher dispatcher = request.getRequestDispatcher("tuotteet.jsp");
+        request.setAttribute("hinnat", hinnat);
+        request.setAttribute("tuote", tuote);
+        
+        if (hinnat.isEmpty()) {
+            request.setAttribute("hintahakuviesti", "Tuotteelle ei löytynyt hintoja.");
+        }
+        
+        RequestDispatcher dispatcher = request.getRequestDispatcher("tuote.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -68,7 +68,7 @@ public class TuotteenlisaysServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TuotteenlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HintojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -86,7 +86,7 @@ public class TuotteenlisaysServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TuotteenlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HintojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -200,19 +200,19 @@ public class Tuote {
         }
     }
     
-    public static boolean lisaaTuote(String lisaysnimi, String lisaysvalmistaja, double lisayspaino) throws Exception {
+    public static Tuote lisaaTuote(String lisaysnimi, String lisaysvalmistaja, double lisayspaino) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
         if(lisaysnimi.length() > 50 || lisaysnimi.length() < 0 || lisaysnimi.equals("")) {
-            return false;
+            return null;
         }       
         if(lisaysvalmistaja.length() > 50 || lisaysvalmistaja.length() < 0 || lisaysvalmistaja.equals("")) {
-            return false;
+            return null;
         }
         if(lisayspaino < 0) {
-            return false;
+            return null;
         }
 
         try {
@@ -226,9 +226,9 @@ public class Tuote {
       
             if (tulokset.next()) {
                 Tuote t = haeTuote(tulokset.getInt("product_id"));
-                return true;
+                return t;
             } else {
-                return false;
+                return null;
             }
 
         } finally {

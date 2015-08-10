@@ -16,7 +16,7 @@ public class TuoteHinta {
     private int sijainti;
     private Timestamp paivays;
     private boolean nykyinen;
-    private static int tuoteId;
+    private int tuoteId;
     private int kauppaId;
     
     private TuoteHinta(ResultSet tulos) throws SQLException {
@@ -39,12 +39,12 @@ public class TuoteHinta {
         this.kauppaId = kauppaId;
     }
     
-    public static HashMap<Integer, Double> haeHintaTuotteelle(int tuote) throws Exception {
+    public static HashMap<Kauppa, Double> haeHintaTuotteelle(int tuote) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
-        HashMap<Integer, Double> hinnat = new HashMap<Integer,Double>();
+        HashMap<Kauppa, Double> hinnat = new HashMap<Kauppa,Double>();
 
         try {
             String sql = "SELECT price, shop_id FROM productprice WHERE product_id = ? AND current_price = TRUE ORDER BY shop_id";
@@ -54,7 +54,8 @@ public class TuoteHinta {
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {
-                hinnat.put(tulokset.getInt("shop_id"), tulokset.getDouble("price"));
+                System.out.println(tulokset.getInt("shop_id"));
+                hinnat.put(Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getDouble("price"));
             }
             
             return hinnat;
@@ -240,25 +241,23 @@ public class TuoteHinta {
         }
     }
     
-    public boolean muokkaaNykyinen(boolean x) throws NamingException, SQLException {
+    public static boolean muokkaaNykyinen(boolean x, int tuoteid, int kauppaid) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
 
         try {
-            String sql = "UPDATE productprice SET current_price = ? WHERE product_id = ? AND productprice_date = ? AND "
+            String sql = "UPDATE productprice SET current_price = ? WHERE product_id = ? AND "
                     + "shop_id = ? RETURNING current_price";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setBoolean(1, x);
-            kysely.setInt(2, tuoteId);
-            kysely.setTimestamp(3, paivays);
-            kysely.setInt(4, kauppaId);
+            kysely.setInt(2, tuoteid);
+            kysely.setInt(3, kauppaid);
             tulokset = kysely.executeQuery();
 
-            if (tulokset.next()) {
-                this.nykyinen = tulokset.getBoolean("current_price");
-                return true;
+            if (tulokset.next()) {       
+                return tulokset.getBoolean("current_price");
             } else {
                 return false;
             }
@@ -292,6 +291,33 @@ public class TuoteHinta {
                 return false;
             }
 
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public static boolean lisaaTuoteHinta(double lisayshinta, int lisayssijainti, int lisaystuoteid, int lisayskauppaid) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+        
+        boolean tulos = muokkaaNykyinen(false, lisaystuoteid, lisayskauppaid);
+
+        try {
+            String sql = "INSERT INTO productprice(price, location, productprice_date, current_price,"
+                    + " product_id, shop_id) VALUES(?,?,now(),TRUE,?,?) RETURNING price";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setDouble(1, lisayshinta);
+            kysely.setInt(2, lisayssijainti);
+            kysely.setInt(3, lisaystuoteid);
+            kysely.setInt(4, lisayskauppaid);
+            tulokset = kysely.executeQuery();
+
+            return tulokset.next();
+             
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
             try { kysely.close(); } catch (Exception e) {  }

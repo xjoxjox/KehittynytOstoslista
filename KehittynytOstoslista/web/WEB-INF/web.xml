@@ -80,6 +80,22 @@
         <servlet-name>KaupanlisaysServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.KaupanlisaysServLet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BonustenhakuServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.BonustenhakuServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HintaServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.HintaServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>KauppojenhakuServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.KauppojenhakuServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HintojenhakuServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.HintojenhakuServLet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
@@ -159,6 +175,22 @@
     <servlet-mapping>
         <servlet-name>KaupanlisaysServLet</servlet-name>
         <url-pattern>/KaupanlisaysServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BonustenhakuServLet</servlet-name>
+        <url-pattern>/BonustenhakuServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HintaServLet</servlet-name>
+        <url-pattern>/HintaServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KauppojenhakuServLet</servlet-name>
+        <url-pattern>/KauppojenhakuServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HintojenhakuServLet</servlet-name>
+        <url-pattern>/HintojenhakuServLet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

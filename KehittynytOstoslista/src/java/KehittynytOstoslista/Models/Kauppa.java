@@ -47,7 +47,13 @@ public class Kauppa {
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                return new Kauppa(tulokset);
+                Kauppa k = new Kauppa(tulokset);
+                k.setId(tulokset.getInt("shop_id"));
+                k.setNimi(tulokset.getString("name"));
+                k.setKaupunki(tulokset.getString("city"));
+                k.setOsoite(tulokset.getString("address"));
+                k.setBonusId(tulokset.getInt("bonus_id"));
+                return k;
             } else {
                 return null;
             }
@@ -164,7 +170,6 @@ public class Kauppa {
         ArrayList<Kauppa> kaupat = new ArrayList<Kauppa>();
         
         while (tulokset.next()) {
-            System.out.println(tulokset.getString("name"));
             Kauppa k = new Kauppa(tulokset);
             k.setId(tulokset.getInt("shop_id"));
             k.setNimi(tulokset.getString("name"));

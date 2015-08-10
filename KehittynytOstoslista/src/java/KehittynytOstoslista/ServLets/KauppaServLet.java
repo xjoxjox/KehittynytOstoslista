@@ -31,11 +31,7 @@ public class KauppaServLet extends HttpServlet {
         
         String hakukaupunki = request.getParameter("hakukaupunki");
         String hakunimi = request.getParameter("hakunimi");
-        String hakubonus = request.getParameter("hakubonus");
-        int hakubonusInt = 0;
-        if (hakubonus.length() > 0) {
-            hakubonusInt = Integer.parseInt(hakubonus);
-        }
+        int hakubonus = Integer.parseInt(request.getParameter("hakubonus"));
         
         List<Kauppa> kaupat = null;
         
@@ -45,10 +41,10 @@ public class KauppaServLet extends HttpServlet {
         if (hakunimi != null && hakunimi.length() > 0) {
             kaupat = Kauppa.haeKaupatNimella(hakunimi);
         }
-        if (hakubonusInt != 0) {
-            kaupat = Kauppa.haeKaupatBonuksella(hakubonusInt);
+        if (hakubonus != 1) {
+            kaupat = Kauppa.haeKaupatBonuksella(hakubonus);
         }
-        if (hakukaupunki.equals("") && hakunimi.equals("") && hakubonusInt == 0) {
+        if (hakukaupunki.equals("") && hakunimi.equals("") && hakubonus == 1) {
             kaupat = Kauppa.haeKaikkiKaupat();
         }
         

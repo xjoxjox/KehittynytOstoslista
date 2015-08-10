@@ -25,8 +25,8 @@
                     <div id="hmenu">
                         <ul>
                             <li><a href="ostoslistat.jsp">Ostoslistat</a></li>
-                            <li><a href="tuotteet.jsp">Tuotteet</a></li>
-                            <li><a href="kaupat.jsp">Kaupat</a></li>
+                            <li><a href="KauppojenhakuServLet?param=tuotteet.jsp">Tuotteet</a></li>
+                            <li><a href="BonustenhakuServLet?param=kaupat.jsp">Kaupat</a></li>
                             <li><a href="maksutavat.jsp">Maksutavat</a></li>
                             <li><a href="bonukset.jsp">Bonukset</a></li>
                             <li><a href="ostohistoria.jsp">Ostohistoria</a></li>

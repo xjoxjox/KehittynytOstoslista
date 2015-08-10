@@ -1,10 +1,14 @@
 package KehittynytOstoslista.ServLets;
 
-import KehittynytOstoslista.Models.Tuote;
-import KehittynytOstoslista.Models.TuoteHinta;
+import KehittynytOstoslista.Models.Bonus;
+import KehittynytOstoslista.Models.Kauppa;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Johanna
  */
-public class TuotteenlisaysServLet extends HttpServlet {
+public class KauppojenhakuServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -27,29 +31,18 @@ public class TuotteenlisaysServLet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
-        
+            throws ServletException, IOException, SQLException, NamingException {
         response.setContentType("text/html;charset=UTF-8");
         
-        Tuote tuote = Tuote.lisaaTuote(request.getParameter("nimi"), request.getParameter("valmistaja"), 
-                Double.parseDouble(request.getParameter("paino")));
+        String ohjaus = request.getParameter("param");
         
+        List<Kauppa> kaupat = null;
         
+        kaupat = Kauppa.haeKaikkiKaupat();
         
-        if(tuote != null) {
-            request.setAttribute("lisaysviesti", "Tuote lisätty onnistuneesti.");
-            boolean tulos = TuoteHinta.lisaaTuoteHinta(Double.parseDouble(request.getParameter("hinta")), 
-                1, tuote.getId(), Integer.parseInt(request.getParameter("kauppa")));
-                if (tulos) {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hinta lisätty onnistuneesti.");
-                } else {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hintaa ei voitu lisätä.");
-                }
-        } else {
-            request.setAttribute("lisaysviesti", "Tuotteen lisäys epäonnistui.");
-        }       
-           
-        RequestDispatcher dispatcher = request.getRequestDispatcher("tuotteet.jsp");
+        request.setAttribute("kaupat", kaupat);
+        
+        RequestDispatcher dispatcher = request.getRequestDispatcher(ohjaus);
         dispatcher.forward(request, response);
     }
 
@@ -67,8 +60,10 @@ public class TuotteenlisaysServLet extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(TuotteenlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NamingException ex) {
+            Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -85,8 +80,10 @@ public class TuotteenlisaysServLet extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(TuotteenlisaysServLet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NamingException ex) {
+            Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

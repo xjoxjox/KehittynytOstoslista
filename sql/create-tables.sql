@@ -84,8 +84,8 @@ CREATE TABLE productprice(
 	current_price BOOLEAN NOT NULL,
 	product_id INTEGER NOT NULL,
 	shop_id INTEGER NOT NULL,
-	CONSTRAINT product_id_fkey FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-	CONSTRAINT shop_id_fkey FOREIGN KEY (shop_id) REFERENCES shop(shop_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+	CONSTRAINT product_id_fkey FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE,
+	CONSTRAINT shop_id_fkey FOREIGN KEY (shop_id) REFERENCES shop(shop_id) ON UPDATE CASCADE,
 	PRIMARY KEY (product_id, shop_id)
 );
 
