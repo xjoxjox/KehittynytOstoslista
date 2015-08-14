@@ -355,6 +355,41 @@ public class OstoslistaTallennettu {
         }
     }
     
+    public static boolean luoUusiLista(String listanimi, int listakauppa, int listakayttaja) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+        
+        if(listanimi.equals("") || listanimi.length() < 0 || listanimi.length() > 50) {
+            return false;
+        }
+
+        try {
+            String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, shop_id, account_id) "
+                    + "VALUES(?,?,?,now(),?,?) RETURNING shoppinglist_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setString(1, listanimi);
+            kysely.setDouble(2, haeSumma());
+            kysely.setDouble(3, haePaino());
+            kysely.setInt(4, listakauppa);
+            kysely.setInt(5, listakayttaja);
+            tulokset = kysely.executeQuery();
+      
+            if (tulokset.next()) {
+                id = tulokset.getInt("shoppinglist_id");
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

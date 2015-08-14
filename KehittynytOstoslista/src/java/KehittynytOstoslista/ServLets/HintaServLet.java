@@ -1,7 +1,12 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Tuote;
+import KehittynytOstoslista.Models.TuoteHinta;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,23 +28,46 @@ public class HintaServLet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet HintaServLet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet HintaServLet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+        
+        int tuoteid = Integer.parseInt(request.getParameter("id"));
+        int kauppaid = Integer.parseInt(request.getParameter("kauppa"));
+        double hinta = Double.parseDouble(request.getParameter("uusihinta"));
+        
+        boolean uusihinta = TuoteHinta.lisaaTuoteHinta(hinta, 1, tuoteid, kauppaid);
+        
+        if (uusihinta) {
+            request.setAttribute("uusihinta", "Hinnan päivitys onnistui.");
+        } else{
+            request.setAttribute("uusihinta", "Hinnan päivitys epäonnistui.");
         }
+        
+        String hakunimi = request.getParameter("hakunimi");
+        
+        List<Tuote> tuotteet = null;
+        
+        if (hakunimi != null && hakunimi.length() > 0) {
+            tuotteet = Tuote.haeTuotteet(hakunimi);
+        } else {
+            tuotteet = Tuote.haeKaikkiTuotteet(1);
+        }
+        
+        request.setAttribute("tuotteet", tuotteet);
+        
+        if (hakunimi != null) {
+            request.setAttribute("hakunimi", hakunimi);
+        }
+        
+        int tuoteLkm = Tuote.tuotteidenLukumaara();
+        request.setAttribute("tuoteLkm", tuoteLkm);
+        
+        if (tuotteet.isEmpty()) {
+            request.setAttribute("viesti", "Tuotteita ei löytynyt");
+        }
+        
+        RequestDispatcher dispatcher = request.getRequestDispatcher("tuote.jsp");
+        dispatcher.forward(request, response); 
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -54,7 +82,11 @@ public class HintaServLet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(HintaServLet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -68,7 +100,11 @@ public class HintaServLet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(HintaServLet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

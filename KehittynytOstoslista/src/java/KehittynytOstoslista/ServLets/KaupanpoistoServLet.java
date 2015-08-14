@@ -41,7 +41,7 @@ public class KaupanpoistoServLet extends HttpServlet {
         
         List<Kauppa> kaupat = null;
 
-        kaupat = Kauppa.haeKaikkiKaupat();
+        kaupat = Kauppa.haeKaikkiKaupat(1);
 
         
         request.setAttribute("kaupat", kaupat);

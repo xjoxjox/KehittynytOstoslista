@@ -33,15 +33,18 @@ table, th, td {
     font-family: Georgia, Arial;
 }
 
-th {
+table th {
     text-align: center;
     background-color: lightgreen;
     color: black;
     font-family: Georgia, Arial;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
-td {
-    
+table td {
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 tbody {
@@ -61,10 +64,10 @@ button {
 } 
 
 div#hmenu { 
-/*   margin: 0; 
-   padding: .3em 0 .3em 0; */
+   margin: 0; 
+   padding: .3em 0 .3em 0; 
    background: #f6f0cc; 
-/*   width: 100%; */
+   width: 100px; 
    text-align: center; 
 } 
 

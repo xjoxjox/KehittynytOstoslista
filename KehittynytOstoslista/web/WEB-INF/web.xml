@@ -45,10 +45,6 @@
         <servlet-class>KehittynytOstoslista.ServLets.OstoslistaTallennettuServLet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TuoteHintaServLet</servlet-name>
-        <servlet-class>KehittynytOstoslista.ServLets.TuoteHintaServLet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>TuoteKategoriaServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.TuoteKategoriaServLet</servlet-class>
     </servlet>
@@ -96,6 +92,22 @@
         <servlet-name>HintojenhakuServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.HintojenhakuServLet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TuotteenMuokkausNakymaServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.TuotteenMuokkausNakymaServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TuoteHintaNakymaServlet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.TuoteHintaNakymaServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>KaupanMuokkausNakymaServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.KaupanMuokkausNakymaServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>KaupanMuokkausServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.KaupanMuokkausServLet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
@@ -139,10 +151,6 @@
     <servlet-mapping>
         <servlet-name>OstoslistaTallennettuServLet</servlet-name>
         <url-pattern>/OstoslistaTallennettuServLet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TuoteHintaServLet</servlet-name>
-        <url-pattern>/TuoteHintaServLet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TuoteKategoriaServLet</servlet-name>
@@ -191,6 +199,22 @@
     <servlet-mapping>
         <servlet-name>HintojenhakuServLet</servlet-name>
         <url-pattern>/HintojenhakuServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TuotteenMuokkausNakymaServLet</servlet-name>
+        <url-pattern>/TuotteenMuokkausNakymaServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TuoteHintaNakymaServlet</servlet-name>
+        <url-pattern>/TuoteHintaNakymaServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KaupanMuokkausNakymaServLet</servlet-name>
+        <url-pattern>/KaupanMuokkausNakymaServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KaupanMuokkausServLet</servlet-name>
+        <url-pattern>/KaupanMuokkausServLet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

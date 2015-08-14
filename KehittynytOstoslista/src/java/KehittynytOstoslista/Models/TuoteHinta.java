@@ -303,6 +303,10 @@ public class TuoteHinta {
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
+        if (lisayshinta < 0) {
+            return false;
+        }
+        
         boolean tulos = muokkaaNykyinen(false, lisaystuoteid, lisayskauppaid);
 
         try {

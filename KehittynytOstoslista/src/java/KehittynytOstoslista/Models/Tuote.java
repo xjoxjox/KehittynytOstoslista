@@ -95,10 +95,11 @@ public class Tuote {
         }
     }
     
-    public static List<Tuote> haeKaikkiTuotteet() throws SQLException, NamingException {
-        String sql = "SELECT product_id, name, brand, weight FROM product ORDER by name";
+    public static List<Tuote> haeKaikkiTuotteet(int sivu) throws SQLException, NamingException {
+        String sql = "SELECT product_id, name, brand, weight FROM product ORDER by name LIMIT 50 OFFSET ?";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
+        kysely.setInt(1, (sivu-1)*50);
         ResultSet tulokset = kysely.executeQuery();
 
         List<Tuote> tuotteet = new ArrayList<Tuote>();
@@ -119,21 +120,41 @@ public class Tuote {
         return tuotteet;
     }
     
-    public boolean muokkaaNimi(String x) throws SQLException, NamingException {
+    public static int tuotteidenLukumaara() throws SQLException, NamingException {
+        String sql = "SELECT count(*) as lkm FROM product";
+        Connection yhteys = Yhteys.getYhteys();
+        PreparedStatement kysely = yhteys.prepareStatement(sql);
+        ResultSet tulokset = kysely.executeQuery();
+
+        tulokset.next();
+        int lkm = tulokset.getInt("lkm");
+
+        try { tulokset.close(); } catch (Exception e) {}
+        try { kysely.close(); } catch (Exception e) {}
+        try { yhteys.close(); } catch (Exception e) {}
+
+        return lkm;
+    }
+    
+    public static boolean muokkaaNimi(String x, int tuoteid) throws SQLException, NamingException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
+        
+        if (x.length() < 0 || x.length() > 50) {
+            return false;
+        }
 
         try {
             String sql = "UPDATE product SET name = ? WHERE product_id = ? RETURNING name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, tuoteid);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.nimi = tulokset.getString("name");
+                String nimi = tulokset.getString("name");
                 return true;
             } else {
                 return false;
@@ -146,21 +167,25 @@ public class Tuote {
         }
     }
   
-    public boolean muokkaaValmistaja(String x) throws SQLException, NamingException {
+    public static boolean muokkaaValmistaja(String x, int tuoteid) throws SQLException, NamingException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
+        
+        if (x.length() < 0 || x.length() > 50) {
+            return false;
+        }
 
         try {
             String sql = "UPDATE product SET brand = ? WHERE product_id = ? RETURNING brand";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, tuoteid);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.valmistaja = tulokset.getString("brand");
+                String valmistaja = tulokset.getString("brand");
                 return true;
             } else {
                 return false;
@@ -173,21 +198,25 @@ public class Tuote {
         }
     }
   
-    public boolean muokkaaPaino(double x) throws NamingException, SQLException {
+    public static boolean muokkaaPaino(double x, int tuoteid) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
+        
+        if (x < 0 || x > 10000) {
+            return false;
+        }
 
         try {
             String sql = "UPDATE product SET weight = ? WHERE product_id = ? RETURNING weight";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setDouble(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, tuoteid);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.paino = tulokset.getDouble("weight");
+                double paino = tulokset.getDouble("weight");
                 return true;
             } else {
                 return false;

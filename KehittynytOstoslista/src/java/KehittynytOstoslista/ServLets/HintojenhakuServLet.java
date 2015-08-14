@@ -5,6 +5,7 @@ import KehittynytOstoslista.Models.Tuote;
 import KehittynytOstoslista.Models.TuoteHinta;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -42,11 +43,36 @@ public class HintojenhakuServLet extends HttpServlet {
             kauppa.getNimi();
         }
         
-        request.setAttribute("hinnat", hinnat);
+        if (!hinnat.isEmpty()) {
+            request.setAttribute("hinnat", hinnat);
+        } else {
+            request.setAttribute("hintahakuviesti", "Tuotteelle ei löytynyt hintoja.");
+            request.setAttribute("hinnat", null);
+        }
+        
         request.setAttribute("tuote", tuote);
         
-        if (hinnat.isEmpty()) {
-            request.setAttribute("hintahakuviesti", "Tuotteelle ei löytynyt hintoja.");
+        String hakunimi = request.getParameter("hakunimi");
+        
+        List<Tuote> tuotteet = null;
+        
+        if (hakunimi != null && hakunimi.length() > 0) {
+            tuotteet = Tuote.haeTuotteet(hakunimi);
+        } else {
+            tuotteet = Tuote.haeKaikkiTuotteet(1);
+        }
+        
+        request.setAttribute("tuotteet", tuotteet);
+        
+        if (hakunimi != null) {
+            request.setAttribute("hakunimi", hakunimi);
+        }
+        
+        int tuoteLkm = Tuote.tuotteidenLukumaara();
+        request.setAttribute("tuoteLkm", tuoteLkm);
+        
+        if (tuotteet.isEmpty()) {
+            request.setAttribute("viesti", "Tuotteita ei löytynyt");
         }
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("tuote.jsp");

@@ -46,7 +46,7 @@ public class TuotteenpoistoServLet extends HttpServlet {
         if (hakunimi != null && hakunimi.length() > 0) {
             tuotteet = Tuote.haeTuotteet(hakunimi);
         } else {
-            tuotteet = Tuote.haeKaikkiTuotteet();
+            tuotteet = Tuote.haeKaikkiTuotteet(1);
         }
         
         request.setAttribute("hakunimi", hakunimi);

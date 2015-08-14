@@ -59,7 +59,7 @@ public class Login extends HttpServlet {
         
         if (k != null) {
             session.setAttribute("kirjautunut", kayttaja);
-            response.sendRedirect("ostoslistat.jsp");
+            response.sendRedirect("OstoslistaTallennettuServLet");
         } else {
             request.setAttribute("virhe", "Kirjautuminen epäonnistui! Antamasi tunnus tai salasana on väärä.");
             request.getRequestDispatcher("login.jsp").forward(request, response);

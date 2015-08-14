@@ -24,17 +24,24 @@ public class TuoteServLet extends HttpServlet {
         String hakunimi = request.getParameter("hakunimi");
         String hakuvalmistaja = request.getParameter("hakuvalmistaja");
         
-        request.setAttribute("hakunimi", hakunimi);
-        
         List<Tuote> tuotteet = null;
         
         if (hakunimi != null && hakunimi.length() > 0) {
             tuotteet = Tuote.haeTuotteet(hakunimi);
         } else {
-            tuotteet = Tuote.haeKaikkiTuotteet();
+            tuotteet = Tuote.haeKaikkiTuotteet(1);
         }
         
         request.setAttribute("tuotteet", tuotteet);
+        
+        if (hakunimi.equals("")) {
+            request.setAttribute("hakunimi", null);
+        } else {
+            request.setAttribute("hakunimi", hakunimi);
+        }
+        
+        int tuoteLkm = Tuote.tuotteidenLukumaara();
+        request.setAttribute("tuoteLkm", tuoteLkm);
         
         if (tuotteet.isEmpty()) {
             request.setAttribute("viesti", "Tuotteita ei löytynyt");

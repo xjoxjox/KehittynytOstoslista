@@ -1,11 +1,7 @@
 package KehittynytOstoslista.ServLets;
 
-import KehittynytOstoslista.Models.Kauppa;
 import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Johanna
  */
-public class KauppaServLet extends HttpServlet {
+public class KaupanMuokkausNakymaServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -27,35 +23,23 @@ public class KauppaServLet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
-        
-        String hakukaupunki = request.getParameter("hakukaupunki");
-        String hakunimi = request.getParameter("hakunimi");
-        int hakubonus = Integer.parseInt(request.getParameter("hakubonus"));
-        
-        List<Kauppa> kaupat = null;
-        
-        if (hakukaupunki != null && hakukaupunki.length() > 0) {
-            kaupat = Kauppa.haeKaupatKaupungilla(hakukaupunki);
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        try {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet KaupanMuokkausNakymaServLet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet KaupanMuokkausNakymaServLet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        } finally {
+            out.close();
         }
-        if (hakunimi != null && hakunimi.length() > 0) {
-            kaupat = Kauppa.haeKaupatNimella(hakunimi);
-        }
-        if (hakubonus != 1) {
-            kaupat = Kauppa.haeKaupatBonuksella(hakubonus);
-        }
-        if (hakukaupunki.equals("") && hakunimi.equals("") && hakubonus == 1) {
-            kaupat = Kauppa.haeKaikkiKaupat(1);
-        }
-        
-        request.setAttribute("kaupat", kaupat);
-        
-        if (kaupat.isEmpty()) {
-            request.setAttribute("viesti", "Kauppoja ei löytynyt");
-        }
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher("kauppa.jsp");
-        dispatcher.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -70,11 +54,7 @@ public class KauppaServLet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(KauppaServLet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -88,11 +68,7 @@ public class KauppaServLet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(KauppaServLet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

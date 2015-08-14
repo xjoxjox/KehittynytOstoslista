@@ -161,10 +161,11 @@ public class Kauppa {
         }
     }
     
-    public static List<Kauppa> haeKaikkiKaupat() throws SQLException, NamingException {
-        String sql = "SELECT shop_id, name, city, address, bonus_id FROM shop ORDER BY name";
+    public static List<Kauppa> haeKaikkiKaupat(int sivu) throws SQLException, NamingException {
+        String sql = "SELECT shop_id, name, city, address, bonus_id FROM shop ORDER BY name LIMIT 50 OFFSET ?";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
+        kysely.setInt(1, (sivu-1)*50);
         ResultSet tulokset = kysely.executeQuery();
 
         ArrayList<Kauppa> kaupat = new ArrayList<Kauppa>();
@@ -184,6 +185,22 @@ public class Kauppa {
         try { yhteys.close(); } catch (Exception e) {}
 
         return kaupat;
+    }
+    
+    public static int kauppojenLukumaara() throws SQLException, NamingException {
+        String sql = "SELECT count(*) AS lkm FROM shop";
+        Connection yhteys = Yhteys.getYhteys();
+        PreparedStatement kysely = yhteys.prepareStatement(sql);
+        ResultSet tulokset = kysely.executeQuery();
+        
+        tulokset.next(); 
+        int lkm = tulokset.getInt("lkm");
+
+        try { tulokset.close(); } catch (Exception e) {}
+        try { kysely.close(); } catch (Exception e) {}
+        try { yhteys.close(); } catch (Exception e) {}
+
+        return lkm;
     }
     
     public boolean muokkaaNimi(String x) throws NamingException, SQLException {
