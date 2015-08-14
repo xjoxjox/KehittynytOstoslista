@@ -28,6 +28,7 @@
                         <th>Kauppa</th>
                         <th>Tuotteet</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,7 +38,7 @@
                         <td>${ostoslista.paivays}</td>
                         <td>${ostoslista.summa}</td>
                         <td>${ostoslista.paino}</td>
-                        <td>${ostoslista.kauppa}</td>
+                        <td>${ostoslista.kauppa.nimi} ${ostoslista.kauppa.kaupunki}</td>
                         <td>
                             <form method="post" name="frm" action="OstoslistaTuoteidenhakuServLet">
                                 <input type="hidden" name="id" value="${ostoslista.id}">
@@ -50,10 +51,19 @@
                                 <input type="submit" value="Lisää tuote">
                             </form>
                         </td>
+                        <td>
+                            <form method="post" name="frm" action="OstoslistankuittausServLet">
+                                <input type="hidden" name="id" value="${ostoslista.id}">
+                                <input type="hidden" name="summa" value="${ostoslista.summa}">
+                                <input type="hidden" name="paino" value="${ostoslista.paino}">
+                                <input type="hidden" name="kuittikauppa" value="${ostoslista.kauppa}">
+                                <input type="submit" value="Kuittaa ostetuksi">
+                            </form>
+                        </td>
                     </tr>
                     </c:forEach>
                 </tbody>
-            </table>
+            </table><br>
         </c:if>
         <form method="post" name="frm" action="OstoslistanlisaysServLet">
             <table>

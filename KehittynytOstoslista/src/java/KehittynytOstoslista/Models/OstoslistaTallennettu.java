@@ -12,13 +12,13 @@ import java.util.List;
 import javax.naming.NamingException;
 
 public class OstoslistaTallennettu {
-    private static int id;
+    private int id;
     private String nimi;
-    private static HashMap<Tuote, Integer> tuotteet;
+    private HashMap<Tuote, Integer> tuotteet;
     private double summa;
     private double paino;
     private Timestamp paivays;
-    private static int kauppaId;
+    private Kauppa kauppa;
     private int kayttajaId;
     
     private OstoslistaTallennettu(ResultSet tulos) throws SQLException, Exception {
@@ -28,18 +28,18 @@ public class OstoslistaTallennettu {
             tulos.getDouble("sum"),
             tulos.getDouble("weight"),
             tulos.getTimestamp("time_created"),
-            tulos.getInt("shop_id"),
+            Kauppa.haeKauppa(tulos.getInt("shop_id")),
             tulos.getInt("account_id")
         );
     }
 
-    public OstoslistaTallennettu(int id, String nimi, double summa, double paino, Timestamp paivays, int kauppaId, int kayttajaId) throws Exception {
+    public OstoslistaTallennettu(int id, String nimi, double summa, double paino, Timestamp paivays, Kauppa kauppa, int kayttajaId) throws Exception {
         this.id = id;
         this.nimi = nimi;
-        this.summa = haeSumma();
-        this.paino = haePaino();
+        this.summa = haeSumma(id, kauppa.getId());
+        this.paino = haePaino(id);
         this.paivays = paivays;
-        this.kauppaId = kauppaId;
+        this.kauppa = kauppa;
         this.kayttajaId = kayttajaId;
         
         this.tuotteet = new HashMap<Tuote, Integer>();
@@ -199,7 +199,7 @@ public class OstoslistaTallennettu {
     }
     
     public static List<OstoslistaTallennettu> haeKaikkiOstoslistaTallennettu(int hakukayttaja) throws SQLException, NamingException, Exception {
-        String sql = "SELECT shoppinglist_id, name, sum, weight, time_created, shop_id FROM shoppinglistsaved WHERE account_id = ? ORDER BY time_created";
+        String sql = "SELECT shoppinglist_id, name, sum, weight, time_created, shop_id, account_id FROM shoppinglistsaved WHERE account_id = ? ORDER BY time_created";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         kysely.setInt(1, hakukayttaja);
@@ -208,7 +208,7 @@ public class OstoslistaTallennettu {
         ArrayList<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
         while (tulokset.next()) {
             OstoslistaTallennettu o = new OstoslistaTallennettu(tulokset.getInt("shoppinglist_id"), tulokset.getString("name"), tulokset.getDouble("sum"),
-                tulokset.getDouble("weight"), tulokset.getTimestamp("time_created"), tulokset.getInt("shop_id"), tulokset.getInt("account_id"));
+                tulokset.getDouble("weight"), tulokset.getTimestamp("time_created"), Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"));
             ostoslistat.add(o);
         }   
 
@@ -219,32 +219,34 @@ public class OstoslistaTallennettu {
         return ostoslistat;
     }
     
-    public static double haeSumma() throws Exception {
+    public static double haeSumma(int listaid, int kauppaid) throws Exception {
         double sum = 0;
+        HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
         for (Tuote tuote: tuotteet.keySet()) {
-            sum += TuoteHinta.haeHintaTuotteelleKaupassa(tuote.getId(), kauppaId);
+            sum += TuoteHinta.haeHintaTuotteelleKaupassa(tuote.getId(), kauppaid);
         }
         return sum;
     }
     
-    public static double haePaino() throws NamingException, SQLException {
+    public static double haePaino(int listaid) throws NamingException, SQLException, Exception {
         double kokPaino = 0;
+        HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
         for (Tuote tuote : tuotteet.keySet()) {
             kokPaino += tuote.getPaino();
         }     
         return kokPaino;
     }
     
-    public void lisaaTuote(int tuoteId) throws Exception {
-        TuoteLista t = new TuoteLista(tuoteId, id);
+    public void lisaaTuote(int tuoteId, int listaid) throws Exception {
+        TuoteLista t = new TuoteLista(tuoteId, listaid);
         t.tallenna();
-        tuotteet = TuoteLista.haeTuotteetListalle(id);
+        tuotteet = TuoteLista.haeTuotteetListalle(listaid);
     }
     
-    public void poistaTuote(int tuoteId) throws Exception {
-        TuoteLista t = new TuoteLista(tuoteId, id);
+    public void poistaTuote(int tuoteId, int listaid) throws Exception {
+        TuoteLista t = new TuoteLista(tuoteId, listaid);
         t.poista();
-        tuotteet = TuoteLista.haeTuotteetListalle(id);
+        tuotteet = TuoteLista.haeTuotteetListalle(listaid);
     }
     
     public boolean muokkaaNimi(String x) throws NamingException, SQLException {
@@ -301,7 +303,7 @@ public class OstoslistaTallennettu {
         }
     }
     
-    public boolean muokkaaKauppaId(int x) throws NamingException, SQLException {
+    public boolean muokkaaKauppaId(int x) throws NamingException, SQLException, Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -315,7 +317,7 @@ public class OstoslistaTallennettu {
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.kauppaId = tulokset.getInt("shop_id");
+                this.kauppa = Kauppa.haeKauppa(tulokset.getInt("shop_id"));
                 return true;
             } else {
                 return false;
@@ -366,18 +368,16 @@ public class OstoslistaTallennettu {
 
         try {
             String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, shop_id, account_id) "
-                    + "VALUES(?,?,?,now(),?,?) RETURNING shoppinglist_id";
+                    + "VALUES(?,0,0,now(),?,?) RETURNING shoppinglist_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, listanimi);
-            kysely.setDouble(2, haeSumma());
-            kysely.setDouble(3, haePaino());
-            kysely.setInt(4, listakauppa);
-            kysely.setInt(5, listakayttaja);
+            kysely.setInt(2, listakauppa);
+            kysely.setInt(3, listakayttaja);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
-                id = tulokset.getInt("shoppinglist_id");
+                int listaid = tulokset.getInt("shoppinglist_id");
                 return true;
             } else {
                 return false;
@@ -404,7 +404,7 @@ public class OstoslistaTallennettu {
             kysely.setDouble(2, summa);
             kysely.setDouble(3, paino);
             kysely.setTimestamp(4, paivays);
-            kysely.setInt(5, kauppaId);
+            kysely.setInt(5, kauppa.getId());
             kysely.setInt(6, kayttajaId);
             tulokset = kysely.executeQuery();
       
@@ -433,8 +433,8 @@ public class OstoslistaTallennettu {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, lisaysnimi);
-            kysely.setDouble(2, haeSumma());
-            kysely.setDouble(3, haePaino());
+            kysely.setDouble(2, haeSumma(id, lisayskauppaId));
+            kysely.setDouble(3, haePaino(id));
             kysely.setInt(5, lisayskauppaId);
             kysely.setInt(6, lisayskayttajaId);
             tulokset = kysely.executeQuery();
@@ -446,7 +446,7 @@ public class OstoslistaTallennettu {
                 o.setSumma();
                 o.setPaino();
                 o.setPaivays(tulokset.getTimestamp("time_created"));
-                o.setKauppaId(tulokset.getInt("shop_id"));
+                o.setKauppa(Kauppa.haeKauppa(tulokset.getInt("shop_id")));
                 o.setKayttajaId(tulokset.getInt("account_id"));
                 return true;
             } else {
@@ -530,7 +530,7 @@ public class OstoslistaTallennettu {
         }
     }
     
-    public boolean muokkaaKauppaId(int x, int lista) throws NamingException, SQLException {
+    public boolean muokkaaKauppaId(int x, int lista) throws NamingException, SQLException, Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -544,7 +544,7 @@ public class OstoslistaTallennettu {
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.kauppaId = tulokset.getInt("shop_id");
+                this.kauppa = Kauppa.haeKauppa(tulokset.getInt("shop_id"));
                 return true;
             } else {
                 return false;
@@ -608,8 +608,8 @@ public class OstoslistaTallennettu {
         return this.paivays;
     }
     
-    public int getKauppaId() {
-        return this.kauppaId;
+    public Kauppa getKauppa() {
+        return this.kauppa;
     }
     
     public int getKayttajaId() {
@@ -625,19 +625,19 @@ public class OstoslistaTallennettu {
     }
       
     public void setSumma() throws Exception {
-        this.summa = haeSumma();
+        this.summa = haeSumma(id, kauppa.getId());
     }
   
-    public void setPaino() throws NamingException, SQLException {
-        this.paino = haePaino();
+    public void setPaino() throws NamingException, SQLException, Exception {
+        this.paino = haePaino(id);
     }
         
     public void setPaivays(Timestamp x) {
         this.paivays = x;
     }
     
-    public void setKauppaId(int x) {
-        this.kauppaId = x;
+    public void setKauppa(Kauppa x) {
+        this.kauppa = x;
     }
     
     public void setKayttajaId(int x) {
