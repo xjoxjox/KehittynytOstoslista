@@ -203,7 +203,7 @@ public class Tuote {
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
-        if (x < 0 || x > 10000) {
+        if (x < 0) {
             return false;
         }
 

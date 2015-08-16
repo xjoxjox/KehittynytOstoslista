@@ -30,19 +30,38 @@ public class KaupanlisaysServLet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         
-        int hakubonusInt = 0;
-        String hakubonus = request.getParameter("bonus");
-        if (!hakubonus.equals("")) {
-            hakubonusInt = Integer.parseInt(hakubonus);
-        }
-        boolean tulos = Kauppa.lisaaKauppa(request.getParameter("nimi"), request.getParameter("kaupunki"), 
-                request.getParameter("osoite"), hakubonusInt);
+        String nimi = request.getParameter("nimi");
+        String kaupunki = request.getParameter("kaupunki");
+        String osoite = request.getParameter("osoite");
+        int hakubonus = Integer.parseInt(request.getParameter("bonus"));
+        boolean tulos = Kauppa.lisaaKauppa(nimi, kaupunki, osoite, hakubonus);
+        String lisaysviesti = "";
         
         if(tulos) {
-            request.setAttribute("lisaysviesti", "Kauppa lisätty onnistuneesti.");
+            lisaysviesti += "Kauppa lisätty onnistuneesti.";
         } else {
-            request.setAttribute("lisaysviesti", "Kaupan lisäys epäonnistui.");
+            lisaysviesti += "Kaupan lisäys epäonnistui. ";
+            if (nimi.length() > 50) {
+                lisaysviesti += "Kaupan nimessä saa olla maksimissaan 50 merkkiä. ";
+            }
+            if (nimi.equals("")) {
+                lisaysviesti += "Kaupan nimessä pitää olla vähintään yksi merkki. ";
+            }
+            if (kaupunki.length() > 50) {
+                lisaysviesti += "Kaupunki saa olla maksimissaan 50 merkkiä pitkä. ";
+            }
+            if (kaupunki.equals("")) {
+                lisaysviesti += "Kaupungissa pitää olla vähintään yksi merkki. ";
+            }
+            if (osoite.length() > 50) {
+                lisaysviesti += "Osoite saa olla maksimissaan 50 merkkiä. ";
+            }
+            if (osoite.equals("")) {
+                lisaysviesti += "Osoitteessa pitää olla vähintään yksi merkki. ";
+            }
         }
+        
+        request.setAttribute("lisaysviesti", lisaysviesti);
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("kaupat.jsp");
         dispatcher.forward(request, response);

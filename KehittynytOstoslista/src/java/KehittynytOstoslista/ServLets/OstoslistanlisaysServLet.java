@@ -43,11 +43,21 @@ public class OstoslistanlisaysServLet extends HttpServlet {
         
         boolean lista = OstoslistaTallennettu.luoUusiLista(listanimi, listakauppa, k.getId());
         
+        String listanluonti = "";
+        
         if (lista) {
-            request.setAttribute("listanluonti", "Uusi lista tallennettu.");
+            listanluonti += "Uusi lista tallennettu. ";
         } else {
-            request.setAttribute("listanluonti", "Uuden listan tallentaminen epäonnistui.");
+            listanluonti += "Uuden listan tallentaminen epäonnistui. ";
+            if (listanimi.length() > 50) {
+                listanluonti += "Listan nimessä saa olla maksimissaan 50 merkkiä.";
+            }
+            if (listanimi.equals("")) {
+                listanluonti += "Listan nimessä pitää olla vähintään yksi merkki.";
+            }
         }
+        
+        request.setAttribute("listanluonti", listanluonti);
         
         List<OstoslistaTallennettu> listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(k.getId());
         

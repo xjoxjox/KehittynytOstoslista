@@ -2,7 +2,6 @@ package KehittynytOstoslista.ServLets;
 
 import KehittynytOstoslista.Models.Tuote;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,7 +35,10 @@ public class TuotteenmuokkausServlet extends HttpServlet {
         
         String muokkausnimi = request.getParameter("muokkausnimi");
         String muokkausvalmistaja = request.getParameter("muokkausvalmistaja");
-        double muokkauspaino = Double.parseDouble(request.getParameter("muokkauspaino"));
+        double muokkauspaino = -1;
+        if (!request.getParameter("muokkauspaino").matches("[0-9.]*")) {
+            muokkauspaino = Double.parseDouble(request.getParameter("paino"));
+        }
         
         int tuoteid = Integer.parseInt(request.getParameter("id"));
         
@@ -44,23 +46,52 @@ public class TuotteenmuokkausServlet extends HttpServlet {
         boolean valmistaja = Tuote.muokkaaValmistaja(muokkausvalmistaja, tuoteid);
         boolean paino = Tuote.muokkaaPaino(muokkauspaino, tuoteid);
         
+        String nimionnistui = "";
+        String valmistajaonnistui = "";
+        String painonnistui = "";
+        
         if (nimi) {
-            request.setAttribute("nimionnistui", "Tuotteen nimen muokkaus onnistui.");
+            nimionnistui += "Tuotteen nimen muokkaus onnistui. ";
         } else {
-            request.setAttribute("nimionnistui", "Tuotteen nimen muokkaus epäonnistui.");
+            nimionnistui += "Tuotteen nimen muokkaus epäonnistui. ";
+            if (muokkausnimi.length() > 50) {
+                nimionnistui += "Tuotteen nimessä saa olla maksimissaan 50 merkkiä. ";
+            }
+            if (muokkausnimi.equals("")) {
+                nimionnistui += "Tuotteen nimessä pitää olla vähintään yksi merkki. ";
+            }
         }
         
         if (valmistaja) {
-            request.setAttribute("valmistajaonnistui", "Tuotteen valmistajan muokkaus onnistui.");
+            valmistajaonnistui += "Tuotteen valmistajan muokkaus onnistui. ";
         } else {
-            request.setAttribute("valmistajaonnistui", "Tuotteen valmistajan muokkaus epäonnistui.");
+            valmistajaonnistui += "Tuotteen valmistajan muokkaus epäonnistui. ";
+            if (muokkausvalmistaja.length() > 50) {
+                valmistajaonnistui += "Tuotteen valmistajassa saa olla maksimissaan 50 merkkiä. ";
+            }
+            if (muokkausvalmistaja.equals("")) {
+                valmistajaonnistui += "Tuotteen valmistajassa pitää olla vähintään yksi merkki. ";
+            }
         }
         
         if (paino) {
-            request.setAttribute("painonnistui", "Tuotteen painon muokkaus onnistui.");
+            painonnistui += "Tuotteen painon muokkaus onnistui. ";
         } else {
-            request.setAttribute("painonnistui", "Tuotteen painon muokkaus epäonnistui.");
+            painonnistui += "Tuotteen painon muokkaus epäonnistui. ";
+            if (muokkauspaino < 0) {
+                painonnistui += "Tuotteen paino ei voi olla negatiivinen. ";
+            }
+            if(request.getParameter("muokkauspaino").contains(",")) {
+                painonnistui += "Käytä desimaalierottimena pistettä. ";
+            }
+            if (!request.getParameter("muokkauspaino").matches("[0-9.]*")) {
+                painonnistui += "Paino saa sisältää vain numeroita. \n";
+            }
         }
+        
+        request.setAttribute("nimionnistui", nimionnistui);
+        request.setAttribute("valmistajaonnistui", valmistajaonnistui);
+        request.setAttribute("painonnistui", painonnistui);
         
         String hakunimi = request.getParameter("hakunimi");
         

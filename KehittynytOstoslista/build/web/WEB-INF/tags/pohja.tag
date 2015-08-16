@@ -27,24 +27,23 @@
                             <li><a href="OstoslistaTallennettuServLet">Ostoslistat</a></li>
                             <li><a href="KauppojenhakuServLet?param=tuotteet.jsp">Tuotteet</a></li>
                             <li><a href="BonustenhakuServLet?param=kaupat.jsp">Kaupat</a></li>
-                            <li><a href="maksutavat.jsp">Maksutavat</a></li>
-                            <li><a href="bonukset.jsp">Bonukset</a></li>
+<!--                            <li><a href="maksutavat.jsp">Maksutavat</a></li>
+                            <li><a href="bonukset.jsp">Bonukset</a></li>-->
                             <li><a href="ostohistoria.jsp">Ostohistoria</a></li>
+                            <form method="link" action="logoutprocess.jsp">
+                                <input type="submit" value="Kirjaudu ulos">
+                            </form>
                         </ul>
                     </div>
                 </div>
             </div>
+            <br>
         </div>
         <div class="container">
             <c:if test="${pageError != null}">
                 <div class="alert alert-danger">${pageError}</div>
             </c:if>
-            <br>
-            <form method="link" action="logoutprocess.jsp">
-                <input type="submit" value="Kirjaudu ulos">
-            </form>
-            <br>
-            <jsp:doBody/>
+        <jsp:doBody/>
         </div>
     </body>
 </html>

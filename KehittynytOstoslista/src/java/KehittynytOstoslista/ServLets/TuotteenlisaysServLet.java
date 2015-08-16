@@ -31,23 +31,65 @@ public class TuotteenlisaysServLet extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         
-        Tuote tuote = Tuote.lisaaTuote(request.getParameter("nimi"), request.getParameter("valmistaja"), 
-                Double.parseDouble(request.getParameter("paino")));
+        String nimi = request.getParameter("nimi");
+        String valmistaja = request.getParameter("valmistaja");
+        double hinta = -1;
+        if (!request.getParameter("hinta").matches("[0-9.]*")) {
+            hinta = Double.parseDouble(request.getParameter("hinta"));
+        }
+        double paino = -1;
+        if (!request.getParameter("paino").matches("[0-9.]*")) {
+            paino = Double.parseDouble(request.getParameter("paino"));
+        }
+        String lisaysviesti = "";
+        String hintalisaysviesti = "";
         
-        
-        
+        Tuote tuote = Tuote.lisaaTuote(nimi, valmistaja, paino);
+
         if(tuote != null) {
-            request.setAttribute("lisaysviesti", "Tuote lisätty onnistuneesti.");
-            boolean tulos = TuoteHinta.lisaaTuoteHinta(Double.parseDouble(request.getParameter("hinta")), 
+            lisaysviesti += "Tuote lisätty onnistuneesti.";
+            boolean tulos = TuoteHinta.lisaaTuoteHinta(hinta, 
                 1, tuote.getId(), Integer.parseInt(request.getParameter("kauppa")));
                 if (tulos) {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hinta lisätty onnistuneesti.");
+                    hintalisaysviesti += "Tuotteen hinta lisätty onnistuneesti.";
                 } else {
-                    request.setAttribute("hintalisaysviesti", "Tuotteen hintaa ei voitu lisätä.");
+                    hintalisaysviesti += "Tuotteen hintaa ei voitu lisätä. ";
+                    if (hinta < 0) {
+                        hintalisaysviesti += "Hinta ei voi olla negatiivinen tai tyhjä. "; 
+                    }
+                    if (request.getParameter("hinta").contains(",")) {
+                        hintalisaysviesti += "Käytä desimaalierottimena pistettä. "; 
+                    } else {
+                        hintalisaysviesti += "Hinta saa sisältää vain numeroita ja desimaalierottimena pisteen. "; 
+                    }
                 }
         } else {
-            request.setAttribute("lisaysviesti", "Tuotteen lisäys epäonnistui.");
-        }       
+            lisaysviesti += "Tuotteen lisäys epäonnistui. ";
+            if (nimi.length() > 50) {
+                lisaysviesti += "Tuotteen nimessä voi olla maksimissaan 50 merkkiä. ";
+            }
+            if (nimi.equals("")) {
+                lisaysviesti += "Tuotteen nimessä täytyy olla vähintään yksi merkki. ";
+            }
+            if (valmistaja.length() > 50) {
+                lisaysviesti += "Valmistaja voi olla maksimissaan 50 merkkiä. ";
+            }
+            if (valmistaja.equals("")) {
+                lisaysviesti += "Valmistajassa täytyy olla vähintään yksi merkki. ";
+            }
+            if (paino < 0) {
+                lisaysviesti += "Tuotteen paino ei voi olla negatiivinen tai tyhjä. ";
+            }
+            if (request.getParameter("paino").contains(",")) {
+                lisaysviesti += "Käytä painon desimaalierottimena pistettä. ";
+            }
+            if (!request.getParameter("paino").matches("[0-9.]*")) {
+                lisaysviesti += "Paino saa sisältää vain numeroita ja desimaalierottimena pisteen. ";
+            }
+        }    
+        
+        request.setAttribute("lisaysviesti", lisaysviesti);
+        request.setAttribute("hintalisaysviesti", hintalisaysviesti);
            
         RequestDispatcher dispatcher = request.getRequestDispatcher("tuotteet.jsp");
         dispatcher.forward(request, response);
