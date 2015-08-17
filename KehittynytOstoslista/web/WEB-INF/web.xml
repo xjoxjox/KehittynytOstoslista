@@ -108,6 +108,18 @@
         <servlet-name>KaupanMuokkausServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.KaupanMuokkausServLet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OstoslistaTuotteetServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistaTuotteetServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OstoslistaLisaaTuoteNakymaServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistaLisaaTuoteNakymaServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OstoslistaLisaaTuote</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistaLisaaTuote</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
@@ -215,6 +227,18 @@
     <servlet-mapping>
         <servlet-name>KaupanMuokkausServLet</servlet-name>
         <url-pattern>/KaupanMuokkausServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistaTuotteetServLet</servlet-name>
+        <url-pattern>/OstoslistaTuotteetServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistaLisaaTuoteNakymaServLet</servlet-name>
+        <url-pattern>/OstoslistaLisaaTuoteNakymaServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistaLisaaTuote</servlet-name>
+        <url-pattern>/OstoslistaLisaaTuote</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

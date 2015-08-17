@@ -40,13 +40,13 @@
                         <td>${ostoslista.paino}</td>
                         <td>${ostoslista.kauppa.nimi} ${ostoslista.kauppa.kaupunki}</td>
                         <td>
-                            <form method="post" name="frm" action="OstoslistaTuoteidenhakuServLet">
+                            <form method="post" name="frm" action="OstoslistaTuotteetServLet">
                                 <input type="hidden" name="id" value="${ostoslista.id}">
                                 <input type="submit" value="Hae tuotteet">
                             </form>
                         </td>
                         <td>
-                            <form method="post" name="frm" action="OstoslistaTuotteenlisaysServLet">
+                            <form method="post" name="frm" action="OstoslistaLisaaTuoteNakymaServLet">
                                 <input type="hidden" name="id" value="${ostoslista.id}">
                                 <input type="submit" value="Lisää tuote">
                             </form>
@@ -65,6 +65,62 @@
                 </tbody>
             </table><br>
         </c:if>
+        <c:if test="${tuotehaku != null}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tuote</th>
+                        <th>kpl</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${tuotteet}" var="tuote">
+                        <tr>
+                            <td>${tuote.key.nimi} ${tuote.key.valmistaja} ${tuote.key.paino}kg</td>
+                            <td>${tuote.value}</td>
+                            <td>
+                                <form method="post" name="frm" action="OstoslistankuittausServLet">
+                                    <input type="hidden" name="id" value="${tuote.key.id}">
+                                    <input type="submit" value="Poista tuote">
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>       
+                </tbody>
+            </table><br>
+        </c:if> 
+        <c:if test="${tuotelistatyhja != null}">
+            <br><p>${tuotelistatyhja}</p><br>
+        </c:if>
+        <c:if test="${tuotteenlisays != null}">
+            <form method="post" name="frm" action="OstoslistaLisaaTuote">
+                <input type="hidden" name="lista" value="${listaid}">
+            <table>
+                <tr><td><h3>Lisää tuote listalle</h3></td></tr>
+                <tr><td><b>Tuote</b></td><td>: <select name="tuote">
+                        <c:forEach items="${tuotelista}" var="tuote">
+                            <option value="${tuote.id}">${tuote.nimi} ${tuote.valmistaja}</option>
+                        </c:forEach>  </td></tr>        
+                <tr><td><b>kpl</b></td>
+                    <td>:   <select name="maara">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                    </td>
+                </tr>
+            </table>
+                <input type="submit" value="Lisää tuote">
+        </form>
+        </c:if><br>
         <form method="post" name="frm" action="OstoslistanlisaysServLet">
             <table>
                 <tr><td><h3>Luo uusi lista</h3></td></tr>
@@ -79,6 +135,9 @@
             </table>
             <input type="submit" value="Luo uusi lista">
         </form>
+        <c:if test="${lisays != null}">
+            <br><p>${lisays}</p><br>
+        </c:if>
         <c:if test="${listanluonti != null}">
             <br><p>${listanluonti}</p><br>
         </c:if>

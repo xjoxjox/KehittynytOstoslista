@@ -360,6 +360,22 @@ public class TuoteHinta {
         }
     }
     
+    public static boolean poistaTuoteHinta(int id) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM productprice where product_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, id);
+            return kysely.execute();
+        } finally {
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

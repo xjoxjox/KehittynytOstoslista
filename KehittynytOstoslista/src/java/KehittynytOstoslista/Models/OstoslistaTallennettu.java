@@ -199,7 +199,7 @@ public class OstoslistaTallennettu {
     }
     
     public static List<OstoslistaTallennettu> haeKaikkiOstoslistaTallennettu(int hakukayttaja) throws SQLException, NamingException, Exception {
-        String sql = "SELECT shoppinglist_id, name, sum, weight, time_created, shop_id, account_id FROM shoppinglistsaved WHERE account_id = ? ORDER BY time_created";
+        String sql = "SELECT shoppinglist_id, name, sum, weight, to_char(time_created, 'YYYY-MM-DD HH24:MI:SS') as time_created, shop_id, account_id FROM shoppinglistsaved WHERE account_id = ? ORDER BY time_created";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         kysely.setInt(1, hakukayttaja);
@@ -223,7 +223,9 @@ public class OstoslistaTallennettu {
         double sum = 0;
         HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
         for (Tuote tuote: tuotteet.keySet()) {
-            sum += TuoteHinta.haeHintaTuotteelleKaupassa(tuote.getId(), kauppaid);
+            for(int i = 0; i < tuotteet.get(tuote); i++) {
+                sum += TuoteHinta.haeHintaTuotteelleKaupassa(tuote.getId(), kauppaid);
+            }
         }
         return sum;
     }
@@ -232,7 +234,9 @@ public class OstoslistaTallennettu {
         double kokPaino = 0;
         HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
         for (Tuote tuote : tuotteet.keySet()) {
-            kokPaino += tuote.getPaino();
+            for(int i = 0; i < tuotteet.get(tuote); i++) {
+                kokPaino += tuote.getPaino();
+            }
         }     
         return kokPaino;
     }

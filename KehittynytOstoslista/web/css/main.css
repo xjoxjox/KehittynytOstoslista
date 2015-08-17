@@ -40,7 +40,6 @@ table th {
     font-family: Georgia, Arial;
     padding-left: 3px;
     padding-right: 3px;
-    width: 30px;
 }
 
 table td {
@@ -68,8 +67,9 @@ div#hmenu {
    margin: 0; 
    padding: .3em 0 .3em 0; 
    background: #f6f0cc; 
-   width: 100px; 
+   width: 100%; 
    text-align: center; 
+   float: left;
 } 
 
 div#hmenu ul { 
@@ -79,12 +79,12 @@ div#hmenu ul {
     overflow: hidden;
 } 
 
-div#hmenu li { 
-    display: inline; 
-    padding: 20px; 
+div#hmenu ul li { 
+    float: left;
+    padding: 3px; 
 } 
 
-div#hmenu a:link{ 
+div#hmenu ul a:link{ 
    margin: 0; 
    padding: .3em .4em .3em .4em; 
    text-decoration: none; 
@@ -93,7 +93,7 @@ div#hmenu a:link{
    color: #23527c; 
 } 
 
-div#hmenu a:visited{ 
+div#hmenu ul a:visited{ 
    margin: 0; 
    padding: .3em .4em .3em .4em; 
    text-decoration: none; 
@@ -102,7 +102,7 @@ div#hmenu a:visited{
    color: darkviolet; 
 } 
 
-div#hmenu a:active{ 
+div#hmenu ul a:active{ 
    margin: 0; 
    padding: .3em .4em .3em .4em; 
    text-decoration: none; 
@@ -111,7 +111,7 @@ div#hmenu a:active{
    color: blue;
 } 
 
-div#hmenu a:hover{ 
+div#hmenu ul a:hover{ 
    margin: 0; 
    padding: .3em .4em .3em .4em; 
    text-decoration: none; 

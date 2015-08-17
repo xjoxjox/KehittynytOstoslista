@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class TuoteLista {
-    private static int tuoteId;
-    private static int listaId;
+    private int tuoteId;
+    private int listaId;
     
     private TuoteLista(ResultSet tulos) throws SQLException {
         TuoteLista t = new TuoteLista(
@@ -28,25 +28,29 @@ public class TuoteLista {
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
+        HashMap<Integer, Integer> tuotteetint = new HashMap<Integer, Integer>();
         HashMap<Tuote, Integer> tuotteet = new HashMap<Tuote, Integer>();
 
         try {
-            String sql = "SELECT product_id, name, brand, weight FROM product WHERE product_id = ?";
+            String sql = "SELECT product_id FROM productlist WHERE shoppinglist_id = ?";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, tuoteId);
+            kysely.setInt(1, lista);
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {
-                Tuote t = new Tuote(tulokset.getInt("product_id"), tulokset.getString("name"), tulokset.getString("brand"),
-                    tulokset.getDouble("weight"));
-                if (!tuotteet.containsKey(t)) {
-                    tuotteet.put(t,1);
+                int t = tulokset.getInt("product_id");
+                if (!tuotteetint.containsKey(t)) {
+                    tuotteetint.put(t,1);
                 } else {
-                    int maara = tuotteet.get(t);
+                    int maara = tuotteetint.get(t);
                     maara++;
-                    tuotteet.put(t, maara);
+                    tuotteetint.put(t, maara);
                 }
+            }
+            
+            for(int tuoteid : tuotteetint.keySet()) {
+                tuotteet.put(Tuote.haeTuote(tuoteid), tuotteetint.get(tuoteid));
             }
             
             return tuotteet;
@@ -69,6 +73,32 @@ public class TuoteLista {
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, tuoteId);
             kysely.setInt(2, listaId);
+            tulokset = kysely.executeQuery();
+      
+            if (tulokset.next()) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public static boolean lisaaTuoteListalle(int tuote, int lista) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "INSERT INTO productlist(product_id, shoppinglist_id) VALUES(?,?) RETURNING productlist_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, tuote);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {

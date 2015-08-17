@@ -78,6 +78,7 @@ CREATE TABLE shoppinglistchecked(
 );
 
 CREATE TABLE productprice(
+	price_id serial PRIMARY KEY,
 	price DECIMAL (10,3) NOT NULL,
 	location INTEGER NOT NULL,
 	productprice_date TIMESTAMP NOT NULL DEFAULT now(),
@@ -85,16 +86,15 @@ CREATE TABLE productprice(
 	product_id INTEGER NOT NULL,
 	shop_id INTEGER NOT NULL,
 	CONSTRAINT product_id_fkey FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE,
-	CONSTRAINT shop_id_fkey FOREIGN KEY (shop_id) REFERENCES shop(shop_id) ON UPDATE CASCADE,
-	PRIMARY KEY (product_id, shop_id)
+	CONSTRAINT shop_id_fkey FOREIGN KEY (shop_id) REFERENCES shop(shop_id) ON UPDATE CASCADE
 );
 
 CREATE TABLE productlist(
+	productlist_id serial PRIMARY KEY,
 	product_id INTEGER NOT NULL,
 	shoppinglist_id INTEGER NOT NULL,
 	CONSTRAINT product_id_fkey FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-	CONSTRAINT shoppinglist_id_fkey FOREIGN KEY (shoppinglist_id) REFERENCES shoppinglistsaved(shoppinglist_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-	PRIMARY KEY (product_id, shoppinglist_id)
+	CONSTRAINT shoppinglist_id_fkey FOREIGN KEY (shoppinglist_id) REFERENCES shoppinglistsaved(shoppinglist_id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 CREATE TABLE productcategory(

@@ -1,8 +1,10 @@
 package KehittynytOstoslista.ServLets;
 
-import KehittynytOstoslista.Models.Tuote;
-import KehittynytOstoslista.Models.TuoteHinta;
+import KehittynytOstoslista.Models.Kayttaja;
+import KehittynytOstoslista.Models.OstoslistaTallennettu;
+import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,12 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Johanna
  */
-public class TuotteenpoistoServLet extends HttpServlet {
+public class OstoslistaLisaaTuote extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,37 +34,38 @@ public class TuotteenpoistoServLet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
-        TuoteHinta.poistaTuoteHinta(Integer.parseInt(request.getParameter("id")));
+        int montako = Integer.parseInt(request.getParameter("maara"));
         
-        boolean tulos = Tuote.poistaTuote(Integer.parseInt(request.getParameter("id")));
-       
-        String hakunimi = request.getParameter("hakunimi");
+        boolean lisays = true;
         
-        if(!tulos) {
-            request.setAttribute("poistoviesti", "Tuote poistettu onnistuneesti.");
+        for (int i = 0; i < montako; i++) {
+            boolean tulos = TuoteLista.lisaaTuoteListalle(Integer.parseInt(request.getParameter("tuote")),
+                    Integer.parseInt(request.getParameter("lista")));
+            if (!tulos) {
+                lisays = false;
+            }
+        }
+        
+        if (lisays) {
+            request.setAttribute("lisays", "Tuote lisätty onnistuneesti.");
         } else {
-            request.setAttribute("poistoviesti", "Tuotteen poisto epäonnistui.");
+            request.setAttribute("lisays", "Tuotteen lisays epäonnistui.");
         }
         
-        List<Tuote> tuotteet = null;
+        HttpSession session = request.getSession();
+        String tunnus = (String)session.getAttribute("kirjautunut");
+        Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
+        List<OstoslistaTallennettu> listat = null;
         
-        if (hakunimi != null && hakunimi.length() > 0) {
-            tuotteet = Tuote.haeTuotteet(hakunimi);
-        } else {
-            tuotteet = Tuote.haeKaikkiTuotteet(1);
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(kayttaja.getId());
+    
+        request.setAttribute("listat", listat);
+        
+        if (listat.isEmpty()) {
+            request.setAttribute("viesti", "Ei tallennettuja listoja.");
         }
         
-        int tuoteLkm = Tuote.tuotteidenLukumaara();
-        request.setAttribute("tuoteLkm", tuoteLkm);
-        
-        request.setAttribute("hakunimi", hakunimi);
-        request.setAttribute("tuotteet", tuotteet);
-        
-        if (tuotteet.isEmpty()) {
-            request.setAttribute("viesti", "Tuotteita ei löytynyt");
-        }
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher("tuote.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ostoslistat.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -80,7 +84,7 @@ public class TuotteenpoistoServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TuotteenpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaLisaaTuote.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -98,7 +102,7 @@ public class TuotteenpoistoServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TuotteenpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaLisaaTuote.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -34,13 +34,14 @@ public class TuotteenlisaysServLet extends HttpServlet {
         String nimi = request.getParameter("nimi");
         String valmistaja = request.getParameter("valmistaja");
         double hinta = -1;
-        if (!request.getParameter("hinta").matches("[0-9.]*")) {
+        if (request.getParameter("hinta").matches("^\\d+\\.\\d+$")) {
             hinta = Double.parseDouble(request.getParameter("hinta"));
         }
         double paino = -1;
-        if (!request.getParameter("paino").matches("[0-9.]*")) {
+        if (request.getParameter("paino").matches("^\\d+\\.\\d+$")) {
             paino = Double.parseDouble(request.getParameter("paino"));
         }
+        
         String lisaysviesti = "";
         String hintalisaysviesti = "";
         
@@ -83,7 +84,7 @@ public class TuotteenlisaysServLet extends HttpServlet {
             if (request.getParameter("paino").contains(",")) {
                 lisaysviesti += "Käytä painon desimaalierottimena pistettä. ";
             }
-            if (!request.getParameter("paino").matches("[0-9.]*")) {
+            if (!request.getParameter("paino").matches("^\\d+\\.\\d+$")) {
                 lisaysviesti += "Paino saa sisältää vain numeroita ja desimaalierottimena pisteen. ";
             }
         }    

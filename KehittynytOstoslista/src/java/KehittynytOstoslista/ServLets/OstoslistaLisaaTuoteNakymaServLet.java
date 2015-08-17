@@ -1,22 +1,28 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Kayttaja;
+import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.Tuote;
-import KehittynytOstoslista.Models.TuoteHinta;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Johanna
  */
-public class TuotteenpoistoServLet extends HttpServlet {
+public class OstoslistaLisaaTuoteNakymaServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -28,40 +34,34 @@ public class TuotteenpoistoServLet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
+            throws ServletException, IOException, SQLException, NamingException, Exception {
         response.setContentType("text/html;charset=UTF-8");
+
+        int lista = Integer.parseInt(request.getParameter("id"));
+        request.setAttribute("listaid", lista);
         
-        TuoteHinta.poistaTuoteHinta(Integer.parseInt(request.getParameter("id")));
+        request.setAttribute("tuotteenlisays", "tuotteenlisays");
         
-        boolean tulos = Tuote.poistaTuote(Integer.parseInt(request.getParameter("id")));
-       
-        String hakunimi = request.getParameter("hakunimi");
+        List<Tuote> tuotelista = new ArrayList<Tuote>();
         
-        if(!tulos) {
-            request.setAttribute("poistoviesti", "Tuote poistettu onnistuneesti.");
-        } else {
-            request.setAttribute("poistoviesti", "Tuotteen poisto epäonnistui.");
+        tuotelista = Tuote.haeKaikkiTuotteet(1);
+        
+        request.setAttribute("tuotelista", tuotelista);
+        
+        HttpSession session = request.getSession();
+        String tunnus = (String)session.getAttribute("kirjautunut");
+        Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
+        List<OstoslistaTallennettu> listat = null;
+        
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(kayttaja.getId());
+    
+        request.setAttribute("listat", listat);
+        
+        if (listat.isEmpty()) {
+            request.setAttribute("viesti", "Ei tallennettuja listoja.");
         }
         
-        List<Tuote> tuotteet = null;
-        
-        if (hakunimi != null && hakunimi.length() > 0) {
-            tuotteet = Tuote.haeTuotteet(hakunimi);
-        } else {
-            tuotteet = Tuote.haeKaikkiTuotteet(1);
-        }
-        
-        int tuoteLkm = Tuote.tuotteidenLukumaara();
-        request.setAttribute("tuoteLkm", tuoteLkm);
-        
-        request.setAttribute("hakunimi", hakunimi);
-        request.setAttribute("tuotteet", tuotteet);
-        
-        if (tuotteet.isEmpty()) {
-            request.setAttribute("viesti", "Tuotteita ei löytynyt");
-        }
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher("tuote.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ostoslistat.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -79,8 +79,10 @@ public class TuotteenpoistoServLet extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
+        } catch (NamingException ex) {
+            Logger.getLogger(OstoslistaLisaaTuoteNakymaServLet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(TuotteenpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaLisaaTuoteNakymaServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -97,8 +99,10 @@ public class TuotteenpoistoServLet extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
+        } catch (NamingException ex) {
+            Logger.getLogger(OstoslistaLisaaTuoteNakymaServLet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(TuotteenpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaLisaaTuoteNakymaServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

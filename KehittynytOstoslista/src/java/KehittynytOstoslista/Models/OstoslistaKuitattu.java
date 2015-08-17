@@ -211,7 +211,7 @@ public class OstoslistaKuitattu {
     }
     
     public static List<OstoslistaKuitattu> haeKaikkiOstoslistaKuitattu(int hakukayttaja) throws SQLException, NamingException, Exception {
-        String sql = "SELECT shoppinglist_id, name, sum, weight, time_checked, shop_id FROM shoppinglistchecked WHERE account_id = ? ORDER BY time_checked";
+        String sql = "SELECT shoppinglist_id, name, sum, weight, to_char(time_checked, 'YYYY-MM-DD HH24:MI:SS') as time_checked, shop_id FROM shoppinglistchecked WHERE account_id = ? ORDER BY time_checked";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         kysely.setInt(1, hakukayttaja);

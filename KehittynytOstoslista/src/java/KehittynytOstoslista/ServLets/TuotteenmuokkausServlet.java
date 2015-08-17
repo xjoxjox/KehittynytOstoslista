@@ -36,8 +36,8 @@ public class TuotteenmuokkausServlet extends HttpServlet {
         String muokkausnimi = request.getParameter("muokkausnimi");
         String muokkausvalmistaja = request.getParameter("muokkausvalmistaja");
         double muokkauspaino = -1;
-        if (!request.getParameter("muokkauspaino").matches("[0-9.]*")) {
-            muokkauspaino = Double.parseDouble(request.getParameter("paino"));
+        if (request.getParameter("muokkauspaino").matches("^\\d+\\.\\d+$")) {
+            muokkauspaino = Double.parseDouble(request.getParameter("muokkauspaino"));
         }
         
         int tuoteid = Integer.parseInt(request.getParameter("id"));
@@ -84,8 +84,8 @@ public class TuotteenmuokkausServlet extends HttpServlet {
             if(request.getParameter("muokkauspaino").contains(",")) {
                 painonnistui += "Käytä desimaalierottimena pistettä. ";
             }
-            if (!request.getParameter("muokkauspaino").matches("[0-9.]*")) {
-                painonnistui += "Paino saa sisältää vain numeroita. \n";
+            if (!request.getParameter("muokkauspaino").matches("^\\d+\\.\\d+$")) {
+                painonnistui += "Paino saa sisältää vain numeroita ja desimaalierottimen. \n";
             }
         }
         

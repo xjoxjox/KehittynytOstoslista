@@ -13,15 +13,19 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login</title>
     </head>
-    <body>
-        <form action="Login" method="POST">
-            Käyttäjänimi: <input type="text" name="username" value="${kayttaja}" />
-            Salasana: <input type="password" name="password" value="${salasana}"/>
-            <button type="submit">Kirjaudu</button>
-        </form> 
+    <body bgcolor="khaki">
+        <div id="login">
+            <h1 text-align="center">OSTOSLISTAT</h1>
             <br>
-        <c:if test="${virhe != null}">
-            <div class="alert alert-danger">Virhe! ${virhe}</div>
-        </c:if>
+            <form action="Login" method="POST">
+                Käyttäjänimi: <input type="text" name="username" value="${kayttaja}" />
+                Salasana: <input type="password" name="password" value="${salasana}"/>
+                <button type="submit">Kirjaudu</button>
+            </form> 
+            <br>
+            <c:if test="${virhe != null}">
+                <div class="alert alert-danger">Virhe! ${virhe}</div>
+            </c:if>
+        </div>
     </body>
 </html>
