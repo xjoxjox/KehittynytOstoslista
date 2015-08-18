@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* @author Johanna
+*/
+
 public class Kayttaja {
     private int id;
     private String tunnus;
@@ -30,7 +34,13 @@ public class Kayttaja {
         this.salasana = salasana;
         this.admin = admin;
     }
-    
+    /**
+    * Metodilla haetaan käyttäjä sen id:llä.
+    *
+    * @param id käyttäjän id tietokannassa.
+    * @throws Exception
+    * @return palauttaa id:tä vastaavan käyttäjän.
+    */
     public static Kayttaja haeKayttajaIDlla(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -55,7 +65,15 @@ public class Kayttaja {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan käyttäjä käyttäjätunnuksen ja salasana perusteella.
+    *
+    * @param kayttaja käyttäjän käyttäjätunnus.
+    * @param salasana käyttäjän salasana.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa käyttäjän.
+    */
     public static Kayttaja haeKayttajaTunnuksilla(String kayttaja, String salasana) throws SQLException, NamingException {
         String sql = "SELECT account_id ,username, password, admin from account where username = ? AND password = ?";
         Connection yhteys = Yhteys.getYhteys();
@@ -80,7 +98,14 @@ public class Kayttaja {
 
         return kirjautunut;
     }
-    
+    /**
+    * Metodilla haetaan käyttäjä käyttäjätunnuksen perusteella.
+    *
+    * @param kayttaja käyttäjän käyttäjätunnus.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa käyttäjän.
+    */
     public static Kayttaja haeKayttajaTunnuksella(String kayttaja) throws SQLException, NamingException {
         String sql = "SELECT account_id ,username, password, admin from account where username = ?";
         Connection yhteys = Yhteys.getYhteys();
@@ -104,7 +129,13 @@ public class Kayttaja {
 
         return kirjautunut;
     }
-    
+    /**
+    * Metodilla haetaan käyttäjiä hakusanalla.
+    *
+    * @param hakusana hakusana jolla käyttäjiäa haetaan tietokannasta.
+    * @throws Exception
+    * @return palauttaa listan käyttäjistä, jotka löytyvät hakusanalla.
+    */
     public static List<Kayttaja> haeKayttajat(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -136,7 +167,13 @@ public class Kayttaja {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-  
+    /**
+    * Metodilla haetaan kaikki käyttäjät.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana kaikki käyttäjät.
+    */
     public static List<Kayttaja> haeKaikkiKayttajat() throws SQLException, NamingException {
         String sql = "SELECT account_id, username, password, admin FROM account ORDER BY username";
         Connection yhteys = Yhteys.getYhteys();
@@ -156,7 +193,14 @@ public class Kayttaja {
 
         return kayttajat;
     }
-    
+    /**
+    * Metodilla muokataan käyttäjän käyttäjätunnus.
+    *
+    * @param x uusi käyttäjätunnus.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaKayttajatunnus(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -183,7 +227,14 @@ public class Kayttaja {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan käyttäjän salasana.
+    *
+    * @param x uusi salasana.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaSalasana(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -210,7 +261,14 @@ public class Kayttaja {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan käyttäjän admin - oikeuksia.
+    *
+    * @param x true, jos halutaan antaa admin - oikeudet. false, jos halutaan poistaa admin - oikeudet.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaAdminoikeudet(boolean x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -237,7 +295,12 @@ public class Kayttaja {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan Kayttaja - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -265,7 +328,12 @@ public class Kayttaja {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan Käyttäjä - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

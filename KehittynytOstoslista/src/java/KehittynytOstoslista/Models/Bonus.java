@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* Kauppa - olioon voi kuulua jokin Bonus - olio, joka tässä luokassa määritellään.
+*
+* @see KehittynytOstoslista.Models.Kauppa
+* @author Johanna
+*/
+
 public class Bonus {
     private int id;
     private String nimi;
@@ -23,8 +30,14 @@ public class Bonus {
     public Bonus(int id, String nimi) {
         this.id = id;
         this.nimi = nimi;
-    }
-    
+    } 
+    /**
+    * Metodilla haetaan bonus sen id:llä.
+    *
+    * @param id bonuksen id tietokannassa.
+    * @throws Exception
+    * @return palauttaa id:tä vastaavan bonuksen.
+    */
     public static Bonus haeBonus(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -49,7 +62,13 @@ public class Bonus {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan bonuksia tietokannasta hakusanalla.
+    *
+    * @param hakusana hakusana, jolla bonuksia haetaan tietokannasta.
+    * @throws Exception
+    * @return palauttaa listana bonukset, jotka vastaavat hakusanaa.
+    */
     public static List<Bonus> haeBonukset(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -80,7 +99,13 @@ public class Bonus {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kaikki bonukset.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana kaikki bonukset.
+    */
     public static List<Bonus> haeKaikkiBonukset() throws SQLException, NamingException {
         String sql = "SELECT bonus_id, name FROM bonus ORDER BY name";
         Connection yhteys = Yhteys.getYhteys();
@@ -100,7 +125,14 @@ public class Bonus {
 
         return bonukset;
     }
-    
+    /**
+    * Metodilla muokataan bonuksen nimi.
+    *
+    * @param x uusi nimi.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaNimi(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -127,7 +159,12 @@ public class Bonus {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan Bonus - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -153,7 +190,12 @@ public class Bonus {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan Bonus - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

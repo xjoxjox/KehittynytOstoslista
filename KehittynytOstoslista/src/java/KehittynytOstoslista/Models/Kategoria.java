@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* Jokainen Alakategoria - luokan olio kuuluu johonkin (ylä)Kategoriaan, joka määritellään tässä luokassa.
+*
+* @see KehittynytOstoslista.Models.Alakategoria
+* @author Johanna
+*/
+
 public class Kategoria {
     private int id;
     private String kuvaus;
@@ -24,7 +31,13 @@ public class Kategoria {
         this.id = id;
         this.kuvaus = kuvaus;
     }
-    
+    /**
+    * Metodilla haetaan kategoria sen id:llä.
+    *
+    * @param id kategorian id tietokannassa.
+    * @throws Exception
+    * @return palauttaa id:tä vastaavan kategorian.
+    */
     public static Kategoria haeKategoria(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -49,7 +62,13 @@ public class Kategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kategorioita hakusanalla.
+    *
+    * @param hakusana hakusana jolla kategoriaa haetaan tietokannasta.
+    * @throws Exception
+    * @return palauttaa listan kategorioita, jotka löytyvät hakusanalla.
+    */
     public static List<Kategoria> haeKategoriat(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -78,7 +97,13 @@ public class Kategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kaikki kategoriat.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana kaikki kategoriat.
+    */
     public static List<Kategoria> haeKaikkiKategoriat() throws SQLException, NamingException {
         String sql = "SELECT category_id, description FROM category ORDER BY description";
         Connection yhteys = Yhteys.getYhteys();
@@ -98,7 +123,14 @@ public class Kategoria {
 
         return kategoriat;
     }
-    
+    /**
+    * Metodilla muokataan kategorian kuvausta.
+    *
+    * @param x uusi kuvaus.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaKuvaus(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -125,7 +157,12 @@ public class Kategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan Kategoria - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */ 
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -151,7 +188,12 @@ public class Kategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan Kategoria - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

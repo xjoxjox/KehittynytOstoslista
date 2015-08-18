@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* @author Johanna
+*/
+
 public class Kauppa {
     private int id;
     private String nimi;
@@ -33,7 +37,13 @@ public class Kauppa {
         this.osoite = osoite;
         this.bonusId = bonusId;
     }
-    
+    /**
+    * Metodilla haetaan kauppa sen id:llä.
+    *
+    * @param id kaupan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa id:tä vastaavan kaupan.
+    */
     public static Kauppa haeKauppa(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -64,7 +74,13 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kauppoja hakusanalla.
+    *
+    * @param hakusana hakusana jolla kauppoja haetaan tietokannasta.
+    * @throws Exception
+    * @return palauttaa listan kaupoista, jotka löytyvät hakusanalla.
+    */
     public static List<Kauppa> haeKaupatNimella(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -96,7 +112,13 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kauppoja kaupungin perusteella.
+    *
+    * @param hakusana kaupunki jolla kauppoja haetaan tietokannasta.
+    * @throws Exception
+    * @return palauttaa listan kaupoista, jotka löytyvät kaupungilla.
+    */
     public static List<Kauppa> haeKaupatKaupungilla(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -128,7 +150,14 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kauppoja bonuksen perusteella.
+    *
+    * @param bonusId bonuksen id tietokannassa, jolla kauppoja haetaan.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Bonus
+    * @return palauttaa listan kaupoista, jotka löytyvät bonuksella.
+    */
     public static List<Kauppa> haeKaupatBonuksella(int bonusId) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -160,7 +189,13 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kaikki kaupat.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana kaikki kaupat.
+    */
     public static List<Kauppa> haeKaikkiKaupat(int sivu) throws SQLException, NamingException {
         String sql = "SELECT shop_id, name, city, address, bonus_id FROM shop ORDER BY name LIMIT 50 OFFSET ?";
         Connection yhteys = Yhteys.getYhteys();
@@ -186,7 +221,13 @@ public class Kauppa {
 
         return kaupat;
     }
-    
+    /**
+    * Metodilla lasketaan kaikkien kauppojen lukumäärä.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa kauppojen lukumäärän.
+    */
     public static int kauppojenLukumaara() throws SQLException, NamingException {
         String sql = "SELECT count(*) AS lkm FROM shop";
         Connection yhteys = Yhteys.getYhteys();
@@ -202,7 +243,14 @@ public class Kauppa {
 
         return lkm;
     }
-    
+    /**
+    * Metodilla muokataan kaupan nimi.
+    *
+    * @param x uusi nimi.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaNimi(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -229,7 +277,14 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan kaupunki, jossa kauppa sijaitsee.
+    *
+    * @param x uusi kaupunki.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaKaupunki(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -256,7 +311,14 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan kaupan osoite.
+    *
+    * @param x uusi osoite.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaOsoite(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -283,7 +345,14 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan bonus, johon kauppa kuuluu.
+    *
+    * @param x uusi bonus.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaBonus(int x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -310,7 +379,13 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan kauppa tietokannasta.
+    *
+    * @param poistoId poistettavan kaupan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public static boolean poistaKauppa(int poistoId) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -326,7 +401,16 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla lisätään kauppa tietokantaan.
+    *
+    * @param lisaysnimi lisättävän kaupan nimi.
+    * @param lisayskaupunki kaupunki, jossa lisättävä kauppa sijaitsee.
+    * @param lisaysosoite lisättävän kaupan osoite.
+    * @param lisaysbonus lisättävän kaupan bonus.
+    * @throws Exception
+    * @return palauttaa true, jos lisäys onnistui.
+    */
     public static boolean lisaaKauppa(String lisaysnimi, String lisayskaupunki, String lisaysosoite, int lisaysbonus) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -367,7 +451,12 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan Kauppa - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -396,7 +485,12 @@ public class Kauppa {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan Kauppa - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

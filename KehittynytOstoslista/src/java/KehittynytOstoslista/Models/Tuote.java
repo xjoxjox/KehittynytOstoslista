@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* @author Johanna
+*/
+
 public class Tuote {
     private int id;
     private String nimi;
@@ -30,7 +34,13 @@ public class Tuote {
         this.valmistaja = valmistaja;
         this.paino = paino;
     }
-    
+    /**
+    * Metodilla haetaan tuote sen id:llä.
+    *
+    * @param id tuotteen id tietokannassa.
+    * @throws Exception
+    * @return palauttaa id:tä vastaavan tuotteen.
+    */
     public static Tuote haeTuote(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -60,7 +70,13 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan tuotteita hakusanalla.
+    *
+    * @param hakusana hakusana jolla tuotteita haetaan tietokannasta.
+    * @throws Exception
+    * @return palauttaa listan tuotteista, jotka löytyvät hakusanalla.
+    */
     public static List<Tuote> haeTuotteet(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -94,7 +110,13 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kaikki tuotteet.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana kaikki tuotteet.
+    */
     public static List<Tuote> haeKaikkiTuotteet(int sivu) throws SQLException, NamingException {
         String sql = "SELECT product_id, name, brand, weight FROM product ORDER by name LIMIT 50 OFFSET ?";
         Connection yhteys = Yhteys.getYhteys();
@@ -119,7 +141,13 @@ public class Tuote {
 
         return tuotteet;
     }
-    
+    /**
+    * Metodilla lasketaan kaikkien tuotteiden lukumäärä.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa tuotteiden lukumäärän.
+    */
     public static int tuotteidenLukumaara() throws SQLException, NamingException {
         String sql = "SELECT count(*) as lkm FROM product";
         Connection yhteys = Yhteys.getYhteys();
@@ -135,7 +163,15 @@ public class Tuote {
 
         return lkm;
     }
-    
+    /**
+    * Metodilla muokataan tuotteen nimi.
+    *
+    * @param x uusi nimi.
+    * @param tuoteid tuotteen id.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public static boolean muokkaaNimi(String x, int tuoteid) throws SQLException, NamingException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -166,7 +202,15 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-  
+    /**
+    * Metodilla muokataan tuotteen valmistaja.
+    *
+    * @param x uusi valmistaja.
+    * @param tuoteid tuotteen id.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public static boolean muokkaaValmistaja(String x, int tuoteid) throws SQLException, NamingException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -197,7 +241,15 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-  
+    /**
+    * Metodilla muokataan tuotteen paino.
+    *
+    * @param x uusi paino.
+    * @param tuoteid tuotteen id.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public static boolean muokkaaPaino(double x, int tuoteid) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -228,7 +280,15 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla luodaan uusi tuote.
+    *
+    * @param lisaysnimi uuden tuotteen nimi.
+    * @param lisaysvalmistaja uuden tuotteen valmistaja.
+    * @param lisayspaino uuden tuotteen paino.
+    * @throws Exception
+    * @return palauttaa true, jos luonti onnistui.
+    */
     public static Tuote lisaaTuote(String lisaysnimi, String lisaysvalmistaja, double lisayspaino) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -266,7 +326,13 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla luodaan posutetaan tuote tietokannasta.
+    *
+    * @param poistoId poistettavan tuotteen id.
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public static boolean poistaTuote(int poistoId) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -282,7 +348,12 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan Tuote - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -310,7 +381,12 @@ public class Tuote {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan Tuote - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

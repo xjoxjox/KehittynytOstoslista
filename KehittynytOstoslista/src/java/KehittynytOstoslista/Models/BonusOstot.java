@@ -7,6 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+/**
+* Luokka, joka yhdistää Bonus - olioita ja Ostoslista - olioita.
+*
+* @see KehittynytOstoslista.Models.Bonus
+* @see KehittynytOstoslista.Models.OstoslistaTallennettu
+* @see KehittynytOstoslista.Models.OstoslistaKuitattu
+* @author Johanna
+*/
+
 public class BonusOstot {
     private int bonusId;
     private int listaId;
@@ -22,7 +31,13 @@ public class BonusOstot {
         this.bonusId = bonusId;
         this.listaId = listaId;
     }
-    
+    /**
+    * Metodilla haetaan summa, joka on käytetty ostoksiin kyseisellä bonuksella.
+    *
+    * @param bonusId bonuksen id tietokannassa.
+    * @throws Exception
+    * @return palauttaa summan.
+    */
     public static double haeBonuksellaSumma(int bonusId) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -49,7 +64,15 @@ public class BonusOstot {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan summa, joka on käytetty ostoksiin kyseisellä bonuksella tietyllä ajanjaksolla.
+    *
+    * @param hakubonusId bonuksen id tietokannassa.
+    * @param paivays1 haun alkupäivämäärä.
+    * @param paivays2 haun loppupäivämäärä.
+    * @throws Exception
+    * @return palauttaa summan.
+    */
     public static double haeBonuksetAjalla(int hakubonusId, Timestamp paivays1, Timestamp paivays2) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -79,7 +102,12 @@ public class BonusOstot {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan BonusOstot - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -106,7 +134,12 @@ public class BonusOstot {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan BonusOstot - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

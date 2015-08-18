@@ -55,6 +55,7 @@ CREATE TABLE shoppinglistsaved(
 	sum DECIMAL (10,2) NOT NULL,
 	weight DECIMAL (10,3) NOT NULL,
 	time_created TIMESTAMP NOT NULL DEFAULT now(),
+	checked BOOLEAN NOT NULL,
 	shop_id INTEGER NOT NULL,
 	account_id INTEGER NOT NULL,
 	CONSTRAINT shop_id_fkey FOREIGN KEY (shop_id) REFERENCES shop(shop_id) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -62,7 +63,8 @@ CREATE TABLE shoppinglistsaved(
 );
 
 CREATE TABLE shoppinglistchecked(
-	shoppinglist_id serial PRIMARY KEY,
+	shoppinglistchecked_id serial PRIMARY KEY,
+	shoppinglist_id INTEGER NOT NULL,
 	name VARCHAR (50) NOT NULL,
 	sum DECIMAL (10,2) NOT NULL,
 	weight DECIMAL (10,3) NOT NULL,
@@ -71,6 +73,7 @@ CREATE TABLE shoppinglistchecked(
 	account_id INTEGER NOT NULL,
 	payment_id INTEGER NOT NULL,
 	bonus_id INTEGER NOT NULL,
+	CONSTRAINT shoppinglist_id_fkey FOREIGN KEY (shoppinglist_id) REFERENCES shoppinglistsaved(shoppinglist_id) ON UPDATE CASCADE ON DELETE RESTRICT,
 	CONSTRAINT shop_id_fkey FOREIGN KEY (shop_id) REFERENCES shop(shop_id) ON UPDATE CASCADE ON DELETE RESTRICT,
 	CONSTRAINT account_id_fkey FOREIGN KEY (account_id) REFERENCES account(account_id) ON UPDATE CASCADE ON DELETE RESTRICT,
 	CONSTRAINT payment_id_fkey FOREIGN KEY (payment_id) REFERENCES payment(payment_id) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -108,10 +111,10 @@ CREATE TABLE productcategory(
 
 CREATE TABLE bonusshopped(
 	bonus_id INTEGER NOT NULL,
-	shoppinglist_id INTEGER NOT NULL,
+	shoppinglistchecked_id INTEGER NOT NULL,
 	CONSTRAINT bonus_id_fkey FOREIGN KEY (bonus_id) REFERENCES bonus(bonus_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-	CONSTRAINT shoppinglist_id_fkey FOREIGN KEY (shoppinglist_id) REFERENCES shoppinglistchecked(shoppinglist_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-	PRIMARY KEY (bonus_id, shoppinglist_id)
+	CONSTRAINT shoppinglistchecked_id_fkey FOREIGN KEY (shoppinglistchecked_id) REFERENCES shoppinglistchecked(shoppinglistchecked_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+	PRIMARY KEY (bonus_id, shoppinglistchecked_id)
 );
 
 

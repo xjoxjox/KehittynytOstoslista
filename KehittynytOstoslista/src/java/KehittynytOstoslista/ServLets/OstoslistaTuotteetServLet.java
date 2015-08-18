@@ -55,7 +55,7 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
         List<OstoslistaTallennettu> listat = null;
         
-        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(kayttaja.getId());
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
     
         request.setAttribute("listat", listat);
         

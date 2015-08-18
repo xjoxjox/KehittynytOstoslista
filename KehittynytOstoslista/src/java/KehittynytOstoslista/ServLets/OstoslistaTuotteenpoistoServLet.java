@@ -3,10 +3,8 @@ package KehittynytOstoslista.ServLets;
 import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.Tuote;
-import KehittynytOstoslista.Models.TuoteHinta;
 import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -63,7 +61,7 @@ public class OstoslistaTuotteenpoistoServLet extends HttpServlet {
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
         List<OstoslistaTallennettu> listat = null;
         
-        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(kayttaja.getId());
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
     
         request.setAttribute("listat", listat);
         

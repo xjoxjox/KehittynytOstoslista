@@ -4,7 +4,6 @@ import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.Tuote;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class OstoslistaLisaaTuoteNakymaServLet extends HttpServlet {
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
         List<OstoslistaTallennettu> listat = null;
         
-        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(kayttaja.getId());
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
     
         request.setAttribute("listat", listat);
         

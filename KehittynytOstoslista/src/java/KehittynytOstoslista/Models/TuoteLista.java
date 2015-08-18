@@ -7,6 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+/**
+* Luokassa voidaan hakea ja poistaa Tuotteita, joita on Ostoslistoilla.
+* 
+* @see KehittynytOstoslista.Models.Tuote
+* @see KehittynytOstoslista.Models.OstoslistaTallennettu
+* @author Johanna
+*/
+
 public class TuoteLista {
     private int tuoteId;
     private int listaId;
@@ -22,7 +30,15 @@ public class TuoteLista {
         this.tuoteId = tuoteId;
         this.listaId = listaId;
     }
-    
+    /**
+    * Metodilla haetaan ostoslistan kaikki tuotteet.
+    *
+    * @param lista ostoslistan id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.OstoslistaTallennettu
+    * @return palauttaa Tuotteet ja niiden määrät HashMapissa, jossa avaimena tuote.
+    */
     public static HashMap<Tuote, Integer> haeTuotteetListalle(int lista) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -61,7 +77,12 @@ public class TuoteLista {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan TuoteLista - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -87,7 +108,16 @@ public class TuoteLista {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla lisätään tuote ostoslistalle.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @param lista ostoslistan id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.OstoslistaTallennettu
+    * @return palauttaa true, jos lisäys onnistui.
+    */
     public static boolean lisaaTuoteListalle(int tuote, int lista) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -113,7 +143,16 @@ public class TuoteLista {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan tuote ostoslistalta.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @param lista ostoslistan id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.OstoslistaTallennettu
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public static boolean poistaTuoteListalta(int tuote, int lista) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -130,7 +169,12 @@ public class TuoteLista {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan TuoteLista - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

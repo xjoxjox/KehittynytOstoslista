@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* Jokainen Tuote - luokan olio kuuluu johonkin alakategoriaan, joka määritellään tässä luokassa.
+*
+* @see KehittynytOstoslista.Models.TuoteKategoria
+* @author Johanna
+*/
+
 public class Alakategoria {
     private int id;
     private String kuvaus;
@@ -24,7 +31,13 @@ public class Alakategoria {
         this.id = id;
         this.kuvaus = kuvaus;
     }
-    
+    /**
+    * Metodilla haetaan alakategoria sen id:llä.
+    *
+    * @param id alakategorian id tietokannassa.
+    * @throws Exception
+    * @return palauttaa id:tä vastaavan alakategorian.
+    */
     public static Alakategoria haeAlakategoria(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -49,7 +62,13 @@ public class Alakategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan alakategorioita hakusanalla.
+    *
+    * @param hakusana hakusana jolla alakategoriaa haetaan tietokannasta.
+    * @throws Exception
+    * @return palauttaa listan alakategorioita, jotka löytyvät hakusanalla.
+    */
     public static List<Alakategoria> haeAlakategoriat(String hakusana) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -78,7 +97,13 @@ public class Alakategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan kaikki alakategoriat.
+    *
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana kaikki alakategoriat.
+    */
     public static List<Alakategoria> haeKaikkiAlakategoriat() throws SQLException, NamingException {
         String sql = "SELECT subcategory_id, description, category_id FROM subcategory ORDER BY description";
         Connection yhteys = Yhteys.getYhteys();
@@ -98,7 +123,14 @@ public class Alakategoria {
 
         return alakategoriat;
     }
-    
+    /**
+    * Metodilla muokataan alakategorian kuvausta.
+    *
+    * @param x uusi kuvaus.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaKuvaus(String x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -125,7 +157,12 @@ public class Alakategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan Alakategoria - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -151,7 +188,12 @@ public class Alakategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan Alakategoria - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

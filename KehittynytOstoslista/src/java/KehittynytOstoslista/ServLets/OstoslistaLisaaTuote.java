@@ -4,7 +4,6 @@ import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +56,7 @@ public class OstoslistaLisaaTuote extends HttpServlet {
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
         List<OstoslistaTallennettu> listat = null;
         
-        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(kayttaja.getId());
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
     
         request.setAttribute("listat", listat);
         

@@ -8,9 +8,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+* Luokassa voidaan hakea, tallentaa ja poistaa Alakategorioita joihin Tuote kuuluu.
+* 
+* @see KehittynytOstoslista.Models.Tuote
+* @see KehittynytOstoslista.Models.Alakategoria
+* @author Johanna
+*/
+
 public class TuoteKategoria {
-    private static int tuoteId;
-    private static int alakategoriaId;
+    private int tuoteId;
+    private int alakategoriaId;
     
     private TuoteKategoria(ResultSet tulos) throws SQLException {
         TuoteLista t = new TuoteLista(
@@ -23,7 +31,15 @@ public class TuoteKategoria {
         this.tuoteId = tuoteId;
         this.alakategoriaId = alakategoriaId;
     }
-    
+     /**
+    * Metodilla haetaan tuotteelle kaikki alakategoriat joihin se kuuluu.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Alakategoria
+    * @return palauttaa alakategoriat, joihin tuote kuuluu, listana.
+    */
     public static List<Alakategoria> haeTuotteenAlakategoriat(int tuote) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -52,7 +68,15 @@ public class TuoteKategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+     /**
+    * Metodilla haetaan alakategorialle kaikki tuotteet, jotka siihen kuuluvat.
+    *
+    * @param alakategoria tuotteen id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Alakategoria
+    * @return palauttaa alakategorian tuotteet, jotka siihen kuuluvat, listana.
+    */
     public static List<Tuote> haeAlakategorianTuotteet(int alakategoria) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -81,8 +105,13 @@ public class TuoteKategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public static boolean tallenna() throws Exception {
+    /**
+    * Metodilla tallennetaan TuoteKategoria - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
+    public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -107,8 +136,13 @@ public class TuoteKategoria {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public static boolean poista() throws Exception {
+    /**
+    * Metodilla poistetaan TuoteKategoria - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
+    public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
 

@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* @author Johanna
+*/
+
 public class OstoslistaTallennettu {
     private int id;
     private String nimi;
@@ -18,6 +22,7 @@ public class OstoslistaTallennettu {
     private double summa;
     private double paino;
     private Timestamp paivays;
+    private boolean kuitattu;
     private Kauppa kauppa;
     private int kayttajaId;
     
@@ -28,23 +33,32 @@ public class OstoslistaTallennettu {
             tulos.getDouble("sum"),
             tulos.getDouble("weight"),
             tulos.getTimestamp("time_created"),
+            tulos.getBoolean("checked"),
             Kauppa.haeKauppa(tulos.getInt("shop_id")),
             tulos.getInt("account_id")
         );
     }
-
-    public OstoslistaTallennettu(int id, String nimi, double summa, double paino, Timestamp paivays, Kauppa kauppa, int kayttajaId) throws Exception {
+    
+    public OstoslistaTallennettu(int id, String nimi, double summa, double paino, Timestamp paivays, 
+            boolean kuitattu, Kauppa kauppa, int kayttajaId) throws Exception {
         this.id = id;
         this.nimi = nimi;
         this.summa = haeSumma(id, kauppa.getId());
         this.paino = haePaino(id);
         this.paivays = paivays;
+        this.kuitattu = kuitattu;
         this.kauppa = kauppa;
         this.kayttajaId = kayttajaId;
         
         this.tuotteet = new HashMap<Tuote, Integer>();
     }
-    
+    /**
+    * Metodilla haetaan ostoslista sen id:llä.
+    *
+    * @param id ostoslistan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa id:tä vastaavan ostoslistan.
+    */
     public static OstoslistaTallennettu haeOstoslistaTallennettu(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -69,8 +83,15 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuNimella(String hakusana) throws Exception {
+    /**
+    * Metodilla haetaan ostoslistoja hakusanalla.
+    *
+    * @param hakusana hakusana jolla ostoslistoja haetaan tietokannasta.
+    * @param kayttaja ostoslistan luoneen käyttäjän id tietokannassa.
+    * @throws Exception
+    * @return palauttaa listan ostoslistoista, jotka löytyvät hakusanalla.
+    */
+    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuNimella(String hakusana, int kayttaja) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -78,10 +99,11 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE name like ? ORDER BY time_created";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE name like ? AND account_id = ? AND checked = FALSE ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, "%" + hakusana + "%");
+            kysely.setInt(2, kayttaja);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -101,8 +123,15 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuPaivayksellaEnnen(Timestamp hakupaiva) throws Exception {
+    /**
+    * Metodilla haetaan ostoslistoja, jotka on luotu annettua päiväystä aiemmin.
+    *
+    * @param hakupaiva päiväys, jota ennen luodut ostoslistat halutaan hakea.
+    * @param kayttaja ostoslistan luoneen käyttäjän id tietokannassa.
+    * @throws Exception
+    * @return palauttaa listan ostoslistoista, jotka löytyvät hakuehdoilla.
+    */
+    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuPaivayksellaEnnen(Timestamp hakupaiva, int kayttaja) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -110,10 +139,11 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created < ? ORDER BY time_created";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created < ? AND account_id = ? AND checked = FALSE ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
+            kysely.setInt(2, kayttaja);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -133,8 +163,15 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuPaivayksellaJalkeen(Timestamp hakupaiva) throws Exception {
+    /**
+    * Metodilla haetaan ostoslistoja, jotka on luotu annetun päiväyksen jälkeen.
+    *
+    * @param hakupaiva päiväys, jonka jälkeen luodut ostoslistat halutaan hakea.
+    * @param kayttaja ostoslistan luoneen käyttäjän id tietokannassa.
+    * @throws Exception
+    * @return palauttaa listan ostoslistoista, jotka löytyvät hakuehdoilla.
+    */
+    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuPaivayksellaJalkeen(Timestamp hakupaiva, int kayttaja) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -142,10 +179,11 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created > ? ORDER BY time_created";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE time_created > ? AND account_id = ? AND checked = FALSE ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, hakupaiva);
+            kysely.setInt(2, kayttaja);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -165,8 +203,15 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuKaupalla(int hakukauppa) throws Exception {
+    /**
+    * Metodilla haetaan ostoslistoja, jonka ostokset on tehty annetussa kaupassa.
+    *
+    * @param hakukauppa kauppa, jossa ostokset on tehty.
+    * @param kayttaja ostoslistan luoneen käyttäjän id tietokannassa.
+    * @throws Exception
+    * @return palauttaa listan ostoslistoista, jotka löytyvät hakuehdoilla.
+    */
+    public static List<OstoslistaTallennettu> haeOstoslistaTallennettuKaupalla(int hakukauppa, int kayttaja) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -174,10 +219,11 @@ public class OstoslistaTallennettu {
         List<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
 
         try {
-            String sql = "SELECT * FROM shoppinglistsaved WHERE shop_id = ? ORDER BY time_created";
+            String sql = "SELECT * FROM shoppinglistsaved WHERE shop_id = ? AND account_id = ? AND checked = FALSE ORDER BY time_created";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, hakukauppa);
+            kysely.setInt(2, kayttaja);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
@@ -197,9 +243,17 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public static List<OstoslistaTallennettu> haeKaikkiOstoslistaTallennettu(int hakukayttaja) throws SQLException, NamingException, Exception {
-        String sql = "SELECT shoppinglist_id, name, sum, weight, to_char(time_created, 'YYYY-MM-DD HH24:MI:SS') as time_created, shop_id, account_id FROM shoppinglistsaved WHERE account_id = ? ORDER BY time_created";
+    /**
+    * Metodilla haetaan kaikki käyttäjän ostoslistat, joita ei ole vielä kuitattu.
+    *
+    * @param hakukayttaja käyttäjän id tietokannassa.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana käyttäjän kaikki ostoslistat, joita ei ole vielä kuitattu.
+    */
+    public static List<OstoslistaTallennettu> haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(int hakukayttaja) throws SQLException, NamingException, Exception {
+        String sql = "SELECT shoppinglist_id, name, sum, weight, to_char(time_created, 'YYYY-MM-DD HH24:MI:SS') as time_created, "
+                + "checked, shop_id, account_id FROM shoppinglistsaved WHERE account_id = ? AND checked = FALSE ORDER BY time_created";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         kysely.setInt(1, hakukayttaja);
@@ -208,7 +262,8 @@ public class OstoslistaTallennettu {
         ArrayList<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
         while (tulokset.next()) {
             OstoslistaTallennettu o = new OstoslistaTallennettu(tulokset.getInt("shoppinglist_id"), tulokset.getString("name"), tulokset.getDouble("sum"),
-                tulokset.getDouble("weight"), tulokset.getTimestamp("time_created"), Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"));
+                tulokset.getDouble("weight"), tulokset.getTimestamp("time_created"), tulokset.getBoolean("checked"), 
+                    Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"));
             ostoslistat.add(o);
         }   
 
@@ -218,7 +273,44 @@ public class OstoslistaTallennettu {
 
         return ostoslistat;
     }
-    
+    /**
+    * Metodilla haetaan kaikki käyttäjän ostoslistat.
+    *
+    * @param hakukayttaja käyttäjän id tietokannassa.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa listana käyttäjän kaikki ostoslistat.
+    */
+    public static List<OstoslistaTallennettu> haeKaikkiOstoslistaTallennettu(int hakukayttaja) throws SQLException, NamingException, Exception {
+        String sql = "SELECT shoppinglist_id, name, sum, weight, to_char(time_created, 'YYYY-MM-DD HH24:MI:SS') as time_created, "
+                + "checked, shop_id, account_id FROM shoppinglistsaved WHERE account_id = ? ORDER BY time_created";
+        Connection yhteys = Yhteys.getYhteys();
+        PreparedStatement kysely = yhteys.prepareStatement(sql);
+        kysely.setInt(1, hakukayttaja);
+        ResultSet tulokset = kysely.executeQuery();
+
+        ArrayList<OstoslistaTallennettu> ostoslistat = new ArrayList<OstoslistaTallennettu>();
+        while (tulokset.next()) {
+            OstoslistaTallennettu o = new OstoslistaTallennettu(tulokset.getInt("shoppinglist_id"), tulokset.getString("name"), tulokset.getDouble("sum"),
+                tulokset.getDouble("weight"), tulokset.getTimestamp("time_created"), tulokset.getBoolean("checked"), 
+                    Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"));
+            ostoslistat.add(o);
+        }   
+
+        try { tulokset.close(); } catch (Exception e) {}
+        try { kysely.close(); } catch (Exception e) {}
+        try { yhteys.close(); } catch (Exception e) {}
+
+        return ostoslistat;
+    }
+    /**
+    * Metodilla haetaan ostoslistalla olevien tuotteiden kokonaissumma.
+    *
+    * @param listaid ostoslistan id tietokannassa.
+    * @param kauppaid ostoslistaan linkitetyn kaupan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa summan.
+    */
     public static double haeSumma(int listaid, int kauppaid) throws Exception {
         double sum = 0;
         HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
@@ -229,7 +321,15 @@ public class OstoslistaTallennettu {
         }
         return sum;
     }
-    
+    /**
+    * Metodilla haetaan ostoslistalla olevien tuotteiden kokonaispaino.
+    *
+    * @param listaid ostoslistan id tietokannassa.
+    * @throws SQLException
+    * @throws NamingException
+    * @throws Exception
+    * @return palauttaa painon.
+    */
     public static double haePaino(int listaid) throws NamingException, SQLException, Exception {
         double kokPaino = 0;
         HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
@@ -240,34 +340,57 @@ public class OstoslistaTallennettu {
         }     
         return kokPaino;
     }
-    
-    public void lisaaTuote(int tuoteId, int listaid) throws Exception {
+    /**
+    * Metodilla lisätään Tuote ostoslistalle.
+    *
+    * @param tuoteId tuotteen id tietokannassa.
+    * @param listaid ostoslistan id tietokannassa.
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.TuoteLista
+    * @throws Exception
+    * @return palauttaa true, jos tuotteen lisays onnistui.
+    */
+    public static boolean lisaaTuote(int tuoteId, int listaid) throws Exception {
         TuoteLista t = new TuoteLista(tuoteId, listaid);
-        t.tallenna();
-        tuotteet = TuoteLista.haeTuotteetListalle(listaid);
+        return t.tallenna();
     }
-    
-    public void poistaTuote(int tuoteId, int listaid) throws Exception {
+    /**
+    * Metodilla poistetaan Tuote ostoslistalta.
+    *
+    * @param tuoteId tuotteen id tietokannassa.
+    * @param listaid ostoslistan id tietokannassa.
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.TuoteLista
+    * @throws Exception
+    * @return palauttaa true, jos tuotteen poisto onnistui.
+    */
+    public static boolean poistaTuote(int tuoteId, int listaid) throws Exception {
         TuoteLista t = new TuoteLista(tuoteId, listaid);
-        t.poista();
-        tuotteet = TuoteLista.haeTuotteetListalle(listaid);
+        return t.poista();
     }
-    
-    public boolean muokkaaNimi(String x) throws NamingException, SQLException {
+    /**
+    * Metodilla muokataan ostoslistan nimi.
+    *
+    * @param x uusi nimi.
+    * @param lista ostoslistan id.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
+    public static  boolean muokkaaNimi(String x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
 
         try {
-            String sql = "UPDATE shoppinlistchecked SET name = ? WHERE shoppinglist_id = ? RETURNING name";
+            String sql = "UPDATE shoppinlistsaved SET name = ? WHERE shoppinglist_id = ? RETURNING name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.nimi = tulokset.getString("name");
                 return true;
             } else {
                 return false;
@@ -279,22 +402,29 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-  
-    public boolean muokkaaPaivays(Timestamp x) throws NamingException, SQLException {
+    /**
+    * Metodilla muokataan ostoslistan päiväys.
+    *
+    * @param x uusi päiväys.
+    * @param lista ostoslistan id.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
+    public static boolean muokkaaPaivays(Timestamp x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
 
         try {
-            String sql = "UPDATE shoppinlistchecked SET time_created = ? WHERE shoppinglist_id = ? RETURNING time_checked";
+            String sql = "UPDATE shoppinlistsaved SET time_created = ? WHERE shoppinglist_id = ? RETURNING time_checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.paivays = tulokset.getTimestamp("time_checked");
                 return true;
             } else {
                 return false;
@@ -306,22 +436,29 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public boolean muokkaaKauppaId(int x) throws NamingException, SQLException, Exception {
+    /**
+    * Metodilla muokataan onko ostoslista kuitattu.
+    *
+    * @param x muokattu.
+    * @param lista ostoslistan id.
+    * @throws SQLException
+    * @throws NamingException
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
+    public static boolean muokkaaKuitattu(boolean x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
 
         try {
-            String sql = "UPDATE shoppinlistchecked SET shop_id = ? WHERE shoppinglist_id = ? RETURNING shop_id";
+            String sql = "UPDATE shoppinlistsaved SET checked = ? WHERE shoppinglist_id = ? RETURNING checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, x);
-            kysely.setInt(2, id);
+            kysely.setBoolean(1, x);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.kauppa = Kauppa.haeKauppa(tulokset.getInt("shop_id"));
                 return true;
             } else {
                 return false;
@@ -333,22 +470,30 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public boolean muokkaaKayttajaId(int x) throws NamingException, SQLException {
+    /**
+    * Metodilla muokataan ostoslistaan linkitetty Kauppa.
+    *
+    * @param x uuden kaupan id.
+    * @param lista ostoslistan id.
+    * @throws SQLException
+    * @throws NamingException
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
+    public static boolean muokkaaKauppaId(int x, int lista) throws NamingException, SQLException, Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
 
         try {
-            String sql = "UPDATE shoppinlistchecked SET account_id = ? WHERE shoppinglist_id = ? RETURNING account_id";
+            String sql = "UPDATE shoppinlistsaved SET shop_id = ? WHERE shoppinglist_id = ? RETURNING shop_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.kayttajaId = tulokset.getInt("account_id");
                 return true;
             } else {
                 return false;
@@ -360,7 +505,52 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan ostoslistaan linkitetty Kayttaja.
+    *
+    * @param x uuden käyttäjän id.
+    * @param lista ostoslistan id.
+    * @throws SQLException
+    * @throws NamingException
+    * @see KehittynytOstoslista.Models.Kayttaja
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
+    public static boolean muokkaaKayttajaId(int x, int lista) throws NamingException, SQLException {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "UPDATE shoppinlistsaved SET account_id = ? WHERE shoppinglist_id = ? RETURNING account_id";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, x);
+            kysely.setInt(2, lista);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
+    * Metodilla luodaan uusi Ostoslista tietokantaan.
+    *
+    * @param listanimi uuden listan nimi.
+    * @param listakauppa kauppa, johon uusi lista linkitetään.
+    * @param listakayttaja käyttäjän id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @see KehittynytOstoslista.Models.Kayttaja
+    * @return palauttaa true, jos luonti onnistui.
+    */
     public static boolean luoUusiLista(String listanimi, int listakauppa, int listakayttaja) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -371,8 +561,8 @@ public class OstoslistaTallennettu {
         }
 
         try {
-            String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, shop_id, account_id) "
-                    + "VALUES(?,0,0,now(),?,?) RETURNING shoppinglist_id";
+            String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, checked, shop_id, account_id) "
+                    + "VALUES(?,0,0,now(),FALSE,?,?) RETURNING shoppinglist_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, listanimi);
@@ -393,14 +583,41 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan ostoslista tietokannasta id:n perusteella.
+    *
+    * @param id ostoslistan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
+    public static boolean poistaLista(int id) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM shoppinglistsaved where shoppinglist_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, id);
+            return kysely.execute();
+        } finally {
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
+    * Metodilla tallennetaan Ostoslista - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
 
         try {
-            String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, shop_id, account_id) "
+            String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, chechked, shop_id, account_id) "
                     + "VALUES(?,?,?,?,?,?) RETURNING shoppinglist_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
@@ -408,8 +625,9 @@ public class OstoslistaTallennettu {
             kysely.setDouble(2, summa);
             kysely.setDouble(3, paino);
             kysely.setTimestamp(4, paivays);
-            kysely.setInt(5, kauppa.getId());
-            kysely.setInt(6, kayttajaId);
+            kysely.setBoolean(5, kuitattu);
+            kysely.setInt(6, kauppa.getId());
+            kysely.setInt(7, kayttajaId);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
@@ -425,45 +643,12 @@ public class OstoslistaTallennettu {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
-    public boolean lisaaOstoslista(String lisaysnimi, int lisayskauppaId, int lisayskayttajaId) throws Exception {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-
-        try {
-            String sql = "INSERT INTO shoppinglistsaved(name, sum, weight, time_created, shop_id, account_id) "
-                    + "VALUES(?,?,?,now(),?,?) RETURNING shoppinglist_id";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, lisaysnimi);
-            kysely.setDouble(2, haeSumma(id, lisayskauppaId));
-            kysely.setDouble(3, haePaino(id));
-            kysely.setInt(5, lisayskauppaId);
-            kysely.setInt(6, lisayskayttajaId);
-            tulokset = kysely.executeQuery();
-      
-            if (tulokset.next()) {
-                OstoslistaTallennettu o = new OstoslistaTallennettu(tulokset);
-                o.setId(tulokset.getInt("shoppinglist_id"));
-                o.setNimi(tulokset.getString("name"));
-                o.setSumma();
-                o.setPaino();
-                o.setPaivays(tulokset.getTimestamp("time_created"));
-                o.setKauppa(Kauppa.haeKauppa(tulokset.getInt("shop_id")));
-                o.setKayttajaId(tulokset.getInt("account_id"));
-                return true;
-            } else {
-                return false;
-            }
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
-    }
-    
+    /**
+    * Metodilla poistetaan Ostoslista - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -475,114 +660,6 @@ public class OstoslistaTallennettu {
             kysely.setInt(1, id);
             return kysely.execute();
         } finally {
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
-    }
-
-    public boolean muokkaaNimi(String x, int lista) throws NamingException, SQLException {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-
-        try {
-            String sql = "UPDATE shoppinlistsaved SET name = ? WHERE shoppinglist_id = ? RETURNING name";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setString(1, x);
-            kysely.setInt(2, lista);
-            tulokset = kysely.executeQuery();
-
-            if (tulokset.next()) {
-                this.nimi = tulokset.getString("name");
-                return true;
-            } else {
-                return false;
-            }
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
-    }
-  
-    public boolean muokkaaPaivays(Timestamp x, int lista) throws NamingException, SQLException {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-
-        try {
-            String sql = "UPDATE shoppinlistsaved SET time_created = ? WHERE shoppinglist_id = ? RETURNING time_created";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setTimestamp(1, x);
-            kysely.setInt(2, lista);
-            tulokset = kysely.executeQuery();
-
-            if (tulokset.next()) {
-                this.paivays = tulokset.getTimestamp("time_created");
-                return true;
-            } else {
-                return false;
-            }
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
-    }
-    
-    public boolean muokkaaKauppaId(int x, int lista) throws NamingException, SQLException, Exception {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-
-        try {
-            String sql = "UPDATE shoppinlistsaved SET shop_id = ? WHERE shoppinglist_id = ? RETURNING shop_id";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, x);
-            kysely.setInt(2, lista);
-            tulokset = kysely.executeQuery();
-
-            if (tulokset.next()) {
-                this.kauppa = Kauppa.haeKauppa(tulokset.getInt("shop_id"));
-                return true;
-            } else {
-                return false;
-            }
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
-            try { kysely.close(); } catch (Exception e) {  }
-            try { yhteys.close(); } catch (Exception e) {  }
-        }
-    }
-    
-    public boolean muokkaaKayttajaId(int x, int lista) throws NamingException, SQLException {
-        Connection yhteys = null;
-        PreparedStatement kysely = null;
-        ResultSet tulokset = null;
-
-        try {
-            String sql = "UPDATE shoppinlistsaved SET account_id = ? WHERE shoppinglist_id = ? RETURNING account_id";
-            yhteys = Yhteys.getYhteys();
-            kysely = yhteys.prepareStatement(sql);
-            kysely.setInt(1, x);
-            kysely.setInt(2, lista);
-            tulokset = kysely.executeQuery();
-
-            if (tulokset.next()) {
-                this.kayttajaId = tulokset.getInt("account_id");
-                return true;
-            } else {
-                return false;
-            }
-
-        } finally {
-            try { tulokset.close(); } catch (Exception e) {  }
             try { kysely.close(); } catch (Exception e) {  }
             try { yhteys.close(); } catch (Exception e) {  }
         }
@@ -612,6 +689,10 @@ public class OstoslistaTallennettu {
         return this.paivays;
     }
     
+    public boolean getKuitattu() {
+        return this.kuitattu;
+    }
+    
     public Kauppa getKauppa() {
         return this.kauppa;
     }
@@ -638,6 +719,10 @@ public class OstoslistaTallennettu {
         
     public void setPaivays(Timestamp x) {
         this.paivays = x;
+    }
+    
+    public void setKuitattu(boolean x) {
+        this.kuitattu = x;
     }
     
     public void setKauppa(Kauppa x) {

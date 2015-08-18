@@ -11,6 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import javax.naming.NamingException;
 
+/**
+* Luokalla voidaan hakea, tallentaa ja poistaa Tuotteille hintoja eri Kaupoissa.
+* 
+* @see KehittynytOstoslista.Models.Tuote
+* @see KehittynytOstoslista.Models.Kauppa
+* @author Johanna
+*/
+
 public class TuoteHinta {
     private double hinta;
     private int sijainti;
@@ -38,7 +46,15 @@ public class TuoteHinta {
         this.tuoteId = tuoteId;
         this.kauppaId = kauppaId;
     }
-    
+    /**
+    * Metodilla haetaan tuotteelle hinta kaikissa kaupoissa.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa tuotteen hinnat HashMapissa, missä avaimena kauppa.
+    */
     public static HashMap<Kauppa, Double> haeHintaTuotteelle(int tuote) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -66,7 +82,16 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan tuotteelle hinta määritetyssä kaupoissa.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @param kauppa kaupan id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa tuotteen voimassa olevan hinnan määritetyssä kaupassa.
+    */
     public static double haeHintaTuotteelleKaupassa(int tuote, int kauppa) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -94,7 +119,14 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan tuotteen kaikki hinnat.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @return palauttaa tuotteen kaikki hinnat listana.
+    */
     public static List<Double> haeTuotteenKaikkiHinnat(int tuote) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -122,7 +154,16 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla haetaan tuotteen kaikki hinnat (nykyinen ja aiemmat) määritetyssä kaupassa.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @param kauppa kaupan id tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa tuotteen kaikki hinnat määritetyssä kaupassa listana.
+    */
     public static List<Double> haeTuotteenKaikkiHinnatKaupassa(int tuote, int kauppa) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -150,7 +191,16 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan tuotteen hintaa kaupassa.
+    *
+    * @param x uusi hinta.
+    * @throws SQLException
+    * @throws NamingException
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaHinta(double x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -180,7 +230,16 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan tuotteen sijainti.
+    *
+    * @param x uusi sijainti.
+    * @throws SQLException
+    * @throws NamingException
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaSijainti(int x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -210,7 +269,16 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan tuotteen hinnan päiväys.
+    *
+    * @param x uusi päiväys.
+    * @throws SQLException
+    * @throws NamingException
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaPaivays(Timestamp x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -240,7 +308,18 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan tieto onko tuotteen hinta voimassa nyt.
+    *
+    * @param x true, jos hinta on tällä hetkellä voimassa. Muuten false.
+    * @param tuoteid tuotteen id tietokannassa.
+    * @param kauppaid kaupan id tietokannassa.
+    * @throws SQLException
+    * @throws NamingException
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public static boolean muokkaaNykyinen(boolean x, int tuoteid, int kauppaid) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -268,7 +347,16 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan kauppaa, jossa tuotteella on jokin hinta.
+    *
+    * @param x uusi kauppa.
+    * @throws SQLException
+    * @throws NamingException
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa true, jos muokkaus onnistui.
+    */
     public boolean muokkaaKauppa(int x) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -297,7 +385,18 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla muokataan lisätään uusi hinta tuotteelle.
+    *
+    * @param lisayshinta uusi hinta.
+    * @param lisayssijainti tuotteen sijainti kaupassa.
+    * @param lisaystuoteid tuotteen id tietokannassa.
+    * @param lisayskauppaid kaupan id, johon hinta halutaan linkittää tietokannassa.
+    * @throws Exception
+    * @see KehittynytOstoslista.Models.Tuote
+    * @see KehittynytOstoslista.Models.Kauppa
+    * @return palauttaa true, jos lisäys onnistui.
+    */
     public static boolean lisaaTuoteHinta(double lisayshinta, int lisayssijainti, int lisaystuoteid, int lisayskauppaid) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -328,7 +427,12 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla tallennetaan TuoteHinta - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos tallennus onnistui.
+    */
     public boolean tallenna() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -359,7 +463,13 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan tuotteen hinta id:n perusteella.
+    *
+    * @param id tuotteen id tietokannassa.
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public static boolean poistaTuoteHinta(int id) throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;
@@ -375,7 +485,12 @@ public class TuoteHinta {
             try { yhteys.close(); } catch (Exception e) {  }
         }
     }
-    
+    /**
+    * Metodilla poistetaan TuoteHinta - olio.
+    *
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
     public boolean poista() throws Exception {
         Connection yhteys = null;
         PreparedStatement kysely = null;

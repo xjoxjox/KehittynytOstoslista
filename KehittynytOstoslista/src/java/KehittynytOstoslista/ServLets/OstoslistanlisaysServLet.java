@@ -59,7 +59,7 @@ public class OstoslistanlisaysServLet extends HttpServlet {
         
         request.setAttribute("listanluonti", listanluonti);
         
-        List<OstoslistaTallennettu> listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(k.getId());
+        List<OstoslistaTallennettu> listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(k.getId());
         
         request.setAttribute("listat", listat);
         

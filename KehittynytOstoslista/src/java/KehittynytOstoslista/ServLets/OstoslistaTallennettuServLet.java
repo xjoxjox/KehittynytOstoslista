@@ -39,7 +39,7 @@ public class OstoslistaTallennettuServLet extends HttpServlet {
          String kayttaja = (String)session.getAttribute("kirjautunut");
          Kayttaja k = Kayttaja.haeKayttajaTunnuksella(kayttaja);
         
-        List<OstoslistaTallennettu> listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(k.getId());
+        List<OstoslistaTallennettu> listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(k.getId());
         
         request.setAttribute("listat", listat);
         
