@@ -5,15 +5,11 @@
         <group>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/TuoteLista.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/OstoslistaTuotteetServLet.java</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/tuotteet.jsp</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/Yhteys.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/ostoslistat.jsp</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/OstoslistaKuitattuServLet.java</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/OstoslistaLisaaTuoteNakymaServLet.java</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/OstoslistaLisaaTuote.java</file>
-            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/Tuote.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/TuoteHinta.java</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/TuotteenpoistoServLet.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/Models/OstoslistaTallennettu.java</file>
+            <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/src/java/KehittynytOstoslista/ServLets/OstoslistaTuotteenpoistoServLet.java</file>
             <file>file:/C:/Users/Johanna/Documents/GitHub/KehittynytOstoslista/KehittynytOstoslista/web/WEB-INF/tags/pohja.tag</file>
         </group>
     </open-files>

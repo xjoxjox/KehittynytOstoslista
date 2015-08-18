@@ -80,8 +80,9 @@
                             <td>${tuote.key.nimi} ${tuote.key.valmistaja} ${tuote.key.paino}kg</td>
                             <td>${tuote.value}</td>
                             <td>
-                                <form method="post" name="frm" action="OstoslistankuittausServLet">
-                                    <input type="hidden" name="id" value="${tuote.key.id}">
+                                <form method="post" name="frm" action="OstoslistaTuotteenpoistoServLet">
+                                    <input type="hidden" name="listaid" value="${listaid}">
+                                    <input type="hidden" name="tuoteid" value="${tuote.key.id}">
                                     <input type="submit" value="Poista tuote">
                                 </form>
                             </td>
@@ -90,6 +91,9 @@
                 </tbody>
             </table><br>
         </c:if> 
+        <c:if test="${tuotteenpoisto != null}">
+            <br><p>${tuotteenpoisto}</p><br>
+        </c:if>
         <c:if test="${tuotelistatyhja != null}">
             <br><p>${tuotelistatyhja}</p><br>
         </c:if>

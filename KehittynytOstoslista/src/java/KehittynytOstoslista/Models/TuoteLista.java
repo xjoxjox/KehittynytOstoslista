@@ -32,7 +32,7 @@ public class TuoteLista {
         HashMap<Tuote, Integer> tuotteet = new HashMap<Tuote, Integer>();
 
         try {
-            String sql = "SELECT product_id FROM productlist WHERE shoppinglist_id = ?";
+            String sql = "SELECT product_id FROM productlist WHERE shoppinglist_id = ? ORDER BY product_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, lista);
@@ -109,6 +109,23 @@ public class TuoteLista {
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    
+    public static boolean poistaTuoteListalta(int tuote, int lista) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM productlist where product_id = ? AND shoppinglist_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, tuote);
+            kysely.setInt(2, lista);
+            return kysely.execute();
+        } finally {
             try { kysely.close(); } catch (Exception e) {  }
             try { yhteys.close(); } catch (Exception e) {  }
         }

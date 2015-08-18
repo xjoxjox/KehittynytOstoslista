@@ -120,6 +120,10 @@
         <servlet-name>OstoslistaLisaaTuote</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.OstoslistaLisaaTuote</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OstoslistaTuotteenpoistoServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistaTuotteenpoistoServLet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
@@ -239,6 +243,10 @@
     <servlet-mapping>
         <servlet-name>OstoslistaLisaaTuote</servlet-name>
         <url-pattern>/OstoslistaLisaaTuote</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistaTuotteenpoistoServLet</servlet-name>
+        <url-pattern>/OstoslistaTuotteenpoistoServLet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

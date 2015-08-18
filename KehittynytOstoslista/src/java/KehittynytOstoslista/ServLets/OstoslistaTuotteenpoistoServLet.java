@@ -3,6 +3,7 @@ package KehittynytOstoslista.ServLets;
 import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.Tuote;
+import KehittynytOstoslista.Models.TuoteHinta;
 import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Johanna
  */
-public class OstoslistaTuotteetServLet extends HttpServlet {
+public class OstoslistaTuotteenpoistoServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,12 +37,19 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
-        int lista = Integer.parseInt(request.getParameter("id"));
+        boolean tulos = TuoteLista.poistaTuoteListalta(Integer.parseInt(request.getParameter("tuoteid")), 
+                Integer.parseInt(request.getParameter("listaid")));
         
-        HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(lista);
+        if (tulos) {
+            request.setAttribute("tuotteenpoisto", "Tuote poistettu listalta onnistuneesti.");
+        } else {
+            request.setAttribute("tuotteenpoisto", "Tuotetta ei voitu poistaa listalta.");
+        }
+        
+        HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(Integer.parseInt(request.getParameter("listaid")));
         
         request.setAttribute("tuotteet", tuotteet);
-        request.setAttribute("listaid", lista);
+        request.setAttribute("listaid", Integer.parseInt(request.getParameter("listaid")));
         
         
         if (tuotteet.isEmpty()) {
@@ -82,7 +90,7 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(OstoslistaTuotteetServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaTuotteenpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -100,7 +108,7 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(OstoslistaTuotteetServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaTuotteenpoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
