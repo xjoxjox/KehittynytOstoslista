@@ -51,7 +51,8 @@ public class Bonus {
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                return new Bonus(tulokset);
+                Bonus b = new Bonus(tulokset.getInt("bonus_id"), tulokset.getString("name"));
+                return b;
             } else {
                 return null;
             }
@@ -84,9 +85,7 @@ public class Bonus {
             tulokset = kysely.executeQuery();
 
             while (tulokset.next()) {
-                Bonus b = new Bonus(tulokset);
-                b.id = tulokset.getInt("bonus_id");
-                b.nimi = tulokset.getString("name");
+                Bonus b = new Bonus(tulokset.getInt("bonus_id"), tulokset.getString("name"));
                 bonukset.add(b);
             }
 

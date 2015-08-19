@@ -1,15 +1,15 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Kauppa;
 import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaKuitattu;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
-import KehittynytOstoslista.Models.Tuote;
-import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
-import java.util.HashMap;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Johanna
  */
-public class OstoslistaTuotteetServLet extends HttpServlet {
+public class OstoslistankuittausServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,55 +31,38 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
+     * @throws javax.naming.NamingException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
+            throws ServletException, IOException, SQLException, NamingException, Exception {
         response.setContentType("text/html;charset=UTF-8");
-        
-        String param = request.getParameter("param");
-        int lista = Integer.parseInt(request.getParameter("id"));
-        
-        HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(lista);
-        
-        request.setAttribute("tuotteet", tuotteet);
-        request.setAttribute("listaid", lista);
-        
-        
-        if (tuotteet.isEmpty()) {
-            request.setAttribute("tuotelistatyhja", "Ostoslistalla ei ole tuotteita.");
-        } else {
-            request.setAttribute("tuotehaku", "tuotehaku");
-        }
-        
-        HttpSession session = request.getSession();
+
+         HttpSession session = request.getSession();
         String tunnus = (String)session.getAttribute("kirjautunut");
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
+        int listabonus = Kauppa.haeKaupalleBonus(Integer.parseInt(request.getParameter("kuittikauppa")));
+                
+        boolean onnistui = OstoslistaKuitattu.luoUusiLista(request.getParameter("nimi"), Integer.parseInt(request.getParameter("id")), 1, 
+                Integer.parseInt(request.getParameter("kuittikauppa")), kayttaja.getId(), listabonus);
         
-        if(param.equals("ostoslistat.jsp")) {
-            List<OstoslistaTallennettu> listat = null;
-        
-            listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
-    
-            request.setAttribute("listat", listat);
-        
-            if (listat.isEmpty()) {
-                request.setAttribute("eiOstoslistoja", "Ei tallennettuja ostoslistoja.");
-            }
+        if(onnistui) {
+            request.setAttribute("kuittausonnistui", "Ostoslistan kuittaus onnistui.");
+        } else {
+            request.setAttribute("kuittausonnistui", "Ostoslistan kuittaus epäonnistui.");
         }
         
-        if(param.equals("ostohistoria.jsp")) {
-            List<OstoslistaKuitattu> listat = null;
+        List<OstoslistaTallennettu> listat = null;
         
-            listat = OstoslistaKuitattu.haeKaikkiOstoslistaKuitattu(kayttaja.getId());
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
     
-            request.setAttribute("listat", listat);
+        request.setAttribute("listat", listat);
         
-            if (listat.isEmpty()) {
-                request.setAttribute("viesti", "Ei tallennettuja listoja.");
-            }
+        if (listat.isEmpty()) {
+            request.setAttribute("viesti", "Ei tallennettuja listoja.");
         }
         
-        RequestDispatcher dispatcher = request.getRequestDispatcher(param);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ostoslistat.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -97,8 +80,10 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
+        } catch (NamingException ex) {
+            Logger.getLogger(OstoslistankuittausServLet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(OstoslistaTuotteetServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistankuittausServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -115,8 +100,10 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
+        } catch (NamingException ex) {
+            Logger.getLogger(OstoslistankuittausServLet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(OstoslistaTuotteetServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistankuittausServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

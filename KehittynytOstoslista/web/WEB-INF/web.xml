@@ -124,6 +124,14 @@
         <servlet-name>OstoslistaTuotteenpoistoServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.OstoslistaTuotteenpoistoServLet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OstoslistaTallennettuPoistoServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistaTallennettuPoistoServLet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OstoslistankuittausServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistankuittausServLet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
@@ -247,6 +255,14 @@
     <servlet-mapping>
         <servlet-name>OstoslistaTuotteenpoistoServLet</servlet-name>
         <url-pattern>/OstoslistaTuotteenpoistoServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistaTallennettuPoistoServLet</servlet-name>
+        <url-pattern>/OstoslistaTallennettuPoistoServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistankuittausServLet</servlet-name>
+        <url-pattern>/OstoslistankuittausServLet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

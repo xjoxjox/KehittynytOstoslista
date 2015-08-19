@@ -1,12 +1,8 @@
 package KehittynytOstoslista.ServLets;
 
 import KehittynytOstoslista.Models.Kayttaja;
-import KehittynytOstoslista.Models.OstoslistaKuitattu;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
-import KehittynytOstoslista.Models.Tuote;
-import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +17,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Johanna
  */
-public class OstoslistaTuotteetServLet extends HttpServlet {
+public class OstoslistaTallennettuPoistoServLet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,50 +32,28 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
-        String param = request.getParameter("param");
-        int lista = Integer.parseInt(request.getParameter("id"));
+        boolean poisto = OstoslistaTallennettu.poistaLista(Integer.parseInt(request.getParameter("id")));
         
-        HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(lista);
-        
-        request.setAttribute("tuotteet", tuotteet);
-        request.setAttribute("listaid", lista);
-        
-        
-        if (tuotteet.isEmpty()) {
-            request.setAttribute("tuotelistatyhja", "Ostoslistalla ei ole tuotteita.");
+        if (poisto) {
+            request.setAttribute("listanpoisto", "Listan poisto onnistui.");
         } else {
-            request.setAttribute("tuotehaku", "tuotehaku");
+            request.setAttribute("listanpoisto", "Listan poisto epäonnistui.");
         }
         
         HttpSession session = request.getSession();
         String tunnus = (String)session.getAttribute("kirjautunut");
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
+        List<OstoslistaTallennettu> listat = null;
         
-        if(param.equals("ostoslistat.jsp")) {
-            List<OstoslistaTallennettu> listat = null;
-        
-            listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
+        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettuJoitaEiKuitattu(kayttaja.getId());
     
-            request.setAttribute("listat", listat);
+        request.setAttribute("listat", listat);
         
-            if (listat.isEmpty()) {
-                request.setAttribute("eiOstoslistoja", "Ei tallennettuja ostoslistoja.");
-            }
+        if (listat.isEmpty()) {
+            request.setAttribute("viesti", "Ei tallennettuja listoja.");
         }
         
-        if(param.equals("ostohistoria.jsp")) {
-            List<OstoslistaKuitattu> listat = null;
-        
-            listat = OstoslistaKuitattu.haeKaikkiOstoslistaKuitattu(kayttaja.getId());
-    
-            request.setAttribute("listat", listat);
-        
-            if (listat.isEmpty()) {
-                request.setAttribute("viesti", "Ei tallennettuja listoja.");
-            }
-        }
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher(param);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ostoslistat.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -98,7 +72,7 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(OstoslistaTuotteetServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaTallennettuPoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -116,7 +90,7 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(OstoslistaTuotteetServLet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OstoslistaTallennettuPoistoServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

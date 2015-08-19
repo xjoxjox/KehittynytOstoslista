@@ -29,7 +29,7 @@
                             <li><a href="BonustenhakuServLet?param=kaupat.jsp">Kaupat</a></li>
 <!--                            <li><a href="maksutavat.jsp">Maksutavat</a></li>
                             <li><a href="bonukset.jsp">Bonukset</a></li>-->
-                            <li><a href="ostohistoria.jsp">Ostohistoria</a></li>
+                            <li><a href="OstoslistaKuitattuServLet">Ostohistoria</a></li>
                             <form method="link" action="logoutprocess.jsp">
                                 <input type="submit" value="Kirjaudu ulos">
                             </form>

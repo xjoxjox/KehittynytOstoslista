@@ -23,10 +23,10 @@ public class OstoslistaKuitattu {
     private double summa;
     private double paino;
     private Timestamp paivays;
-    private int kauppaId;
+    private Kauppa kauppa;
     private int kayttajaId;
-    private int maksutapaId;
-    private int bonusId;
+    private Maksutapa maksutapa;
+    private Bonus bonus;
     
     private OstoslistaKuitattu(ResultSet tulos) throws SQLException, Exception {
         OstoslistaKuitattu o = new OstoslistaKuitattu(
@@ -36,23 +36,25 @@ public class OstoslistaKuitattu {
             tulos.getDouble("sum"),
             tulos.getDouble("weight"),
             tulos.getTimestamp("time_checked"),
-            tulos.getInt("shop_id"),
+            Kauppa.haeKauppa(tulos.getInt("shop_id")),
             tulos.getInt("account_id"),
-            tulos.getInt("payment_id"),
-            tulos.getInt("bonus_id")
+            Maksutapa.haeMaksutapa(tulos.getInt("payment_id")),
+            Bonus.haeBonus(tulos.getInt("bonus_id"))
         );
     }
 
-    public OstoslistaKuitattu(int id, int listaid, String nimi, double summa, double paino, Timestamp paivays, int kauppaId,
-        int kayttajaId, int maksutapaId, int bonusId) throws Exception {
+    public OstoslistaKuitattu(int id, int listaid, String nimi, double summa, double paino, Timestamp paivays, Kauppa kauppa,
+        int kayttajaId, Maksutapa maksutapa, Bonus bonus) throws Exception {
         this.id = id;
         this.listaid = listaid;
         this.nimi = nimi;
+        this.summa = haeSumma(listaid, kauppa.getId());
+        this.paino = haePaino(listaid);
         this.paivays = paivays;
-        this.kauppaId = kauppaId;
+        this.kauppa = kauppa;
         this.kayttajaId = kayttajaId;
-        this.maksutapaId = maksutapaId;
-        this.bonusId = bonusId;
+        this.maksutapa = maksutapa;
+        this.bonus = bonus;
         
         this.tuotteet = TuoteLista.haeTuotteetListalle(id);
     }
@@ -76,7 +78,11 @@ public class OstoslistaKuitattu {
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                return new OstoslistaKuitattu(tulokset);
+                OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset.getInt("shoppinglistchecked_id"), tulokset.getInt("shoppinglist_id"),
+                    tulokset.getString("name"), tulokset.getDouble("sum"), tulokset.getDouble("weight"), tulokset.getTimestamp("time_checked"),
+                        Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"), Maksutapa.haeMaksutapa(tulokset.getInt("payment_id")),
+                            Bonus.haeBonus(tulokset.getInt("bonus_id")));
+                return o;
             } else {
                 return null;
             }
@@ -112,7 +118,10 @@ public class OstoslistaKuitattu {
 
             if (tulokset.next()) {
                 while (tulokset.next()) {
-                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset);
+                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset.getInt("shoppinglistchecked_id"), tulokset.getInt("shoppinglist_id"),
+                    tulokset.getString("name"), tulokset.getDouble("sum"), tulokset.getDouble("weight"), tulokset.getTimestamp("time_checked"),
+                        Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"), Maksutapa.haeMaksutapa(tulokset.getInt("payment_id")),
+                            Bonus.haeBonus(tulokset.getInt("bonus_id")));
                     ostoslistat.add(o);
                 }
             } else {
@@ -152,7 +161,10 @@ public class OstoslistaKuitattu {
 
             if (tulokset.next()) {
                 while (tulokset.next()) {
-                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset);
+                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset.getInt("shoppinglistchecked_id"), tulokset.getInt("shoppinglist_id"),
+                    tulokset.getString("name"), tulokset.getDouble("sum"), tulokset.getDouble("weight"), tulokset.getTimestamp("time_checked"),
+                        Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"), Maksutapa.haeMaksutapa(tulokset.getInt("payment_id")),
+                            Bonus.haeBonus(tulokset.getInt("bonus_id")));
                     ostoslistat.add(o);
                 }
             } else {
@@ -192,7 +204,10 @@ public class OstoslistaKuitattu {
 
             if (tulokset.next()) {
                 while (tulokset.next()) {
-                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset);
+                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset.getInt("shoppinglistchecked_id"), tulokset.getInt("shoppinglist_id"),
+                    tulokset.getString("name"), tulokset.getDouble("sum"), tulokset.getDouble("weight"), tulokset.getTimestamp("time_checked"),
+                        Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"), Maksutapa.haeMaksutapa(tulokset.getInt("payment_id")),
+                            Bonus.haeBonus(tulokset.getInt("bonus_id")));
                     ostoslistat.add(o);
                 }
             } else {
@@ -232,7 +247,10 @@ public class OstoslistaKuitattu {
 
             if (tulokset.next()) {
                 while (tulokset.next()) {
-                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset);
+                    OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset.getInt("shoppinglistchecked_id"), tulokset.getInt("shoppinglist_id"),
+                    tulokset.getString("name"), tulokset.getDouble("sum"), tulokset.getDouble("weight"), tulokset.getTimestamp("time_checked"),
+                        Kauppa.haeKauppa(tulokset.getInt("shop_id")), tulokset.getInt("account_id"), Maksutapa.haeMaksutapa(tulokset.getInt("payment_id")),
+                            Bonus.haeBonus(tulokset.getInt("bonus_id")));
                     ostoslistat.add(o);
                 }
             } else {
@@ -256,7 +274,8 @@ public class OstoslistaKuitattu {
     * @return palauttaa listana käyttäjän kaikki ostoslistat.
     */
     public static List<OstoslistaKuitattu> haeKaikkiOstoslistaKuitattu(int hakukayttaja) throws SQLException, NamingException, Exception {
-        String sql = "SELECT shoppinglistchecked_id, shoppinglist_id, name, sum, weight, to_char(time_checked, 'YYYY-MM-DD HH24:MI:SS') as time_checked, shop_id FROM shoppinglistchecked WHERE account_id = ? ORDER BY time_checked";
+        String sql = "SELECT shoppinglistchecked_id, shoppinglist_id, name, sum, weight, to_char(time_checked, 'YYYY-MM-DD HH24:MI:SS') as time_checked,"
+                + " shop_id, account_id, payment_id, bonus_id FROM shoppinglistchecked WHERE account_id = ? ORDER BY time_checked";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
         kysely.setInt(1, hakukayttaja);
@@ -265,8 +284,9 @@ public class OstoslistaKuitattu {
         ArrayList<OstoslistaKuitattu> ostoslistat = new ArrayList<OstoslistaKuitattu>();
         while (tulokset.next()) {
             OstoslistaKuitattu o = new OstoslistaKuitattu(tulokset.getInt("shoppinglistchecked_id"), tulokset.getInt("shoppinglist_id"), tulokset.getString("name"), tulokset.getDouble("sum"),
-                tulokset.getDouble("weight"), tulokset.getTimestamp("time_checked"), tulokset.getInt("shop_id"), 
-                    tulokset.getInt("account_id"), tulokset.getInt("payment_id"), tulokset.getInt("bonus_id"));
+                tulokset.getDouble("weight"), tulokset.getTimestamp("time_checked"), Kauppa.haeKauppa(tulokset.getInt("shop_id")), 
+                    tulokset.getInt("account_id"), Maksutapa.haeMaksutapa(tulokset.getInt("payment_id")), 
+                        Bonus.haeBonus(tulokset.getInt("bonus_id")));
             ostoslistat.add(o);
         }   
 
@@ -349,11 +369,12 @@ public class OstoslistaKuitattu {
     * Metodilla muokataan ostoslistan nimi.
     *
     * @param x uusi nimi.
+    * @param lista ostoslistan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaNimi(String x) throws NamingException, SQLException {
+    public static boolean muokkaaNimi(String x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -363,11 +384,10 @@ public class OstoslistaKuitattu {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.nimi = tulokset.getString("name");
                 return true;
             } else {
                 return false;
@@ -383,11 +403,12 @@ public class OstoslistaKuitattu {
     * Metodilla muokataan ostoslistan päiväys.
     *
     * @param x uusi päiväys.
+    * @param lista ostoslistan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaPaivays(Timestamp x) throws NamingException, SQLException {
+    public static boolean muokkaaPaivays(Timestamp x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -397,11 +418,10 @@ public class OstoslistaKuitattu {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setTimestamp(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.paivays = tulokset.getTimestamp("time_checked");
                 return true;
             } else {
                 return false;
@@ -417,12 +437,13 @@ public class OstoslistaKuitattu {
     * Metodilla muokataan ostoslistaan linkitetty Kauppa.
     *
     * @param x uuden kaupan id.
+    * @param lista ostoslistan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @see KehittynytOstoslista.Models.Kauppa
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaKauppaId(int x) throws NamingException, SQLException {
+    public static boolean muokkaaKauppaId(int x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -432,11 +453,10 @@ public class OstoslistaKuitattu {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.kauppaId = tulokset.getInt("shop_id");
                 return true;
             } else {
                 return false;
@@ -452,12 +472,13 @@ public class OstoslistaKuitattu {
     * Metodilla muokataan ostoslistaan linkitetty Kayttaja.
     *
     * @param x uuden käyttäjän id.
+    * @param lista ostoslistan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @see KehittynytOstoslista.Models.Kayttaja
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaKayttajaId(int x) throws NamingException, SQLException {
+    public static boolean muokkaaKayttajaId(int x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -467,11 +488,10 @@ public class OstoslistaKuitattu {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.kayttajaId = tulokset.getInt("account_id");
                 return true;
             } else {
                 return false;
@@ -487,12 +507,13 @@ public class OstoslistaKuitattu {
     * Metodilla muokataan ostoslistaan linkitetty maksutapa.
     *
     * @param x uuden maksutavan id.
+    * @param lista ostoslistan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @see KehittynytOstoslista.Models.Maksutapa
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaMaksutapaId(int x) throws NamingException, SQLException {
+    public static boolean muokkaaMaksutapaId(int x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -502,11 +523,10 @@ public class OstoslistaKuitattu {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.maksutapaId = tulokset.getInt("payment_id");
                 return true;
             } else {
                 return false;
@@ -522,12 +542,13 @@ public class OstoslistaKuitattu {
     * Metodilla muokataan ostoslistaan linkitetty Bonus.
     *
     * @param x uuden bonuksen id.
+    * @param lista ostoslistan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @see KehittynytOstoslista.Models.Bonus
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaBonusId(int x) throws NamingException, SQLException {
+    public static boolean muokkaaBonusId(int x, int lista) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -537,11 +558,10 @@ public class OstoslistaKuitattu {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, lista);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.bonusId = tulokset.getInt("bonus_id");
                 return true;
             } else {
                 return false;
@@ -583,18 +603,17 @@ public class OstoslistaKuitattu {
 
         try {
             String sql = "INSERT INTO shoppinglistchecked(shoppinglist_id, name, sum, weight, time_checked, "
-                    + "shoppinglist_id, shop_id, account_id, payment_id, bonus_id) VALUES(?,?,?,?,now(),?,?,?,?,?) RETURNING shoppinglistchecked_id";
+                    + "shop_id, account_id, payment_id, bonus_id) VALUES(?,?,?,?,now(),?,?,?,?) RETURNING shoppinglistchecked_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, lista);
             kysely.setString(2, listanimi);
             kysely.setDouble(3, listasumma);
             kysely.setDouble(4, listapaino);
-            kysely.setInt(5, lista);
-            kysely.setInt(6, listakauppa);
-            kysely.setInt(7, listakayttaja);
-            kysely.setInt(8, listamaksutapa);
-            kysely.setInt(9, listabonus);
+            kysely.setInt(5, listakauppa);
+            kysely.setInt(6, listakayttaja);
+            kysely.setInt(7, listamaksutapa);
+            kysely.setInt(8, listabonus);
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
@@ -631,10 +650,10 @@ public class OstoslistaKuitattu {
             kysely.setDouble(3, summa);
             kysely.setDouble(4, paino);
             kysely.setTimestamp(5, paivays);
-            kysely.setInt(6, kauppaId);
+            kysely.setInt(6, kauppa.getId());
             kysely.setInt(7, kayttajaId);
-            kysely.setInt(8, maksutapaId);
-            kysely.setInt(9, bonusId);
+            kysely.setInt(8, maksutapa.getId());
+            kysely.setInt(9, bonus.getId());
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
@@ -675,6 +694,10 @@ public class OstoslistaKuitattu {
     public int getId() {
         return this.id;
     }
+    
+    public int getListaid() {
+        return this.listaid;
+    }
   
     public String getNimi() {
         return this.nimi;
@@ -696,55 +719,59 @@ public class OstoslistaKuitattu {
         return this.paivays;
     }
     
-    public int getKauppaId() {
-        return this.kauppaId;
+    public Kauppa getKauppa() {
+        return this.kauppa;
     }
     
     public int getKayttajaId() {
         return this.kayttajaId;
     }
     
-    public int getMaksutapaId() {
-        return this.maksutapaId;
+    public Maksutapa getMaksutapa() {
+        return this.maksutapa;
     }
     
-    public int getBonusId() {
-        return this.bonusId;
+    public Bonus getBonus() {
+        return this.bonus;
     }
   
     public void setId(int x) {
         this.id = x;
+    }
+    
+    public void setListaid(int x) {
+        this.listaid = x;
     }
   
     public void setNimi(String x) {
         this.nimi = x;
     }
   
-    public void setSumma(double x) {
-        this.summa = x;
+    public void setSumma() throws Exception {
+        this.summa = haeSumma(listaid, kauppa.getId());
     }
   
-    public void setPaino(double x) {
-        this.paino = x;
+    public void setPaino() throws NamingException, SQLException, Exception {
+        this.paino = haePaino(listaid);
     }
   
     public void setPaivays(Timestamp x) {
         this.paivays = x;
     }
     
-    public void setKauppaId(int x) {
-        this.kauppaId = x;
+    public void setKauppa(Kauppa x) {
+        this.kauppa = x;
     }
     
     public void setKayttajaId(int x) {
         this.kayttajaId = x;
     }
     
-    public void setMaksutapaId(int x) {
-        this.maksutapaId = x;
+    public void setMaksutapa(Maksutapa x) {
+        this.maksutapa = x;
     }
     
-    public void setBonusId(int x) {
-        this.bonusId = x;
+    public void setBonus(Bonus x) {
+        this.bonus = x;
     }
 }

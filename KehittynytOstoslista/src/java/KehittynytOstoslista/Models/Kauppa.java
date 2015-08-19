@@ -196,6 +196,7 @@ public class Kauppa {
     /**
     * Metodilla haetaan kaikki kaupat.
     *
+    * @param sivu
     * @throws SQLException
     * @throws NamingException
     * @return palauttaa listana kaikki kaupat.
@@ -388,6 +389,37 @@ public class Kauppa {
                 return true;
             } else {
                 return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
+    * Metodilla haetaan sen bonuksen id, johon kauppa kuuluu.
+    *
+    * @param kauppa kaupan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa bonuksen id:n.
+    */
+    public static int haeKaupalleBonus(int kauppa) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "SELECT bonus_id FROM shop WHERE shop_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, kauppa);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                return tulokset.getInt("bonus_id");
+            } else {
+                return 0;
             }
 
         } finally {

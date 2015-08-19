@@ -451,7 +451,7 @@ public class OstoslistaTallennettu {
         ResultSet tulokset = null;
 
         try {
-            String sql = "UPDATE shoppinlistsaved SET checked = ? WHERE shoppinglist_id = ? RETURNING checked";
+            String sql = "UPDATE shoppinglistsaved SET checked = ? WHERE shoppinglist_id = ? RETURNING checked";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setBoolean(1, x);

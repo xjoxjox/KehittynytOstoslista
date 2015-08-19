@@ -1,6 +1,7 @@
 package KehittynytOstoslista.ServLets;
 
 import KehittynytOstoslista.Models.Kayttaja;
+import KehittynytOstoslista.Models.OstoslistaKuitattu;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -39,9 +40,9 @@ public class OstoslistaKuitattuServLet extends HttpServlet {
         String tunnus = (String)session.getAttribute("kirjautunut");
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
         
-        List<OstoslistaTallennettu> listat = null;
+        List<OstoslistaKuitattu> listat = null;
         
-        listat = OstoslistaTallennettu.haeKaikkiOstoslistaTallennettu(kayttaja.getId());
+        listat = OstoslistaKuitattu.haeKaikkiOstoslistaKuitattu(kayttaja.getId());
     
         request.setAttribute("listat", listat);
         
@@ -49,9 +50,7 @@ public class OstoslistaKuitattuServLet extends HttpServlet {
             request.setAttribute("viesti", "Ei tallennettuja listoja.");
         }
         
-        request.setAttribute("pageError", "Ei tallennettuja listoja."); 
-        
-        request.getRequestDispatcher("ostoslistat.jsp").forward(request,response);
+        request.getRequestDispatcher("ostohistoria.jsp").forward(request,response);
         
     }
 
