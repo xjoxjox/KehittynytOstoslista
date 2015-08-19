@@ -22,7 +22,7 @@
                 <tr><td><b>Valmistaja</b></td><td>: <input  type="text" name="hakuvalmistaja"></td></tr> 
                 <tr><td><input  type="submit" value="Hae"></td></tr>
             </table>
-            </form>
+            </form><br>
             <form method="post" name="frm" action="TuotteenlisaysServLet">
             <table>
                 <tr><td><h3>Lisää tuote</h3></td></tr>

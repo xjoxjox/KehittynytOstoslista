@@ -5,7 +5,6 @@ import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.Tuote;
 import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;

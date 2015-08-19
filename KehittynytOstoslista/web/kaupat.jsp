@@ -15,7 +15,7 @@
         <body>
             <br/><br/>
             <form method="post" name="frm" action="KauppaServLet">
-                <p>Haku toimii tällä hetkellä syöttämällä vain yksi hakukriteeri.</p>
+                <p>Haku toimii tällä hetkellä syöttämällä vain yksi hakukriteeri. Jättämällä kaikki tyhjäksi haetaan kaikki kaupat.</p>
             <table>
                 <tr><td><h3>Etsi kauppa</h3></td></tr>
                 <tr><td><b>Kaupunki</b></td><td>: <input  type="text" name="hakukaupunki"></td></tr>        
@@ -29,7 +29,7 @@
                 </tr> 
                 <tr><td><input  type="submit" value="Hae"></td></tr>
             </table>
-            </form>
+            </form><br>
             <form method="post" name="frm" action="KaupanlisaysServLet">
             <table>
                 <tr><td><h3>Lisää kauppa</h3></td></tr>

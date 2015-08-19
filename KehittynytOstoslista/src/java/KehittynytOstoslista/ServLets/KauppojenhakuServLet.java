@@ -1,9 +1,7 @@
 package KehittynytOstoslista.ServLets;
 
-import KehittynytOstoslista.Models.Bonus;
 import KehittynytOstoslista.Models.Kauppa;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,9 +27,11 @@ public class KauppojenhakuServLet extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
+     * @throws javax.naming.NamingException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException, NamingException {
+            throws ServletException, IOException, SQLException, NamingException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
         String ohjaus = request.getParameter("param");
@@ -64,6 +64,8 @@ public class KauppojenhakuServLet extends HttpServlet {
             Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NamingException ex) {
             Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -83,6 +85,8 @@ public class KauppojenhakuServLet extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NamingException ex) {
+            Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(KauppojenhakuServLet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

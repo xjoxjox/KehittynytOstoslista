@@ -31,6 +31,8 @@ public class OstoslistaLisaaTuoteNakymaServLet extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
+     * @throws javax.naming.NamingException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, NamingException, Exception {
@@ -41,7 +43,7 @@ public class OstoslistaLisaaTuoteNakymaServLet extends HttpServlet {
         
         request.setAttribute("tuotteenlisays", "tuotteenlisays");
         
-        List<Tuote> tuotelista = new ArrayList<Tuote>();
+        List<Tuote> tuotelista = null;
         
         tuotelista = Tuote.haeKaikkiTuotteet(1);
         

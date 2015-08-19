@@ -1,7 +1,12 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Bonus;
+import KehittynytOstoslista.Models.Kauppa;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,23 +28,47 @@ public class KaupanMuokkausNakymaServLet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet KaupanMuokkausNakymaServLet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet KaupanMuokkausNakymaServLet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+        
+        Kauppa kauppa = Kauppa.haeKauppa(Integer.parseInt(request.getParameter("id")));
+        
+        List<Bonus> bonukset = Bonus.haeKaikkiBonukset();
+        
+        request.setAttribute("muokkauskauppa", kauppa);
+        request.setAttribute("bonukset", bonukset);
+        
+        String hakukaupunki = request.getParameter("hakukaupunki");
+        String hakunimi = request.getParameter("hakunimi");
+        int hakubonus = Integer.parseInt(request.getParameter("hakubonus"));
+        
+        List<Kauppa> kaupat = null;
+        
+        if (hakukaupunki != null && hakukaupunki.length() > 0) {
+            kaupat = Kauppa.haeKaupatKaupungilla(hakukaupunki);
         }
+        if (hakunimi != null && hakunimi.length() > 0) {
+            kaupat = Kauppa.haeKaupatNimella(hakunimi);
+        }
+        if (hakubonus != 1) {
+            kaupat = Kauppa.haeKaupatBonuksella(hakubonus);
+        }
+        if (hakukaupunki.equals("") && hakunimi.equals("") && hakubonus == 1) {
+            kaupat = Kauppa.haeKaikkiKaupat(1);
+        }
+        
+        request.setAttribute("kaupat", kaupat);
+        
+        if (kaupat.isEmpty()) {
+            request.setAttribute("viesti", "Kauppoja ei löytynyt");
+        }
+        
+        request.setAttribute("hakukaupunki", hakukaupunki);
+        request.setAttribute("hakunimi", hakunimi);
+        request.setAttribute("hakubonus", hakubonus);
+        
+        RequestDispatcher dispatcher = request.getRequestDispatcher("kauppa.jsp");
+        dispatcher.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -54,7 +83,11 @@ public class KaupanMuokkausNakymaServLet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(KaupanMuokkausNakymaServLet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -68,7 +101,11 @@ public class KaupanMuokkausNakymaServLet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(KaupanMuokkausNakymaServLet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

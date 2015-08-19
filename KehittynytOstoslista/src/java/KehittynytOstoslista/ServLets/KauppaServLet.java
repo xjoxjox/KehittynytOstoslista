@@ -54,6 +54,10 @@ public class KauppaServLet extends HttpServlet {
             request.setAttribute("viesti", "Kauppoja ei löytynyt");
         }
         
+        request.setAttribute("hakukaupunki", hakukaupunki);
+        request.setAttribute("hakunimi", hakunimi);
+        request.setAttribute("hakubonus", hakubonus);
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher("kauppa.jsp");
         dispatcher.forward(request, response);
     }

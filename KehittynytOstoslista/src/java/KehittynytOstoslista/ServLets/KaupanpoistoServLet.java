@@ -39,16 +39,34 @@ public class KaupanpoistoServLet extends HttpServlet {
             request.setAttribute("poistoviesti", "Kauppa poisto epäonnistui.");
         }
         
+        String hakukaupunki = request.getParameter("hakukaupunki");
+        String hakunimi = request.getParameter("hakunimi");
+        int hakubonus = Integer.parseInt(request.getParameter("hakubonus"));
+        
         List<Kauppa> kaupat = null;
-
-        kaupat = Kauppa.haeKaikkiKaupat(1);
-
+        
+        if (hakukaupunki != null && hakukaupunki.length() > 0) {
+            kaupat = Kauppa.haeKaupatKaupungilla(hakukaupunki);
+        }
+        if (hakunimi != null && hakunimi.length() > 0) {
+            kaupat = Kauppa.haeKaupatNimella(hakunimi);
+        }
+        if (hakubonus != 1) {
+            kaupat = Kauppa.haeKaupatBonuksella(hakubonus);
+        }
+        if (hakukaupunki.equals("") && hakunimi.equals("") && hakubonus == 1) {
+            kaupat = Kauppa.haeKaikkiKaupat(1);
+        }
         
         request.setAttribute("kaupat", kaupat);
         
         if (kaupat.isEmpty()) {
             request.setAttribute("viesti", "Kauppoja ei löytynyt");
         }
+        
+        request.setAttribute("hakukaupunki", hakukaupunki);
+        request.setAttribute("hakunimi", hakunimi);
+        request.setAttribute("hakubonus", hakubonus);
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("kauppa.jsp");
         dispatcher.forward(request, response);

@@ -18,24 +18,24 @@ public class Kauppa {
     private String nimi;
     private String kaupunki;
     private String osoite;
-    private int bonusId;
+    private Bonus bonus;
     
-    private Kauppa(ResultSet tulos) throws SQLException {
+    private Kauppa(ResultSet tulos) throws SQLException, Exception {
         Kauppa k = new Kauppa(
             tulos.getInt("shop_id"),
             tulos.getString("name"),
             tulos.getString("city"),
             tulos.getString("address"),
-            tulos.getInt("bonus_id")
+            Bonus.haeBonus(tulos.getInt("bonus_id"))
         );
     }
 
-    public Kauppa(int id, String nimi, String kaupunki, String osoite, int bonusId) {
+    public Kauppa(int id, String nimi, String kaupunki, String osoite, Bonus bonus) {
         this.id = id;
         this.nimi = nimi;
         this.kaupunki = kaupunki;
         this.osoite = osoite;
-        this.bonusId = bonusId;
+        this.bonus = bonus;
     }
     /**
     * Metodilla haetaan kauppa sen id:llä.
@@ -57,12 +57,13 @@ public class Kauppa {
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                Kauppa k = new Kauppa(tulokset);
+                Kauppa k = new Kauppa(tulokset.getInt("shop_id"), tulokset.getString("name"), tulokset.getString("city"),
+                tulokset.getString("address"), Bonus.haeBonus(tulokset.getInt("bonus_id")));
                 k.setId(tulokset.getInt("shop_id"));
                 k.setNimi(tulokset.getString("name"));
                 k.setKaupunki(tulokset.getString("city"));
                 k.setOsoite(tulokset.getString("address"));
-                k.setBonusId(tulokset.getInt("bonus_id"));
+                k.setBonus(Bonus.haeBonus(tulokset.getInt("bonus_id")));
                 return k;
             } else {
                 return null;
@@ -97,7 +98,8 @@ public class Kauppa {
 
             if (tulokset.next()) {
                 while (tulokset.next()) {
-                    Kauppa k = new Kauppa(tulokset);
+                    Kauppa k = new Kauppa(tulokset.getInt("shop_id"), tulokset.getString("name"), tulokset.getString("city"),
+                        tulokset.getString("address"), Bonus.haeBonus(tulokset.getInt("bonus_id")));
                     kaupat.add(k);
                 }
             } else {
@@ -135,7 +137,8 @@ public class Kauppa {
 
             if (tulokset.next()) {
                 while (tulokset.next()) {
-                    Kauppa k = new Kauppa(tulokset);
+                    Kauppa k = new Kauppa(tulokset.getInt("shop_id"), tulokset.getString("name"), tulokset.getString("city"),
+                        tulokset.getString("address"), Bonus.haeBonus(tulokset.getInt("bonus_id")));
                     kaupat.add(k);
                 }
             } else {
@@ -174,7 +177,8 @@ public class Kauppa {
 
             if (tulokset.next()) {
                 while (tulokset.next()) {
-                    Kauppa k = new Kauppa(tulokset);
+                    Kauppa k = new Kauppa(tulokset.getInt("shop_id"), tulokset.getString("name"), tulokset.getString("city"),
+                        tulokset.getString("address"), Bonus.haeBonus(tulokset.getInt("bonus_id")));
                     kaupat.add(k);
                 }
             } else {
@@ -196,7 +200,7 @@ public class Kauppa {
     * @throws NamingException
     * @return palauttaa listana kaikki kaupat.
     */
-    public static List<Kauppa> haeKaikkiKaupat(int sivu) throws SQLException, NamingException {
+    public static List<Kauppa> haeKaikkiKaupat(int sivu) throws SQLException, NamingException, Exception {
         String sql = "SELECT shop_id, name, city, address, bonus_id FROM shop ORDER BY name LIMIT 50 OFFSET ?";
         Connection yhteys = Yhteys.getYhteys();
         PreparedStatement kysely = yhteys.prepareStatement(sql);
@@ -206,12 +210,13 @@ public class Kauppa {
         ArrayList<Kauppa> kaupat = new ArrayList<Kauppa>();
         
         while (tulokset.next()) {
-            Kauppa k = new Kauppa(tulokset);
+            Kauppa k = new Kauppa(tulokset.getInt("shop_id"), tulokset.getString("name"), tulokset.getString("city"),
+                tulokset.getString("address"), Bonus.haeBonus(tulokset.getInt("bonus_id")));
             k.setId(tulokset.getInt("shop_id"));
             k.setNimi(tulokset.getString("name"));
             k.setKaupunki(tulokset.getString("city"));
             k.setOsoite(tulokset.getString("address"));
-            k.setBonusId(tulokset.getInt("bonus_id"));
+            k.setBonus(Bonus.haeBonus(tulokset.getInt("bonus_id")));
             kaupat.add(k);
         }   
 
@@ -247,25 +252,29 @@ public class Kauppa {
     * Metodilla muokataan kaupan nimi.
     *
     * @param x uusi nimi.
+    * @param kauppa muokattavan kaupan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaNimi(String x) throws NamingException, SQLException {
+    public static boolean muokkaaNimi(String x, int kauppa) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
+        
+        if(x.length() > 50 || x.equals("")) {
+            return false;
+        }
 
         try {
             String sql = "UPDATE shop SET name = ? WHERE shop_id = ? RETURNING name";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, kauppa);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.nimi = tulokset.getString("name");
                 return true;
             } else {
                 return false;
@@ -281,25 +290,29 @@ public class Kauppa {
     * Metodilla muokataan kaupunki, jossa kauppa sijaitsee.
     *
     * @param x uusi kaupunki.
+    * @param kauppa muokattavan kaupan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaKaupunki(String x) throws NamingException, SQLException {
+    public static boolean muokkaaKaupunki(String x, int kauppa) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
+        
+        if(x.length() > 50 || x.equals("")) {
+            return false;
+        }
 
         try {
             String sql = "UPDATE shop SET city = ? WHERE shop_id = ? RETURNING city";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, kauppa);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.kaupunki = tulokset.getString("city");
                 return true;
             } else {
                 return false;
@@ -315,25 +328,29 @@ public class Kauppa {
     * Metodilla muokataan kaupan osoite.
     *
     * @param x uusi osoite.
+    * @param kauppa muokattavan kaupan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaOsoite(String x) throws NamingException, SQLException {
+    public static boolean muokkaaOsoite(String x, int kauppa) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
+        
+        if(x.length() > 50) {
+            return false;
+        }
 
         try {
             String sql = "UPDATE shop SET address = ? WHERE shop_id = ? RETURNING address";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setString(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, kauppa);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.osoite = tulokset.getString("address");
                 return true;
             } else {
                 return false;
@@ -349,11 +366,12 @@ public class Kauppa {
     * Metodilla muokataan bonus, johon kauppa kuuluu.
     *
     * @param x uusi bonus.
+    * @param kauppa muokattavan kaupan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @return palauttaa true, jos muokkaus onnistui.
     */
-    public boolean muokkaaBonus(int x) throws NamingException, SQLException {
+    public static boolean muokkaaBonus(int x, int kauppa) throws NamingException, SQLException {
         Connection yhteys = null;
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
@@ -363,11 +381,10 @@ public class Kauppa {
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, x);
-            kysely.setInt(2, id);
+            kysely.setInt(2, kauppa);
             tulokset = kysely.executeQuery();
 
             if (tulokset.next()) {
-                this.bonusId = tulokset.getInt("onus_id");
                 return true;
             } else {
                 return false;
@@ -469,7 +486,7 @@ public class Kauppa {
             kysely.setString(1, nimi);
             kysely.setString(2, kaupunki);
             kysely.setString(3, osoite);
-            kysely.setInt(4, bonusId);
+            kysely.setInt(4, bonus.getId());
             tulokset = kysely.executeQuery();
       
             if (tulokset.next()) {
@@ -523,8 +540,8 @@ public class Kauppa {
         return this.osoite;
     }
   
-    public int getBonusId() {
-        return this.bonusId;
+    public Bonus getBonus() {
+        return this.bonus;
     }
   
     public void setId(int x) {
@@ -543,7 +560,7 @@ public class Kauppa {
         this.osoite = x;
     }
   
-    public void setBonusId(int x) {
-        this.bonusId = x;
+    public void setBonus(Bonus x) {
+        this.bonus = x;
     }
 }
