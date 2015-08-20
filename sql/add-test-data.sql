@@ -35,8 +35,8 @@ INSERT INTO categorylink (category_id, subcategory_id)
 
 INSERT INTO payment (name)
 VALUES
-	('Visa'),
-	('Kateinen');
+	('Kateinen'),
+	('Visa');
 
 INSERT INTO shop (name, city, address, bonus_id)
 	SELECT '','','', bonus_id FROM bonus WHERE name = 'ei bonusta';

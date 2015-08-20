@@ -5,7 +5,6 @@ import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.Tuote;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
