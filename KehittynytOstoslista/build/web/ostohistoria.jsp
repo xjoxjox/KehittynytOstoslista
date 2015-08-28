@@ -47,7 +47,7 @@
                             </form>
                         </td>
                         <td>
-                            <form method="post" name="frm" action="OstoslistaKuitattuPoistoServLet">
+                            <form method="post" name="frm" action="OstoslistanpoistoServLet">
                                 <input type="hidden" name="id" value="${ostoslista.id}">
                                 <input type="submit" value="Poista">
                             </form>

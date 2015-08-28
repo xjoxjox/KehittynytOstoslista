@@ -244,6 +244,37 @@ public class OstoslistaTallennettu {
         }
     }
     /**
+    * Metodilla tarkistetaan onko ostoslistoja, joiden ostokset on tehty annetussa kaupassa.
+    *
+    * @param kauppa kauppa, jossa ostokset on tehty.
+    * @throws Exception
+    * @return palauttaa true jos listoja löytyy, muuten false.
+    */
+    public static boolean onkoOstoslistaTallennettuKaupalla(int kauppa) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "SELECT * FROM shoppinglistsaved WHERE shop_id = ? AND checked = FALSE ORDER BY time_created";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, kauppa);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
     * Metodilla haetaan kaikki käyttäjän ostoslistat, joita ei ole vielä kuitattu.
     *
     * @param hakukayttaja käyttäjän id tietokannassa.
@@ -319,7 +350,7 @@ public class OstoslistaTallennettu {
                 sum += TuoteHinta.haeHintaTuotteelleKaupassa(tuote.getId(), kauppaid);
             }
         }
-        return sum;
+        return Math.round(sum*100)/100.00d;
     }
     /**
     * Metodilla haetaan ostoslistalla olevien tuotteiden kokonaispaino.
@@ -338,7 +369,7 @@ public class OstoslistaTallennettu {
                 kokPaino += tuote.getPaino();
             }
         }     
-        return kokPaino;
+        return Math.round(kokPaino*100)/100.000d;
     }
     /**
     * Metodilla lisätään Tuote ostoslistalle.

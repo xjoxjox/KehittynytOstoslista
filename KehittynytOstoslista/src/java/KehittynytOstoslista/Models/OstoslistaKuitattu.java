@@ -48,8 +48,8 @@ public class OstoslistaKuitattu {
         this.id = id;
         this.listaid = listaid;
         this.nimi = nimi;
-        this.summa = haeSumma(listaid, kauppa.getId());
-        this.paino = haePaino(listaid);
+        this.summa = haeSumma(id, kauppa.getId());
+        this.paino = haePaino(id);
         this.paivays = paivays;
         this.kauppa = kauppa;
         this.kayttajaId = kayttajaId;
@@ -223,7 +223,7 @@ public class OstoslistaKuitattu {
         }
     }
     /**
-    * Metodilla haetaan ostoslistoja, jonka ostokset on tehty annetussa kaupassa.
+    * Metodilla haetaan käyttäjän ostoslistoja, joiden ostokset on tehty annetussa kaupassa.
     *
     * @param hakukauppa kauppa, jossa ostokset on tehty.
     * @param kayttaja ostoslistan luoneen käyttäjän id tietokannassa.
@@ -258,6 +258,37 @@ public class OstoslistaKuitattu {
             }
             
             return ostoslistat;
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
+    * Metodilla tarkistetaan onko ostoslistoja, joiden ostokset on tehty annetussa kaupassa.
+    *
+    * @param kauppa kauppa, jossa ostokset on tehty.
+    * @throws Exception
+    * @return palauttaa true, jos ostoslistoja löytyy, muuten false.
+    */
+    public static boolean onkoOstoslistaKuitattuKaupalla(int kauppa) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "SELECT * FROM shoppinglistchecked WHERE shop_id = ? ORDER BY time_checked";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, kauppa);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                return true;
+            } else {
+                return false;
+            }
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
@@ -331,39 +362,41 @@ public class OstoslistaKuitattu {
     /**
     * Metodilla haetaan ostoslistalla olevien tuotteiden kokonaissumma.
     *
-    * @param listaid ostoslistan id tietokannassa.
+    * @param lista ostoslistan id tietokannassa.
     * @param kauppaid ostoslistaan linkitetyn kaupan id tietokannassa.
     * @throws Exception
     * @return palauttaa summan.
     */
-    public static double haeSumma(int listaid, int kauppaid) throws Exception {
+    public static double haeSumma(int lista, int kauppaid) throws Exception {
         double sum = 0;
+        int listaid = haeOstoslistalleOstoslistaTallennettuId(lista);
         HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
         for (Tuote tuote: tuotteet.keySet()) {
             for(int i = 0; i < tuotteet.get(tuote); i++) {
                 sum += TuoteHinta.haeHintaTuotteelleKaupassa(tuote.getId(), kauppaid);
             }
         }
-        return sum;
+        return Math.round(sum*100)/100.00d;
     }
     /**
     * Metodilla haetaan ostoslistalla olevien tuotteiden kokonaispaino.
     *
-    * @param listaid ostoslistan id tietokannassa.
+    * @param lista ostoslistan id tietokannassa.
     * @throws SQLException
     * @throws NamingException
     * @throws Exception
     * @return palauttaa painon.
     */
-    public static double haePaino(int listaid) throws NamingException, SQLException, Exception {
+    public static double haePaino(int lista) throws NamingException, SQLException, Exception {
         double kokPaino = 0;
+        int listaid = haeOstoslistalleOstoslistaTallennettuId(lista);
         HashMap<Tuote, Integer> tuotteet = TuoteLista.haeTuotteetListalle(listaid);
         for (Tuote tuote : tuotteet.keySet()) {
             for(int i = 0; i < tuotteet.get(tuote); i++) {
                 kokPaino += tuote.getPaino();
             }
         }     
-        return kokPaino;
+        return Math.round(kokPaino*100)/100.000d;
     }
     /**
     * Metodilla muokataan ostoslistan nimi.
@@ -625,6 +658,28 @@ public class OstoslistaKuitattu {
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
+    * Metodilla poistetaan ostoslista.
+    *
+    * @param lista ostoslistan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
+    public static boolean poistaLista(int lista) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM shoppinglistchecked where shoppinglistchecked_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, lista);
+            return kysely.execute();
+        } finally {
             try { kysely.close(); } catch (Exception e) {  }
             try { yhteys.close(); } catch (Exception e) {  }
         }

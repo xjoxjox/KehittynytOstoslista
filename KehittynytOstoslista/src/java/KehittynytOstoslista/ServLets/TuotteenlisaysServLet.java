@@ -1,8 +1,10 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Kauppa;
 import KehittynytOstoslista.Models.Tuote;
 import KehittynytOstoslista.Models.TuoteHinta;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -87,7 +89,13 @@ public class TuotteenlisaysServLet extends HttpServlet {
             if (!request.getParameter("paino").matches("^\\d+\\.\\d+$")) {
                 lisaysviesti += "Paino saa sisältää vain numeroita ja desimaalierottimena pisteen. ";
             }
-        }    
+        } 
+        
+        List<Kauppa> kaupat = null;
+        
+        kaupat = Kauppa.haeKaikkiKaupat(1);
+        
+        request.setAttribute("kaupat", kaupat);
         
         request.setAttribute("lisaysviesti", lisaysviesti);
         request.setAttribute("hintalisaysviesti", hintalisaysviesti);

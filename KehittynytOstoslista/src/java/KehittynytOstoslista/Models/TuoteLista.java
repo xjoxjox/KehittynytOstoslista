@@ -44,11 +44,11 @@ public class TuoteLista {
         PreparedStatement kysely = null;
         ResultSet tulokset = null;
         
-        HashMap<Integer, Integer> tuotteetint = new HashMap<Integer, Integer>();
         HashMap<Tuote, Integer> tuotteet = new HashMap<Tuote, Integer>();
 
         try {
-            String sql = "SELECT product_id FROM productlist WHERE shoppinglist_id = ? ORDER BY product_id";
+            String sql = "SELECT product_id, COUNT(shoppinglist_id) as count FROM productlist WHERE shoppinglist_id = ? "
+                    + "GROUP BY product_id ORDER BY product_id";
             yhteys = Yhteys.getYhteys();
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, lista);
@@ -56,20 +56,43 @@ public class TuoteLista {
 
             while (tulokset.next()) {
                 int t = tulokset.getInt("product_id");
-                if (!tuotteetint.containsKey(t)) {
-                    tuotteetint.put(t,1);
-                } else {
-                    int maara = tuotteetint.get(t);
-                    maara++;
-                    tuotteetint.put(t, maara);
-                }
-            }
-            
-            for(int tuoteid : tuotteetint.keySet()) {
-                tuotteet.put(Tuote.haeTuote(tuoteid), tuotteetint.get(tuoteid));
+                int maara = tulokset.getInt("count");
+                Tuote tuote = Tuote.haeTuote(t);
+                tuotteet.put(tuote, maara);
             }
             
             return tuotteet;
+
+        } finally {
+            try { tulokset.close(); } catch (Exception e) {  }
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
+    * Metodilla tarkustetaan onko tuote jollakin ostoslistalla.
+    *
+    * @param tuote tuotteen id tietokannassa.
+    * @throws Exception
+    * @return palauttaa true, jos tuote löytyy joltakin ostoslistalta.
+    */
+    public static boolean onkoTuoteListalla(int tuote) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+        ResultSet tulokset = null;
+
+        try {
+            String sql = "SELECT shoppinglist_id FROM productlist WHERE product_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, tuote);
+            tulokset = kysely.executeQuery();
+
+            if (tulokset.next()) {
+                return true;
+            } else {
+                return false;
+            }
 
         } finally {
             try { tulokset.close(); } catch (Exception e) {  }
@@ -163,6 +186,28 @@ public class TuoteLista {
             kysely = yhteys.prepareStatement(sql);
             kysely.setInt(1, tuote);
             kysely.setInt(2, lista);
+            return kysely.execute();
+        } finally {
+            try { kysely.close(); } catch (Exception e) {  }
+            try { yhteys.close(); } catch (Exception e) {  }
+        }
+    }
+    /**
+    * Metodilla poistetaan ostoslistan tuotteet.
+    *
+    * @param lista ostoslistan id tietokannassa.
+    * @throws Exception
+    * @return palauttaa true, jos poisto onnistui.
+    */
+    public static boolean poistaLista(int lista) throws Exception {
+        Connection yhteys = null;
+        PreparedStatement kysely = null;
+
+        try {
+            String sql = "DELETE FROM productlist where shoppinglist_id = ?";
+            yhteys = Yhteys.getYhteys();
+            kysely = yhteys.prepareStatement(sql);
+            kysely.setInt(1, lista);
             return kysely.execute();
         } finally {
             try { kysely.close(); } catch (Exception e) {  }

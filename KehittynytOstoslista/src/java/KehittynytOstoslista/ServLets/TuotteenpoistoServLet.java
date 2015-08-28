@@ -2,6 +2,7 @@ package KehittynytOstoslista.ServLets;
 
 import KehittynytOstoslista.Models.Tuote;
 import KehittynytOstoslista.Models.TuoteHinta;
+import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,17 +32,23 @@ public class TuotteenpoistoServLet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
-        TuoteHinta.poistaTuoteHinta(Integer.parseInt(request.getParameter("id")));
+        boolean listalla = TuoteLista.onkoTuoteListalla(Integer.parseInt(request.getParameter("id")));
         
-        boolean tulos = Tuote.poistaTuote(Integer.parseInt(request.getParameter("id")));
-       
-        String hakunimi = request.getParameter("hakunimi");
+        if (!listalla) {
+            TuoteHinta.poistaTuoteHinta(Integer.parseInt(request.getParameter("id")));
         
-        if(!tulos) {
-            request.setAttribute("poistoviesti", "Tuote poistettu onnistuneesti.");
+            boolean tulos = Tuote.poistaTuote(Integer.parseInt(request.getParameter("id")));
+        
+            if(!tulos) {
+                request.setAttribute("poistoviesti", "Tuote poistettu onnistuneesti.");
+            } else {
+                request.setAttribute("poistoviesti", "Tuotteen poisto epäonnistui.");
+            }
         } else {
-            request.setAttribute("poistoviesti", "Tuotteen poisto epäonnistui.");
+            request.setAttribute("poistoviesti", "Tuotetta ei voida poistaa, koska se on jollakin ostoslistalla.");
         }
+        
+        String hakunimi = request.getParameter("hakunimi");
         
         List<Tuote> tuotteet = null;
         

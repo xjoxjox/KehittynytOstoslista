@@ -33,7 +33,7 @@ public class KaupanlisaysServLet extends HttpServlet {
         String nimi = request.getParameter("nimi");
         String kaupunki = request.getParameter("kaupunki");
         String osoite = request.getParameter("osoite");
-        int hakubonus = Integer.parseInt(request.getParameter("bonus"));
+        int hakubonus = Integer.parseInt(request.getParameter("bonusid"));
         boolean tulos = Kauppa.lisaaKauppa(nimi, kaupunki, osoite, hakubonus);
         String lisaysviesti = "";
         

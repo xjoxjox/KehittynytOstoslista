@@ -2,6 +2,7 @@ package KehittynytOstoslista.ServLets;
 
 import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
+import KehittynytOstoslista.Models.TuoteLista;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,9 +33,10 @@ public class OstoslistaTallennettuPoistoServLet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
+        TuoteLista.poistaLista(Integer.parseInt(request.getParameter("id")));
         boolean poisto = OstoslistaTallennettu.poistaLista(Integer.parseInt(request.getParameter("id")));
         
-        if (poisto) {
+        if (!poisto) {
             request.setAttribute("listanpoisto", "Listan poisto onnistui.");
         } else {
             request.setAttribute("listanpoisto", "Listan poisto epäonnistui.");
@@ -50,7 +52,7 @@ public class OstoslistaTallennettuPoistoServLet extends HttpServlet {
         request.setAttribute("listat", listat);
         
         if (listat.isEmpty()) {
-            request.setAttribute("viesti", "Ei tallennettuja listoja.");
+            request.setAttribute("eiOstoslistoja", "Ei tallennettuja listoja.");
         }
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("ostoslistat.jsp");

@@ -132,6 +132,10 @@
         <servlet-name>OstoslistankuittausServLet</servlet-name>
         <servlet-class>KehittynytOstoslista.ServLets.OstoslistankuittausServLet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OstoslistanpoistoServLet</servlet-name>
+        <servlet-class>KehittynytOstoslista.ServLets.OstoslistanpoistoServLet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TuoteServLet</servlet-name>
         <url-pattern>/TuoteServLet</url-pattern>
@@ -263,6 +267,10 @@
     <servlet-mapping>
         <servlet-name>OstoslistankuittausServLet</servlet-name>
         <url-pattern>/OstoslistankuittausServLet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OstoslistanpoistoServLet</servlet-name>
+        <url-pattern>/OstoslistanpoistoServLet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

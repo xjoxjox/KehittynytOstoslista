@@ -1,6 +1,8 @@
 package KehittynytOstoslista.ServLets;
 
 import KehittynytOstoslista.Models.Kauppa;
+import KehittynytOstoslista.Models.OstoslistaKuitattu;
+import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,12 +33,20 @@ public class KaupanpoistoServLet extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         
-        boolean tulos = Kauppa.poistaKauppa(Integer.parseInt(request.getParameter("id")));
+        boolean listallaT = OstoslistaTallennettu.onkoOstoslistaTallennettuKaupalla(Integer.parseInt(request.getParameter("id")));
+        boolean listallaK = OstoslistaKuitattu.onkoOstoslistaKuitattuKaupalla(Integer.parseInt(request.getParameter("id")));
         
-        if(!tulos) {
-            request.setAttribute("poistoviesti", "Kauppa poistettu onnistuneesti.");
+        if(!listallaT && !listallaK) {
+        
+            boolean tulos = Kauppa.poistaKauppa(Integer.parseInt(request.getParameter("id")));
+        
+            if(!tulos) {
+                request.setAttribute("poistoviesti", "Kauppa poistettu onnistuneesti.");
+            } else {
+                request.setAttribute("poistoviesti", "Kauppa poisto epäonnistui.");
+            }
         } else {
-            request.setAttribute("poistoviesti", "Kauppa poisto epäonnistui.");
+            request.setAttribute("poistoviesti", "Kauppaa ei voida poistaa, koska se on jollakin ostoslistalla.");
         }
         
         String hakukaupunki = request.getParameter("hakukaupunki");

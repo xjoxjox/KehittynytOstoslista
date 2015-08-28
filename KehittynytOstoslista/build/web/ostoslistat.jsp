@@ -63,7 +63,7 @@
                             </form>
                         </td>
                         <td>
-                            <form method="post" name="frm" action="OstoslistanpoistoServLet">
+                            <form method="post" name="frm" action="OstoslistaTallennettuPoistoServLet">
                                 <input type="hidden" name="id" value="${ostoslista.id}">
                                 <input type="submit" value="Poista">
                             </form>

@@ -37,7 +37,7 @@
                 <tr><td><tr><td ><b>Kaupunki</b></td><td>: <input  type="text" name="kaupunki"></td></tr>
                 <tr><td><b>Osoite</b></td><td>: <input  type="text" name="osoite"></td></tr> 
                 <tr><td><b>Bonus</b></td>
-                    <td>: <select name="hakubonus">
+                    <td>: <select name="bonusid">
                         <c:forEach items="${bonukset}" var="bonus">
                             <option value="${bonus.id}">${bonus.nimi}</option>
                         </c:forEach>  
