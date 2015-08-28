@@ -15,7 +15,7 @@
         <body>
             <br/><br/>
             <form method="post" name="frm" action="TuoteServLet">
-                <p>Haku toimii tällä hetkellä vain nimen perusteella.</p>
+                <p>Haku toimii tällä hetkellä vain nimen perusteella. Jättämällä kentät tyhjiksi haetaan kaikki tuotteet.</p>
             <table>
                 <tr><td><h3>Etsi tuotetta</h3></td></tr>
                 <tr><td><b>Nimi</b></td><td>: <input  type="text" name="hakunimi"></td></tr>
