@@ -35,31 +35,35 @@
                         <td>
                             <form method="post" name="frm" action="HintojenhakuServLet">
                                 <input type="hidden" name="id" value="${tuote.id}">
+                                <input type="hidden" name="hakunimi" value="${hakunimi}">
                                 <input type="submit" value="Hae hinnat">
                             </form>
                         </td>
                         <td>
                             <form method="post" name="frm" action="TuoteHintaNakymaServlet">
                                 <input type="hidden" name="id" value="${tuote.id}">
+                                <input type="hidden" name="hakunimi" value="${hakunimi}">
                                 <input type="submit" value="Päivitä hinta">
                             </form>
                         </td>
                         <td>
                             <form method="post" name="frm" action="TuotteenMuokkausNakymaServLet">
                                 <input type="hidden" name="id" value="${tuote.id}">
+                                <input type="hidden" name="hakunimi" value="${hakunimi}">
                                 <input type="submit" value="Muokkaa">
                             </form>
                         </td>                        
                         <td>
                             <form method="post" name="frm" action="TuotteenpoistoServLet">
                                 <input type="hidden" name="id" value="${tuote.id}">
+                                <input type="hidden" name="hakunimi" value="${hakunimi}">
                                 <input type="submit" value="Poista">
                             </form>
                         </td>
                     </tr>
                 </c:forEach>
             </tbody>
-        </table>
+        </table><br>
         <c:if test="${hakunimi == null}">
             <p>Tuotteita yhteensä ${tuoteLkm}.</p>
         </c:if>

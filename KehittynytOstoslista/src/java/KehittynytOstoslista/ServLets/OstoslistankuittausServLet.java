@@ -38,7 +38,7 @@ public class OstoslistankuittausServLet extends HttpServlet {
             throws ServletException, IOException, SQLException, NamingException, Exception {
         response.setContentType("text/html;charset=UTF-8");
 
-         HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         String tunnus = (String)session.getAttribute("kirjautunut");
         Kayttaja kayttaja = Kayttaja.haeKayttajaTunnuksella(tunnus);
         int listabonus = Kauppa.haeKaupalleBonus(Integer.parseInt(request.getParameter("kuittikauppa")));
@@ -61,6 +61,12 @@ public class OstoslistankuittausServLet extends HttpServlet {
         if (listat.isEmpty()) {
             request.setAttribute("eiOstoslistoja", "Ei tallennettuja listoja.");
         }
+        
+        List<Kauppa> kaupat = null;
+        
+        kaupat = Kauppa.haeKaikkiKaupat(1);
+        
+        request.setAttribute("kaupat", kaupat);
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("ostoslistat.jsp");
         dispatcher.forward(request, response);

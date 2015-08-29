@@ -1,5 +1,6 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Kauppa;
 import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
 import KehittynytOstoslista.Models.Tuote;
@@ -58,8 +59,14 @@ public class OstoslistaLisaaTuoteNakymaServLet extends HttpServlet {
         request.setAttribute("listat", listat);
         
         if (listat.isEmpty()) {
-            request.setAttribute("viesti", "Ei tallennettuja listoja.");
+            request.setAttribute("eiOstoslistoja", "Ei tallennettuja listoja.");
         }
+        
+        List<Kauppa> kaupat = null;
+        
+        kaupat = Kauppa.haeKaikkiKaupat(1);
+        
+        request.setAttribute("kaupat", kaupat);
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("ostoslistat.jsp");
         dispatcher.forward(request, response);

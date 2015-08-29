@@ -1,5 +1,6 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Kauppa;
 import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaKuitattu;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
@@ -65,6 +66,12 @@ public class OstoslistaTuotteetServLet extends HttpServlet {
             if (listat.isEmpty()) {
                 request.setAttribute("eiOstoslistoja", "Ei tallennettuja ostoslistoja.");
             }
+            
+            List<Kauppa> kaupat = null;
+        
+            kaupat = Kauppa.haeKaikkiKaupat(1);
+        
+            request.setAttribute("kaupat", kaupat);
         }
         
         if(param.equals("ostohistoria.jsp")) {

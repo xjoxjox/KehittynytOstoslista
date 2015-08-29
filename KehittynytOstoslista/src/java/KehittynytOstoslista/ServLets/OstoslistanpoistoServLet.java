@@ -1,5 +1,6 @@
 package KehittynytOstoslista.ServLets;
 
+import KehittynytOstoslista.Models.Kauppa;
 import KehittynytOstoslista.Models.Kayttaja;
 import KehittynytOstoslista.Models.OstoslistaKuitattu;
 import KehittynytOstoslista.Models.OstoslistaTallennettu;
@@ -55,8 +56,14 @@ public class OstoslistanpoistoServLet extends HttpServlet {
         request.setAttribute("listat", listat);
         
         if (listat.isEmpty()) {
-            request.setAttribute("viesti", "Ei kuitattuja listoja.");
+            request.setAttribute("eiOstoslistoja", "Ei kuitattuja listoja.");
         }
+        
+        List<Kauppa> kaupat = null;
+        
+        kaupat = Kauppa.haeKaikkiKaupat(1);
+        
+        request.setAttribute("kaupat", kaupat);
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("ostohistoria.jsp");
         dispatcher.forward(request, response);
